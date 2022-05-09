@@ -18,7 +18,7 @@ use bevy_input::{
 };
 use bevy_math::{ivec2, DVec2, Vec2};
 use bevy_utils::{
-    tracing::{error, info, trace, warn},
+    tracing::{error, info, warn, info_span},
     Instant,
 };
 use bevy_window::{
@@ -284,13 +284,19 @@ pub fn winit_runner_with(mut app: App) {
         .insert_non_send_resource(event_loop.create_proxy());
 
     let return_from_run = app.world.resource::<WinitSettings>().return_from_run;
-    trace!("Entering winit event loop");
 
     let event_handler = move |event: Event<()>,
                               event_loop: &EventLoopWindowTarget<()>,
                               control_flow: &mut ControlFlow| {
+        
+        #[cfg(feature = "trace")]
+        let _span = info_span!("winit event loop").entered();
+
         match event {
             event::Event::NewEvents(start) => {
+                #[cfg(feature = "trace")]
+                let _span = info_span!("NewEvents").entered();
+
                 let winit_config = app.world.resource::<WinitSettings>();
                 let windows = app.world.resource::<Windows>();
                 let focused = windows.iter().any(|w| w.is_focused());
@@ -316,6 +322,9 @@ pub fn winit_runner_with(mut app: App) {
                 window_id: winit_window_id,
                 ..
             } => {
+                #[cfg(feature = "trace")]
+                let _span = info_span!("WindowEvent").entered();
+
                 let world = app.world.cell();
                 let winit_windows = world.non_send_resource_mut::<WinitWindows>();
                 let mut windows = world.resource_mut::<Windows>();
@@ -341,6 +350,9 @@ pub fn winit_runner_with(mut app: App) {
 
                 match event {
                     WindowEvent::Resized(size) => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::Resized").entered();
+
                         window.update_actual_size_from_backend(size.width, size.height);
                         let mut resize_events = world.resource_mut::<Events<WindowResized>>();
                         resize_events.send(WindowResized {
@@ -350,16 +362,24 @@ pub fn winit_runner_with(mut app: App) {
                         });
                     }
                     WindowEvent::CloseRequested => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::CloseRequested").entered();
+
                         let mut window_close_requested_events =
                             world.resource_mut::<Events<WindowCloseRequested>>();
                         window_close_requested_events.send(WindowCloseRequested { id: window_id });
                     }
                     WindowEvent::KeyboardInput { ref input, .. } => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::KeyboardInput").entered();
                         let mut keyboard_input_events =
                             world.resource_mut::<Events<KeyboardInput>>();
                         keyboard_input_events.send(converters::convert_keyboard_input(input));
                     }
                     WindowEvent::CursorMoved { position, .. } => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::CursorMoved").entered();
+
                         let mut cursor_moved_events = world.resource_mut::<Events<CursorMoved>>();
                         let winit_window = winit_windows.get_window(window_id).unwrap();
                         let inner_size = winit_window.inner_size();
@@ -377,16 +397,25 @@ pub fn winit_runner_with(mut app: App) {
                         });
                     }
                     WindowEvent::CursorEntered { .. } => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::CursorEntered").entered();
+
                         let mut cursor_entered_events =
                             world.resource_mut::<Events<CursorEntered>>();
                         cursor_entered_events.send(CursorEntered { id: window_id });
                     }
                     WindowEvent::CursorLeft { .. } => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::CursorLeft").entered();
+
                         let mut cursor_left_events = world.resource_mut::<Events<CursorLeft>>();
                         window.update_cursor_physical_position_from_backend(None);
                         cursor_left_events.send(CursorLeft { id: window_id });
                     }
                     WindowEvent::MouseInput { state, button, .. } => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::MouseInput").entered();
+
                         let mut mouse_button_input_events =
                             world.resource_mut::<Events<MouseButtonInput>>();
                         mouse_button_input_events.send(MouseButtonInput {
@@ -394,27 +423,35 @@ pub fn winit_runner_with(mut app: App) {
                             state: converters::convert_element_state(state),
                         });
                     }
-                    WindowEvent::MouseWheel { delta, .. } => match delta {
-                        event::MouseScrollDelta::LineDelta(x, y) => {
-                            let mut mouse_wheel_input_events =
-                                world.resource_mut::<Events<MouseWheel>>();
-                            mouse_wheel_input_events.send(MouseWheel {
-                                unit: MouseScrollUnit::Line,
-                                x,
-                                y,
-                            });
-                        }
-                        event::MouseScrollDelta::PixelDelta(p) => {
-                            let mut mouse_wheel_input_events =
-                                world.resource_mut::<Events<MouseWheel>>();
-                            mouse_wheel_input_events.send(MouseWheel {
-                                unit: MouseScrollUnit::Pixel,
-                                x: p.x as f32,
-                                y: p.y as f32,
-                            });
+                    WindowEvent::MouseWheel { delta, .. } => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::MouseWheel").entered();
+
+                        match delta {
+                            event::MouseScrollDelta::LineDelta(x, y) => {
+                                let mut mouse_wheel_input_events =
+                                    world.resource_mut::<Events<MouseWheel>>();
+                                mouse_wheel_input_events.send(MouseWheel {
+                                    unit: MouseScrollUnit::Line,
+                                    x,
+                                    y,
+                                });
+                            }
+                            event::MouseScrollDelta::PixelDelta(p) => {
+                                let mut mouse_wheel_input_events =
+                                    world.resource_mut::<Events<MouseWheel>>();
+                                mouse_wheel_input_events.send(MouseWheel {
+                                    unit: MouseScrollUnit::Pixel,
+                                    x: p.x as f32,
+                                    y: p.y as f32,
+                                });
+                            }
                         }
                     },
                     WindowEvent::Touch(touch) => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::Touch").entered();
+
                         let mut touch_input_events = world.resource_mut::<Events<TouchInput>>();
 
                         let mut location = touch.location.to_logical(window.scale_factor());
@@ -428,6 +465,9 @@ pub fn winit_runner_with(mut app: App) {
                         touch_input_events.send(converters::convert_touch_input(touch, location));
                     }
                     WindowEvent::ReceivedCharacter(c) => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::ReceivedCharacter").entered();
+
                         let mut char_input_events =
                             world.resource_mut::<Events<ReceivedCharacter>>();
 
@@ -440,6 +480,9 @@ pub fn winit_runner_with(mut app: App) {
                         scale_factor,
                         new_inner_size,
                     } => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::ScaleFactorChanged").entered();
+
                         let mut backend_scale_factor_change_events =
                             world.resource_mut::<Events<WindowBackendScaleFactorChanged>>();
                         backend_scale_factor_change_events.send(WindowBackendScaleFactorChanged {
@@ -487,6 +530,9 @@ pub fn winit_runner_with(mut app: App) {
                         );
                     }
                     WindowEvent::Focused(focused) => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::Focused").entered();
+
                         window.update_focused_status_from_backend(focused);
                         let mut focused_events = world.resource_mut::<Events<WindowFocused>>();
                         focused_events.send(WindowFocused {
@@ -495,6 +541,9 @@ pub fn winit_runner_with(mut app: App) {
                         });
                     }
                     WindowEvent::DroppedFile(path_buf) => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::DroppedFile").entered();
+
                         let mut events = world.resource_mut::<Events<FileDragAndDrop>>();
                         events.send(FileDragAndDrop::DroppedFile {
                             id: window_id,
@@ -502,6 +551,9 @@ pub fn winit_runner_with(mut app: App) {
                         });
                     }
                     WindowEvent::HoveredFile(path_buf) => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::HoveredFile").entered();
+
                         let mut events = world.resource_mut::<Events<FileDragAndDrop>>();
                         events.send(FileDragAndDrop::HoveredFile {
                             id: window_id,
@@ -509,10 +561,16 @@ pub fn winit_runner_with(mut app: App) {
                         });
                     }
                     WindowEvent::HoveredFileCancelled => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::HoveredFileCancelled").entered();
+
                         let mut events = world.resource_mut::<Events<FileDragAndDrop>>();
                         events.send(FileDragAndDrop::HoveredFileCancelled { id: window_id });
                     }
                     WindowEvent::Moved(position) => {
+                        #[cfg(feature = "trace")]
+                        let _span = info_span!("WindowEvent::Moved").entered();
+                        
                         let position = ivec2(position.x, position.y);
                         window.update_actual_position_from_backend(position);
                         let mut events = world.resource_mut::<Events<WindowMoved>>();
@@ -528,18 +586,30 @@ pub fn winit_runner_with(mut app: App) {
                 event: DeviceEvent::MouseMotion { delta },
                 ..
             } => {
+                #[cfg(feature = "trace")]
+                let _span = info_span!("DeviceEvent::MouseMotion").entered();
+                
                 let mut mouse_motion_events = app.world.resource_mut::<Events<MouseMotion>>();
                 mouse_motion_events.send(MouseMotion {
                     delta: Vec2::new(delta.0 as f32, delta.1 as f32),
                 });
             }
             event::Event::Suspended => {
+                #[cfg(feature = "trace")]
+                let _span = info_span!("Event::Suspended").entered();
+
                 winit_state.active = false;
             }
             event::Event::Resumed => {
+                #[cfg(feature = "trace")]
+                let _span = info_span!("Event::Resumed").entered();
+
                 winit_state.active = true;
             }
             event::Event::MainEventsCleared => {
+                #[cfg(feature = "trace")]
+                let _span = info_span!("Event::MainEventsCleared").entered();
+
                 handle_create_window_events(
                     &mut app.world,
                     event_loop,
@@ -566,6 +636,9 @@ pub fn winit_runner_with(mut app: App) {
                 }
             }
             Event::RedrawEventsCleared => {
+                #[cfg(feature = "trace")]
+                let _span = info_span!("Event::RedrawEventsCleared").entered();
+
                 {
                     let winit_config = app.world.resource::<WinitSettings>();
                     let windows = app.world.resource::<Windows>();
