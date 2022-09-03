@@ -1,8 +1,9 @@
-use crate::{Window, WindowCloseRequested, WindowFocused, WindowId, Windows};
+use crate::{Window, WindowCloseRequested, WindowId, WindowMode, Windows};
 
 use bevy_app::AppExit;
 use bevy_ecs::prelude::*;
 use bevy_input::{keyboard::KeyCode, Input};
+use bevy_utils::HashMap;
 
 /// Exit the application when there are no open windows.
 ///
@@ -36,21 +37,45 @@ pub fn close_when_requested(
 /// Close the focused window whenever the escape key (<kbd>Esc</kbd>) is pressed
 ///
 /// This is useful for examples or prototyping.
-pub fn close_on_esc(
-    mut focused: Local<Option<WindowId>>,
-    mut focused_events: EventReader<WindowFocused>,
+pub fn close_on_esc(mut windows: ResMut<Windows>, input: Res<Input<KeyCode>>) {
+    if let Some(window) = windows.get_focused_mut() {
+        if input.just_pressed(KeyCode::Escape) {
+            window.close();
+        }
+    }
+}
+
+/// Toggle between the last selected fullscreen mode and windowed mode on the focused window whenever `Alt + Enter` is pressed.
+pub fn toggle_fullscreen_shortcut(
     mut windows: ResMut<Windows>,
     input: Res<Input<KeyCode>>,
+    mut last_fullscreen_mode: Local<HashMap<WindowId, WindowMode>>,
 ) {
-    // TODO: Track this in e.g. a resource to ensure consistent behaviour across similar systems
-    for event in focused_events.iter() {
-        *focused = event.focused.then(|| event.id);
+    if windows.is_changed() {
+        for window in windows.iter() {
+            if window.mode() != WindowMode::Windowed {
+                // Update since a fullscreen mode might have been set outside of this system.
+                last_fullscreen_mode
+                    .entry(window.id())
+                    .insert(window.mode());
+            }
+        }
+
+        // Remove entries from closed windows.
+        last_fullscreen_mode.retain(|id, _| windows.get(*id).is_some());
     }
 
-    if let Some(focused) = &*focused {
-        if input.just_pressed(KeyCode::Escape) {
-            if let Some(window) = windows.get_mut(*focused) {
-                window.close();
+    if let Some(window) = windows.get_focused_mut() {
+        if input.any_pressed([KeyCode::LAlt, KeyCode::RAlt]) && input.just_pressed(KeyCode::Return)
+        {
+            if window.mode() == WindowMode::Windowed {
+                let mode = *last_fullscreen_mode
+                    .entry(window.id())
+                    .or_insert(WindowMode::Fullscreen);
+
+                window.set_mode(mode);
+            } else {
+                window.set_mode(WindowMode::Windowed);
             }
         }
     }

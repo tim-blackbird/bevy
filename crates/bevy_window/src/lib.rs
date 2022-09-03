@@ -23,9 +23,9 @@ pub mod prelude {
 
 use bevy_app::prelude::*;
 use bevy_ecs::{
-    event::Events,
+    event::{EventReader, Events},
     schedule::{ParallelSystemDescriptorCoercion, SystemLabel},
-    system::Resource,
+    system::{ResMut, Resource},
 };
 
 /// The configuration information for the [`WindowPlugin`].
@@ -55,6 +55,10 @@ pub struct WindowSettings {
     /// If this system (or a replacement) is not running, the close button will have no effect.
     /// This may surprise your users. It is recommended to leave this setting as `true`.
     pub close_when_requested: bool,
+    /// Wether to toggle fullscreen when the user pressed Alt + Enter on their keyboard.
+    ///
+    /// If true, this plugin will add [`toggle_fullscreen_shortcut`] to [`CoreStage::Update`].
+    pub toggle_fullscreen_shortcut: bool,
 }
 
 impl Default for WindowSettings {
@@ -63,6 +67,7 @@ impl Default for WindowSettings {
             add_primary_window: true,
             exit_on_all_closed: true,
             close_when_requested: true,
+            toggle_fullscreen_shortcut: true,
         }
     }
 }
@@ -117,6 +122,9 @@ impl Plugin for WindowPlugin {
         }
         if settings.close_when_requested {
             app.add_system(close_when_requested);
+        }
+        if settings.toggle_fullscreen_shortcut {
+            app.add_system(toggle_fullscreen_shortcut);
         }
     }
 }
