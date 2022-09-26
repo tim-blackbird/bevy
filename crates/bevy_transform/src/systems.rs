@@ -103,7 +103,7 @@ mod test {
     use crate::components::{GlobalTransform, Transform};
     use crate::systems::transform_propagate_system;
     use crate::TransformBundle;
-    use bevy_hierarchy::{BuildChildren, BuildWorldChildren, Children, Parent};
+    use bevy_hierarchy::{HierachyEntityMutExt, Children, HierarchyCommands, Parent, HierachyEntityCommandsExt};
 
     #[derive(StageLabel)]
     struct Update;
@@ -339,7 +339,7 @@ mod test {
 
         app.world
             .spawn(TransformBundle::IDENTITY)
-            .push_children(&[child]);
+            .add_children(&[child]);
         std::mem::swap(
             &mut *app.world.get_mut::<Parent>(child).unwrap(),
             &mut *temp.get_mut::<Parent>(grandchild).unwrap(),

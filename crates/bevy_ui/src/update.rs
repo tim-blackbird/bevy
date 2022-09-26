@@ -128,7 +128,7 @@ mod tests {
         system::{CommandQueue, Commands},
         world::World,
     };
-    use bevy_hierarchy::BuildChildren;
+    use bevy_hierarchy::HierachyEntityCommandsExt;
     use bevy_transform::components::Transform;
 
     use crate::Node;

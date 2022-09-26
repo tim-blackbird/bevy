@@ -7,7 +7,7 @@ use bevy_ecs::{
 };
 use bevy_reflect::Reflect;
 use core::slice;
-use smallvec::SmallVec;
+use smallvec::{SmallVec, smallvec};
 use std::ops::Deref;
 
 /// Contains references to the child entities of this entity
@@ -39,6 +39,11 @@ impl Children {
     /// Constructs a [`Children`] component with the given entities.
     pub(crate) fn from_entities(entities: &[Entity]) -> Self {
         Self(SmallVec::from_slice(entities))
+    }
+
+    /// Constructs a [`Children`] component with the given entities.
+    pub(crate) fn from_entity(entity: Entity) -> Self {
+        Self(smallvec![entity])
     }
 
     /// Swaps the child at `a_index` with the child at `b_index`.
