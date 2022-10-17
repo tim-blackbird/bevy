@@ -15,6 +15,12 @@ pub trait HierarchyCommands {
     /// Add the children.
     fn add_children(&mut self, children: &[Entity]) -> &mut Self;
 
+    /// Insert the child at the given index.
+    fn insert_child(&mut self, index: usize, child: Entity) -> &mut Self;
+
+    /// Insert the children at the given index.
+    fn insert_children(&mut self, index: usize, children: &[Entity]) -> &mut Self;
+
     /// Remove the child.
     fn remove_child(&mut self, child: Entity) -> &mut Self;
 
@@ -23,12 +29,6 @@ pub trait HierarchyCommands {
 
     /// Remove all children.
     fn remove_all_children(&mut self) -> &mut Self;
-
-    /// Insert the child at the given index.
-    fn insert_child(&mut self, index: usize, child: Entity) -> &mut Self;
-
-    /// Insert the children at the given index.
-    fn insert_children(&mut self, index: usize, children: &[Entity]) -> &mut Self;
 
     /// Set the parent.
     fn set_parent(&mut self, parent: Entity) -> &mut Self;
@@ -44,7 +44,6 @@ impl<'w> HierarchyCommands for EntityMut<'w> {
             // SAFETY: parent entity is not modified and its location is updated manually
             let world = unsafe { self.world_mut() };
             set_parent(world, child, parent);
-
             // Inserting a bundle in the children entities may change the parent entity's location if they were of the same archetype
             self.update_location();
         }
@@ -78,54 +77,12 @@ impl<'w> HierarchyCommands for EntityMut<'w> {
         self
     }
 
-    fn remove_child(&mut self, child: Entity) -> &mut Self {
-        let parent = self.id();
-        // SAFETY: This doesn't change the parent's location
-        let world = unsafe { self.world_mut() };
-        remove_child(world, parent, child);
-        self
-    }
-
-    fn remove_children(&mut self, children: &[Entity]) -> &mut Self {
-        let parent = self.id();
-        // SAFETY: This doesn't change the parent's location
-        let world = unsafe { self.world_mut() };
-        remove_children(world, parent, children);
-        self
-    }
-
-    fn remove_all_children(&mut self) -> &mut Self {
-        let parent = self.id();
-        if let Some(children) = self.remove::<Children>() {
-            // SAFETY: This doesn't change the parent's location
-            let world = unsafe { self.world_mut() };
-            for child in children.0 {
-                world.entity_mut(child).remove::<Parent>();
-                push_event(world, HierarchyEvent::ChildRemoved { child, parent })
-            }
-        }
-        self
-    }
-
     fn insert_child(&mut self, index: usize, child: Entity) -> &mut Self {
         let parent = self.id();
         {
             // SAFETY: parent entity is not modified and its location is updated manually
             let world = unsafe { self.world_mut() };
-            if let Some(previous_parent) = update_parent_component(world, parent, child) {
-                if previous_parent != parent {
-                    push_event(
-                        world,
-                        HierarchyEvent::ChildMoved {
-                            child,
-                            previous_parent,
-                            new_parent: parent,
-                        },
-                    );
-                }
-            } else {
-                push_event(world, HierarchyEvent::ChildAdded { child, parent });
-            }
+            set_parent(world, child, parent);
             // Inserting a bundle in the children entities may change the parent entity's location if they were of the same archetype
             self.update_location();
         }
@@ -164,6 +121,35 @@ impl<'w> HierarchyCommands for EntityMut<'w> {
         self
     }
 
+    fn remove_child(&mut self, child: Entity) -> &mut Self {
+        let parent = self.id();
+        // SAFETY: This doesn't change the parent's location
+        let world = unsafe { self.world_mut() };
+        remove_child(world, parent, child);
+        self
+    }
+
+    fn remove_children(&mut self, children: &[Entity]) -> &mut Self {
+        let parent = self.id();
+        // SAFETY: This doesn't change the parent's location
+        let world = unsafe { self.world_mut() };
+        remove_children(world, parent, children);
+        self
+    }
+
+    fn remove_all_children(&mut self) -> &mut Self {
+        let parent = self.id();
+        if let Some(children) = self.remove::<Children>() {
+            // SAFETY: This doesn't change the parent's location
+            let world = unsafe { self.world_mut() };
+            for child in children.0 {
+                world.entity_mut(child).remove::<Parent>();
+                push_event(world, HierarchyEvent::ChildRemoved { child, parent })
+            }
+        }
+        self
+    }
+
     fn set_parent(&mut self, parent: Entity) -> &mut Self {
         let child = self.id();
         // SAFETY: ???
@@ -175,10 +161,11 @@ impl<'w> HierarchyCommands for EntityMut<'w> {
 
     fn remove_parent(&mut self) -> &mut Self {
         let child = self.id();
-        if let Some(parent) = self.remove::<Parent>() {
+        if let Some(parent) = self.remove::<Parent>().map(|p| p.get()) {
             // SAFETY: child entity is not modified and its location is updated manually
             let world = unsafe { self.world_mut() };
-            remove_child(world, parent.get(), child);
+            remove_child(world, parent, child);
+            push_event(world, HierarchyEvent::ChildRemoved { child, parent });
             // Inserting a bundle in the children entities may change the parent entity's location if they were of the same archetype
             self.update_location();
         }
@@ -382,6 +369,26 @@ impl<'w, 's, 'a> HierarchyCommands for EntityCommands<'w, 's, 'a> {
         self
     }
 
+    fn insert_child(&mut self, index: usize, child: Entity) -> &mut Self {
+        let parent = self.id();
+        self.commands().add(InsertChildren {
+            children: smallvec::smallvec![child],
+            index,
+            parent,
+        });
+        self
+    }
+
+    fn insert_children(&mut self, index: usize, children: &[Entity]) -> &mut Self {
+        let parent = self.id();
+        self.commands().add(InsertChildren {
+            children: children.into(),
+            index,
+            parent,
+        });
+        self
+    }
+
     fn remove_child(&mut self, child: Entity) -> &mut Self {
         let parent = self.id();
         self.commands().add(RemoveChild { child, parent });
@@ -400,26 +407,6 @@ impl<'w, 's, 'a> HierarchyCommands for EntityCommands<'w, 's, 'a> {
     fn remove_all_children(&mut self) -> &mut Self {
         let parent = self.id();
         self.commands().add(RemoveAllChildren { parent });
-        self
-    }
-
-    fn insert_child(&mut self, index: usize, child: Entity) -> &mut Self {
-        let parent = self.id();
-        self.commands().add(InsertChildren {
-            children: smallvec::smallvec![child],
-            index,
-            parent,
-        });
-        self
-    }
-
-    fn insert_children(&mut self, index: usize, children: &[Entity]) -> &mut Self {
-        let parent = self.id();
-        self.commands().add(InsertChildren {
-            children: children.into(),
-            index,
-            parent,
-        });
         self
     }
 
@@ -448,7 +435,7 @@ pub(crate) fn update_parent_component(
     let mut child = world.entity_mut(child);
     if let Some(mut parent_component) = child.get_mut::<Parent>() {
         let previous = parent_component.0;
-        *parent_component = Parent(parent);
+        parent_component.0 = parent;
         Some(previous)
     } else {
         child.insert(Parent(parent));
@@ -536,6 +523,8 @@ pub(crate) fn remove_children(world: &mut World, parent: Entity, children: &[Ent
 /// Does not update the new parents [`Children`] component.
 ///
 /// Removes the `child` from the previous parent's [`Children`].
+///
+/// Does nothing if
 ///
 /// Sends [`HierarchyEvent`]'s.
 pub(crate) fn set_parent(world: &mut World, child: Entity, parent: Entity) {
@@ -688,7 +677,6 @@ mod tests {
     use smallvec::SmallVec;
 
     use bevy_ecs::{
-        component::Component,
         entity::Entity,
         system::{CommandQueue, Commands},
         world::World,
@@ -735,9 +723,6 @@ mod tests {
         assert_eq!(Some(&Parent(a)), world.get::<Parent>(c));
         assert_children(world, a, Some(&[b, c]));
     }
-
-    #[derive(Component)]
-    struct C(u32);
 
     #[test]
     fn build_children() {

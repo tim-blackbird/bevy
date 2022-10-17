@@ -103,7 +103,9 @@ mod test {
     use crate::components::{GlobalTransform, Transform};
     use crate::systems::transform_propagate_system;
     use crate::TransformBundle;
-    use bevy_hierarchy::{HierachyEntityMutExt, Children, HierarchyCommands, Parent, HierachyEntityCommandsExt};
+    use bevy_hierarchy::{
+        Children, HierachyEntityCommandsExt, HierachyEntityMutExt, HierarchyCommands, Parent,
+    };
 
     #[derive(StageLabel)]
     struct Update;

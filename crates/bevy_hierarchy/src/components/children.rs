@@ -7,7 +7,7 @@ use bevy_ecs::{
 };
 use bevy_reflect::Reflect;
 use core::slice;
-use smallvec::{SmallVec, smallvec};
+use smallvec::{smallvec, SmallVec};
 use std::ops::Deref;
 
 /// Contains references to the child entities of this entity
