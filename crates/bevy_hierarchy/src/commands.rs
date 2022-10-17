@@ -89,10 +89,13 @@ impl<'w> HierarchyCommands for EntityMut<'w> {
 
         if let Some(mut children_component) = self.get_mut::<Children>() {
             children_component.0.retain(|value| child != *value);
-            // FIXME The retain above could change the position of elements, so the index is no longer accurate.
-            children_component.0.insert(index, child);
+            if index < children_component.0.len() {
+                // FIXME The retain above could change the position of elements, so the index is no longer accurate.
+                children_component.0.insert(index, child);
+            } else {
+                children_component.0.push(child);
+            }
         } else {
-            // FIXME An incorrect index will panic above, but if the parent did not have any children yet, it's ignored.
             self.insert(Children::from_entity(child));
         }
         self
@@ -112,10 +115,13 @@ impl<'w> HierarchyCommands for EntityMut<'w> {
             children_component
                 .0
                 .retain(|value| !children.contains(value));
-            // FIXME The retain above could change the position of elements, so the index is no longer accurate.
-            children_component.0.insert_from_slice(index, children);
+            if index < children_component.0.len() {
+                // FIXME The retain above could change the position of elements, so the index is no longer accurate.
+                children_component.0.insert_from_slice(index, children);
+            } else {
+                children_component.0.extend_from_slice(children);
+            }
         } else {
-            // FIXME An incorrect index will panic above, but if the parent did not have any children yet, it's ignored.
             self.insert(Children::from_entities(children));
         }
         self
