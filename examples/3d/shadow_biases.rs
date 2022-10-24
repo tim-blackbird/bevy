@@ -257,7 +257,7 @@ fn camera_controller(
     key_input: Res<Input<KeyCode>>,
     mut query: Query<(&mut Transform, &mut CameraController), With<Camera>>,
 ) {
-    let dt = time.delta_seconds();
+    let dt = time.delta_secs();
 
     // Handle mouse input
     let mut mouse_delta = Vec2::ZERO;

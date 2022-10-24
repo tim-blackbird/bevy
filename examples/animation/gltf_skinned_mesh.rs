@@ -67,6 +67,6 @@ fn joint_animation(
         let mut second_joint_transform = transform_query.get_mut(second_joint_entity).unwrap();
 
         second_joint_transform.rotation =
-            Quat::from_rotation_z(FRAC_PI_2 * time.elapsed_seconds().sin());
+            Quat::from_rotation_z(FRAC_PI_2 * time.elapsed_secs().sin());
     }
 }

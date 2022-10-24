@@ -337,7 +337,7 @@ fn update_lights(
             transform.rotation = Quat::from_euler(
                 EulerRot::ZYX,
                 0.0,
-                time.elapsed_seconds() * PI / 15.0,
+                time.elapsed_secs() * PI / 15.0,
                 -FRAC_PI_4,
             );
         }
@@ -465,7 +465,7 @@ fn camera_controller(
     mut move_toggled: Local<bool>,
     mut query: Query<(&mut Transform, &mut CameraController), With<Camera>>,
 ) {
-    let dt = time.delta_seconds();
+    let dt = time.delta_secs();
 
     if let Ok((mut transform, mut options)) = query.get_single_mut() {
         if !options.initialized {

@@ -25,7 +25,7 @@ fn change_component(time: Res<Time>, mut query: Query<(Entity, &mut MyComponent)
     for (entity, mut component) in &mut query {
         if rand::thread_rng().gen_bool(0.1) {
             info!("changing component {:?}", entity);
-            component.0 = time.elapsed_seconds();
+            component.0 = time.elapsed_secs();
         }
     }
 }

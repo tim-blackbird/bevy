@@ -282,7 +282,7 @@ fn focus_camera(
     // smooth out the camera movement using the frame time
     let mut camera_motion = game.camera_should_focus - game.camera_is_focus;
     if camera_motion.length() > 0.2 {
-        camera_motion *= SPEED * time.delta_seconds();
+        camera_motion *= SPEED * time.delta_secs();
         // set the new camera's actual focus
         game.camera_is_focus += camera_motion;
     }
@@ -355,9 +355,9 @@ fn spawn_bonus(
 fn rotate_bonus(game: Res<Game>, time: Res<Time>, mut transforms: Query<&mut Transform>) {
     if let Some(entity) = game.bonus.entity {
         if let Ok(mut cake_transform) = transforms.get_mut(entity) {
-            cake_transform.rotate_y(time.delta_seconds());
+            cake_transform.rotate_y(time.delta_secs());
             cake_transform.scale =
-                Vec3::splat(1.0 + (game.score as f32 / 10.0 * time.elapsed_seconds().sin()).abs());
+                Vec3::splat(1.0 + (game.score as f32 / 10.0 * time.elapsed_secs().sin()).abs());
         }
     }
 }

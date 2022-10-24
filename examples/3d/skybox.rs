@@ -107,7 +107,7 @@ fn cycle_cubemap_asset(
     asset_server: Res<AssetServer>,
     render_device: Res<RenderDevice>,
 ) {
-    let now = time.elapsed_seconds();
+    let now = time.elapsed_secs();
     if *next_swap == 0.0 {
         *next_swap = now + CUBEMAP_SWAP_DELAY;
         return;
@@ -192,7 +192,7 @@ fn animate_light_direction(
     mut query: Query<&mut Transform, With<DirectionalLight>>,
 ) {
     for mut transform in &mut query {
-        transform.rotate_y(time.delta_seconds() * 0.5);
+        transform.rotate_y(time.delta_secs() * 0.5);
     }
 }
 
@@ -342,7 +342,7 @@ pub fn camera_controller(
     mut move_toggled: Local<bool>,
     mut query: Query<(&mut Transform, &mut CameraController), With<Camera>>,
 ) {
-    let dt = time.delta_seconds();
+    let dt = time.delta_secs();
 
     if let Ok((mut transform, mut options)) = query.get_single_mut() {
         if !options.initialized {

@@ -208,13 +208,13 @@ impl Time {
 
     /// Returns how much time has advanced since the last [`update`](#method.update), as [`f32`] seconds.
     #[inline]
-    pub fn delta_seconds(&self) -> f32 {
+    pub fn delta_secs(&self) -> f32 {
         self.delta_seconds
     }
 
     /// Returns how much time has advanced since the last [`update`](#method.update), as [`f64`] seconds.
     #[inline]
-    pub fn delta_seconds_f64(&self) -> f64 {
+    pub fn delta_secs_f64(&self) -> f64 {
         self.delta_seconds_f64
     }
 
@@ -230,13 +230,13 @@ impl Time {
     /// If you need an `f32` but that precision loss is unacceptable,
     /// use [`elapsed_seconds_wrapped`](#method.elapsed_seconds_wrapped).
     #[inline]
-    pub fn elapsed_seconds(&self) -> f32 {
+    pub fn elapsed_secs(&self) -> f32 {
         self.elapsed_seconds
     }
 
     /// Returns how much time has advanced since [`startup`](#method.startup), as [`f64`] seconds.
     #[inline]
-    pub fn elapsed_seconds_f64(&self) -> f64 {
+    pub fn elapsed_secs_f64(&self) -> f64 {
         self.elapsed_seconds_f64
     }
 
@@ -253,14 +253,14 @@ impl Time {
     /// This method is intended for applications (e.g. shaders) that require an [`f32`] value but
     /// suffer from the gradual precision loss of [`elapsed_seconds`](#method.elapsed_seconds).
     #[inline]
-    pub fn elapsed_seconds_wrapped(&self) -> f32 {
+    pub fn elapsed_secs_wrapped(&self) -> f32 {
         self.elapsed_seconds_wrapped
     }
 
     /// Returns how much time has advanced since [`startup`](#method.startup) modulo
     /// the [`wrap_period`](#method.wrap_period), as [`f64`] seconds.
     #[inline]
-    pub fn elapsed_seconds_wrapped_f64(&self) -> f64 {
+    pub fn elapsed_secs_wrapped_f64(&self) -> f64 {
         self.elapsed_seconds_wrapped_f64
     }
 
@@ -272,13 +272,13 @@ impl Time {
 
     /// Returns how much real time has elapsed since the last [`update`](#method.update), as [`f32`] seconds.
     #[inline]
-    pub fn raw_delta_seconds(&self) -> f32 {
+    pub fn raw_delta_secs(&self) -> f32 {
         self.raw_delta_seconds
     }
 
     /// Returns how much real time has elapsed since the last [`update`](#method.update), as [`f64`] seconds.
     #[inline]
-    pub fn raw_delta_seconds_f64(&self) -> f64 {
+    pub fn raw_delta_secs_f64(&self) -> f64 {
         self.raw_delta_seconds_f64
     }
 
@@ -294,13 +294,13 @@ impl Time {
     /// If you need an `f32` but that precision loss is unacceptable,
     /// use [`raw_elapsed_seconds_wrapped`](#method.raw_elapsed_seconds_wrapped).
     #[inline]
-    pub fn raw_elapsed_seconds(&self) -> f32 {
+    pub fn raw_elapsed_secs(&self) -> f32 {
         self.raw_elapsed_seconds
     }
 
     /// Returns how much real time has elapsed since [`startup`](#method.startup), as [`f64`] seconds.
     #[inline]
-    pub fn raw_elapsed_seconds_f64(&self) -> f64 {
+    pub fn raw_elapsed_secs_f64(&self) -> f64 {
         self.raw_elapsed_seconds_f64
     }
 
@@ -317,14 +317,14 @@ impl Time {
     /// This method is intended for applications (e.g. shaders) that require an [`f32`] value but
     /// suffer from the gradual precision loss of [`raw_elapsed_seconds`](#method.raw_elapsed_seconds).
     #[inline]
-    pub fn raw_elapsed_seconds_wrapped(&self) -> f32 {
+    pub fn raw_elapsed_secs_wrapped(&self) -> f32 {
         self.raw_elapsed_seconds_wrapped
     }
 
     /// Returns how much real time has elapsed since [`startup`](#method.startup) modulo
     /// the [`wrap_period`](#method.wrap_period), as [`f64`] seconds.
     #[inline]
-    pub fn raw_elapsed_seconds_wrapped_f64(&self) -> f64 {
+    pub fn raw_elapsed_secs_wrapped_f64(&self) -> f64 {
         self.raw_elapsed_seconds_wrapped_f64
     }
 
@@ -455,17 +455,17 @@ mod tests {
         assert_eq!(time.last_update(), None);
         assert_eq!(time.relative_speed(), 1.0);
         assert_eq!(time.delta(), Duration::ZERO);
-        assert_eq!(time.delta_seconds(), 0.0);
-        assert_eq!(time.delta_seconds_f64(), 0.0);
+        assert_eq!(time.delta_secs(), 0.0);
+        assert_eq!(time.delta_secs_f64(), 0.0);
         assert_eq!(time.raw_delta(), Duration::ZERO);
-        assert_eq!(time.raw_delta_seconds(), 0.0);
-        assert_eq!(time.raw_delta_seconds_f64(), 0.0);
+        assert_eq!(time.raw_delta_secs(), 0.0);
+        assert_eq!(time.raw_delta_secs_f64(), 0.0);
         assert_eq!(time.elapsed(), Duration::ZERO);
-        assert_eq!(time.elapsed_seconds(), 0.0);
-        assert_eq!(time.elapsed_seconds_f64(), 0.0);
+        assert_eq!(time.elapsed_secs(), 0.0);
+        assert_eq!(time.elapsed_secs_f64(), 0.0);
         assert_eq!(time.raw_elapsed(), Duration::ZERO);
-        assert_eq!(time.raw_elapsed_seconds(), 0.0);
-        assert_eq!(time.raw_elapsed_seconds_f64(), 0.0);
+        assert_eq!(time.raw_elapsed_secs(), 0.0);
+        assert_eq!(time.raw_elapsed_secs_f64(), 0.0);
 
         // Update `time` and check results.
         // The first update to `time` normally happens before other systems have run,
@@ -478,27 +478,27 @@ mod tests {
         assert_eq!(time.last_update(), Some(first_update_instant));
         assert_eq!(time.relative_speed(), 1.0);
         assert_eq!(time.delta(), Duration::ZERO);
-        assert_eq!(time.delta_seconds(), 0.0);
-        assert_eq!(time.delta_seconds_f64(), 0.0);
+        assert_eq!(time.delta_secs(), 0.0);
+        assert_eq!(time.delta_secs_f64(), 0.0);
         assert_eq!(time.raw_delta(), Duration::ZERO);
-        assert_eq!(time.raw_delta_seconds(), 0.0);
-        assert_eq!(time.raw_delta_seconds_f64(), 0.0);
+        assert_eq!(time.raw_delta_secs(), 0.0);
+        assert_eq!(time.raw_delta_secs_f64(), 0.0);
         assert_eq!(time.elapsed(), first_update_instant - start_instant,);
         assert_eq!(
-            time.elapsed_seconds(),
+            time.elapsed_secs(),
             (first_update_instant - start_instant).as_secs_f32(),
         );
         assert_eq!(
-            time.elapsed_seconds_f64(),
+            time.elapsed_secs_f64(),
             (first_update_instant - start_instant).as_secs_f64(),
         );
         assert_eq!(time.raw_elapsed(), first_update_instant - start_instant,);
         assert_eq!(
-            time.raw_elapsed_seconds(),
+            time.raw_elapsed_secs(),
             (first_update_instant - start_instant).as_secs_f32(),
         );
         assert_eq!(
-            time.raw_elapsed_seconds_f64(),
+            time.raw_elapsed_secs_f64(),
             (first_update_instant - start_instant).as_secs_f64(),
         );
 
@@ -512,11 +512,11 @@ mod tests {
         assert_eq!(time.relative_speed(), 1.0);
         assert_eq!(time.delta(), second_update_instant - first_update_instant);
         assert_eq!(
-            time.delta_seconds(),
+            time.delta_secs(),
             (second_update_instant - first_update_instant).as_secs_f32(),
         );
         assert_eq!(
-            time.delta_seconds_f64(),
+            time.delta_secs_f64(),
             (second_update_instant - first_update_instant).as_secs_f64(),
         );
         assert_eq!(
@@ -524,29 +524,29 @@ mod tests {
             second_update_instant - first_update_instant,
         );
         assert_eq!(
-            time.raw_delta_seconds(),
+            time.raw_delta_secs(),
             (second_update_instant - first_update_instant).as_secs_f32(),
         );
         assert_eq!(
-            time.raw_delta_seconds_f64(),
+            time.raw_delta_secs_f64(),
             (second_update_instant - first_update_instant).as_secs_f64(),
         );
         assert_eq!(time.elapsed(), second_update_instant - start_instant,);
         assert_eq!(
-            time.elapsed_seconds(),
+            time.elapsed_secs(),
             (second_update_instant - start_instant).as_secs_f32(),
         );
         assert_eq!(
-            time.elapsed_seconds_f64(),
+            time.elapsed_secs_f64(),
             (second_update_instant - start_instant).as_secs_f64(),
         );
         assert_eq!(time.raw_elapsed(), second_update_instant - start_instant,);
         assert_eq!(
-            time.raw_elapsed_seconds(),
+            time.raw_elapsed_secs(),
             (second_update_instant - start_instant).as_secs_f32(),
         );
         assert_eq!(
-            time.raw_elapsed_seconds_f64(),
+            time.raw_elapsed_secs_f64(),
             (second_update_instant - start_instant).as_secs_f64(),
         );
     }
@@ -561,19 +561,19 @@ mod tests {
             ..Default::default()
         };
 
-        assert_eq!(time.elapsed_seconds_wrapped(), 0.0);
+        assert_eq!(time.elapsed_secs_wrapped(), 0.0);
 
         time.update_with_instant(start_instant + Duration::from_secs(1));
-        assert_float_eq(time.elapsed_seconds_wrapped(), 1.0);
+        assert_float_eq(time.elapsed_secs_wrapped(), 1.0);
 
         time.update_with_instant(start_instant + Duration::from_secs(2));
-        assert_float_eq(time.elapsed_seconds_wrapped(), 2.0);
+        assert_float_eq(time.elapsed_secs_wrapped(), 2.0);
 
         time.update_with_instant(start_instant + Duration::from_secs(3));
-        assert_float_eq(time.elapsed_seconds_wrapped(), 0.0);
+        assert_float_eq(time.elapsed_secs_wrapped(), 0.0);
 
         time.update_with_instant(start_instant + Duration::from_secs(4));
-        assert_float_eq(time.elapsed_seconds_wrapped(), 1.0);
+        assert_float_eq(time.elapsed_secs_wrapped(), 1.0);
     }
 
     #[test]
@@ -597,11 +597,11 @@ mod tests {
         assert_eq!(time.relative_speed(), 1.0);
         assert_eq!(time.delta(), second_update_instant - first_update_instant);
         assert_eq!(
-            time.delta_seconds(),
+            time.delta_secs(),
             (second_update_instant - first_update_instant).as_secs_f32(),
         );
         assert_eq!(
-            time.delta_seconds_f64(),
+            time.delta_secs_f64(),
             (second_update_instant - first_update_instant).as_secs_f64(),
         );
         assert_eq!(
@@ -609,29 +609,29 @@ mod tests {
             second_update_instant - first_update_instant,
         );
         assert_eq!(
-            time.raw_delta_seconds(),
+            time.raw_delta_secs(),
             (second_update_instant - first_update_instant).as_secs_f32(),
         );
         assert_eq!(
-            time.raw_delta_seconds_f64(),
+            time.raw_delta_secs_f64(),
             (second_update_instant - first_update_instant).as_secs_f64(),
         );
         assert_eq!(time.elapsed(), second_update_instant - start_instant,);
         assert_eq!(
-            time.elapsed_seconds(),
+            time.elapsed_secs(),
             (second_update_instant - start_instant).as_secs_f32(),
         );
         assert_eq!(
-            time.elapsed_seconds_f64(),
+            time.elapsed_secs_f64(),
             (second_update_instant - start_instant).as_secs_f64(),
         );
         assert_eq!(time.raw_elapsed(), second_update_instant - start_instant,);
         assert_eq!(
-            time.raw_elapsed_seconds(),
+            time.raw_elapsed_secs(),
             (second_update_instant - start_instant).as_secs_f32(),
         );
         assert_eq!(
-            time.raw_elapsed_seconds_f64(),
+            time.raw_elapsed_secs_f64(),
             (second_update_instant - start_instant).as_secs_f64(),
         );
 
@@ -650,21 +650,21 @@ mod tests {
         assert_eq!(time.last_update(), Some(third_update_instant));
         assert_eq!(time.relative_speed(), 2.0);
         assert_eq!(time.delta(), elapsed.mul_f32(2.0));
-        assert_eq!(time.delta_seconds(), elapsed.mul_f32(2.0).as_secs_f32());
-        assert_eq!(time.delta_seconds_f64(), elapsed.mul_f32(2.0).as_secs_f64());
+        assert_eq!(time.delta_secs(), elapsed.mul_f32(2.0).as_secs_f32());
+        assert_eq!(time.delta_secs_f64(), elapsed.mul_f32(2.0).as_secs_f64());
         assert_eq!(time.raw_delta(), elapsed);
-        assert_eq!(time.raw_delta_seconds(), elapsed.as_secs_f32());
-        assert_eq!(time.raw_delta_seconds_f64(), elapsed.as_secs_f64());
+        assert_eq!(time.raw_delta_secs(), elapsed.as_secs_f32());
+        assert_eq!(time.raw_delta_secs_f64(), elapsed.as_secs_f64());
         assert_eq!(
             time.elapsed(),
             second_update_instant - start_instant + elapsed.mul_f32(2.0),
         );
         assert_eq!(
-            time.elapsed_seconds(),
+            time.elapsed_secs(),
             (second_update_instant - start_instant + elapsed.mul_f32(2.0)).as_secs_f32(),
         );
         assert_eq!(
-            time.elapsed_seconds_f64(),
+            time.elapsed_secs_f64(),
             (second_update_instant - start_instant + elapsed.mul_f32(2.0)).as_secs_f64(),
         );
         assert_eq!(
@@ -672,11 +672,11 @@ mod tests {
             second_update_instant - start_instant + elapsed,
         );
         assert_eq!(
-            time.raw_elapsed_seconds(),
+            time.raw_elapsed_secs(),
             (second_update_instant - start_instant + elapsed).as_secs_f32(),
         );
         assert_eq!(
-            time.raw_elapsed_seconds_f64(),
+            time.raw_elapsed_secs_f64(),
             (second_update_instant - start_instant + elapsed).as_secs_f64(),
         );
     }

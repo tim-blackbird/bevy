@@ -164,7 +164,7 @@ fn change_text_system(
             }
         }
 
-        let mut frame_time = time.delta_seconds_f64();
+        let mut frame_time = time.delta_secs_f64();
         if let Some(frame_time_diagnostic) = diagnostics.get(FrameTimeDiagnosticsPlugin::FRAME_TIME)
         {
             if let Some(frame_time_smoothed) = frame_time_diagnostic.smoothed() {

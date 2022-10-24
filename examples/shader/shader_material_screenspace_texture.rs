@@ -61,7 +61,7 @@ fn rotate_camera(mut camera: Query<&mut Transform, With<MainCamera>>, time: Res<
 
     cam_transform.rotate_around(
         Vec3::ZERO,
-        Quat::from_axis_angle(Vec3::Y, 45f32.to_radians() * time.delta_seconds()),
+        Quat::from_axis_angle(Vec3::Y, 45f32.to_radians() * time.delta_secs()),
     );
     cam_transform.look_at(Vec3::ZERO, Vec3::Y);
 }

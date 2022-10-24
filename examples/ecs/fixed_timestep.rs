@@ -34,15 +34,15 @@ fn main() {
 fn frame_update(mut last_time: Local<f32>, time: Res<Time>) {
     info!(
         "time since last frame_update: {}",
-        time.raw_elapsed_seconds() - *last_time
+        time.raw_elapsed_secs() - *last_time
     );
-    *last_time = time.raw_elapsed_seconds();
+    *last_time = time.raw_elapsed_secs();
 }
 
 fn fixed_update(mut last_time: Local<f32>, time: Res<Time>, fixed_timesteps: Res<FixedTimesteps>) {
     info!(
         "time since last fixed_update: {}\n",
-        time.raw_elapsed_seconds() - *last_time
+        time.raw_elapsed_secs() - *last_time
     );
 
     let state = fixed_timesteps.get(LABEL).unwrap();
@@ -56,5 +56,5 @@ fn fixed_update(mut last_time: Local<f32>, time: Res<Time>, fixed_timesteps: Res
         "time accrued toward next fixed_update (% of timestep): {}",
         state.overstep_percentage()
     );
-    *last_time = time.raw_elapsed_seconds();
+    *last_time = time.raw_elapsed_secs();
 }

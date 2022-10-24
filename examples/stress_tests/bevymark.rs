@@ -160,7 +160,7 @@ fn mouse_handler(
     }
 
     if mouse_button_input.pressed(MouseButton::Left) {
-        let spawn_count = (BIRDS_PER_SECOND as f64 * time.delta_seconds_f64()) as usize;
+        let spawn_count = (BIRDS_PER_SECOND as f64 * time.delta_secs_f64()) as usize;
         spawn_birds(
             &mut commands,
             &windows,
@@ -213,9 +213,9 @@ fn spawn_birds(
 
 fn movement_system(time: Res<Time>, mut bird_query: Query<(&mut Bird, &mut Transform)>) {
     for (mut bird, mut transform) in &mut bird_query {
-        transform.translation.x += bird.velocity.x * time.delta_seconds();
-        transform.translation.y += bird.velocity.y * time.delta_seconds();
-        bird.velocity.y += GRAVITY * time.delta_seconds();
+        transform.translation.x += bird.velocity.x * time.delta_secs();
+        transform.translation.y += bird.velocity.y * time.delta_secs();
+        bird.velocity.y += GRAVITY * time.delta_secs();
     }
 }
 

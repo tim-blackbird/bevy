@@ -48,7 +48,7 @@ fn change_title(time: Res<Time>, mut windows: ResMut<Windows>) {
     let window = windows.primary_mut();
     window.set_title(format!(
         "Seconds since startup: {}",
-        time.elapsed_seconds().round()
+        time.elapsed_secs().round()
     ));
 }
 

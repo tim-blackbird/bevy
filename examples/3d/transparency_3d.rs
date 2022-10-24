@@ -103,7 +103,7 @@ fn setup(
 ///                when the alpha value goes back below the threshold.
 /// - `Blend`: Object fades in and out smoothly.
 pub fn fade_transparency(time: Res<Time>, mut materials: ResMut<Assets<StandardMaterial>>) {
-    let alpha = (time.elapsed_seconds().sin() / 2.0) + 0.5;
+    let alpha = (time.elapsed_secs().sin() / 2.0) + 0.5;
     for (_, material) in materials.iter_mut() {
         material.base_color.set_a(alpha);
     }

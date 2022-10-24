@@ -36,7 +36,7 @@ impl FrameTimeDiagnosticsPlugin {
     ) {
         diagnostics.add_measurement(Self::FRAME_COUNT, || frame_count.0 as f64);
 
-        let delta_seconds = time.raw_delta_seconds_f64();
+        let delta_seconds = time.raw_delta_secs_f64();
         if delta_seconds == 0.0 {
             return;
         }

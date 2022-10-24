@@ -162,6 +162,6 @@ fn setup(
 /// Animate the joint marked with [`AnimatedJoint`] component.
 fn joint_animation(time: Res<Time>, mut query: Query<&mut Transform, With<AnimatedJoint>>) {
     for mut transform in &mut query {
-        transform.rotation = Quat::from_rotation_z(FRAC_PI_2 * time.elapsed_seconds().sin());
+        transform.rotation = Quat::from_rotation_z(FRAC_PI_2 * time.elapsed_secs().sin());
     }
 }

@@ -232,7 +232,7 @@ fn deselect(sprite: &mut Sprite, contributor: &Contributor, transform: &mut Tran
 
 /// Applies gravity to all entities with velocity
 fn velocity_system(time: Res<Time>, mut velocity_query: Query<&mut Velocity>) {
-    let delta = time.delta_seconds();
+    let delta = time.delta_secs();
 
     for mut velocity in &mut velocity_query {
         velocity.translation.y -= GRAVITY * delta;
@@ -301,7 +301,7 @@ fn collision_system(
 
 /// Apply velocity to positions and rotations.
 fn move_system(time: Res<Time>, mut query: Query<(&Velocity, &mut Transform)>) {
-    let delta = time.delta_seconds();
+    let delta = time.delta_secs();
 
     for (velocity, mut transform) in &mut query {
         transform.translation += delta * velocity.translation;

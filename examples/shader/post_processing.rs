@@ -156,8 +156,8 @@ fn main_camera_cube_rotator_system(
     mut query: Query<&mut Transform, With<MainCube>>,
 ) {
     for mut transform in &mut query {
-        transform.rotate_x(0.55 * time.delta_seconds());
-        transform.rotate_z(0.15 * time.delta_seconds());
+        transform.rotate_x(0.55 * time.delta_secs());
+        transform.rotate_z(0.15 * time.delta_secs());
     }
 }
 

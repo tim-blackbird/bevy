@@ -125,15 +125,13 @@ fn movement(
         }
 
         if direction != Vec3::ZERO {
-            transform.translation += direction.normalize() * SPEED * time.delta_seconds();
+            transform.translation += direction.normalize() * SPEED * time.delta_secs();
         }
     }
 }
 
 fn change_color(time: Res<Time>, mut query: Query<&mut Sprite>) {
     for mut sprite in &mut query {
-        sprite
-            .color
-            .set_b((time.elapsed_seconds() * 0.5).sin() + 2.0);
+        sprite.color.set_b((time.elapsed_secs() * 0.5).sin() + 2.0);
     }
 }

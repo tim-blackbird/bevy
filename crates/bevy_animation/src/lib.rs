@@ -199,7 +199,7 @@ pub fn animation_player(
                 continue;
             }
             if !player.paused {
-                player.elapsed += time.delta_seconds() * player.speed;
+                player.elapsed += time.delta_secs() * player.speed;
             }
             let mut elapsed = player.elapsed;
             if player.repeat {

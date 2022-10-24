@@ -124,7 +124,7 @@ fn move_cubes_according_to_global_transform(
     timer: Res<Time>,
 ) {
     for mut global_transform in &mut cubes {
-        *global_transform.translation_mut() += Vec3A::from(direction.0) * timer.delta_seconds();
+        *global_transform.translation_mut() += Vec3A::from(direction.0) * timer.delta_secs();
     }
 }
 
@@ -135,7 +135,7 @@ fn move_cubes_according_to_local_transform(
     timer: Res<Time>,
 ) {
     for mut transform in &mut cubes {
-        transform.translation += direction.0 * timer.delta_seconds();
+        transform.translation += direction.0 * timer.delta_secs();
     }
 }
 

@@ -155,7 +155,7 @@ impl Default for LocalFixedTimestepState {
 impl LocalFixedTimestepState {
     fn update(&mut self, time: &Time) -> ShouldRun {
         if !self.looping {
-            self.accumulator += time.delta_seconds_f64();
+            self.accumulator += time.delta_secs_f64();
         }
 
         if self.accumulator >= self.step {
