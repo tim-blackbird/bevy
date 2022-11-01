@@ -17,10 +17,7 @@ struct BonusSpawnTimer(Timer);
 fn main() {
     App::new()
         .init_resource::<Game>()
-        .insert_resource(BonusSpawnTimer(Timer::from_secs(
-            5.0,
-            TimerMode::Repeating,
-        )))
+        .insert_resource(BonusSpawnTimer(Timer::from_secs(5.0, TimerMode::Repeating)))
         .add_plugins(DefaultPlugins)
         .add_state(GameState::Playing)
         .add_startup_system(setup_cameras)
