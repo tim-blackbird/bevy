@@ -24,8 +24,8 @@ pub struct Countdown {
 impl Countdown {
     pub fn new() -> Self {
         Self {
-            percent_trigger: Timer::from_seconds(4.0, TimerMode::Repeating),
-            main_timer: Timer::from_seconds(20.0, TimerMode::Once),
+            percent_trigger: Timer::from_secs(4.0, TimerMode::Repeating),
+            main_timer: Timer::from_secs(20.0, TimerMode::Once),
         }
     }
 }
@@ -38,7 +38,7 @@ impl Default for Countdown {
 
 fn setup(mut commands: Commands) {
     // Add an entity to the world with a timer
-    commands.spawn(PrintOnCompletionTimer(Timer::from_seconds(
+    commands.spawn(PrintOnCompletionTimer(Timer::from_secs(
         5.0,
         TimerMode::Once,
     )));
