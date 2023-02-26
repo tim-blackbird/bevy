@@ -48,7 +48,7 @@ impl Plugin for Gizmo2dPlugin {
             core_2d::graph::node::END_MAIN_PASS_POST_PROCESSING,
             core_2d::graph::node::GIZMO,
         );
-        graph.add_node_edge(core_2d::graph::node::GIZMO, core_2d::graph::node::UPSCALING);
+        graph.add_node_edge(core_2d::graph::node::GIZMO, "ui_pass");
     }
 }
 

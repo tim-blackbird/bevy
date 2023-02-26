@@ -51,7 +51,7 @@ impl Plugin for Gizmo3dPlugin {
             core_3d::graph::node::END_MAIN_PASS_POST_PROCESSING,
             core_3d::graph::node::GIZMO,
         );
-        graph.add_node_edge(core_3d::graph::node::GIZMO, core_3d::graph::node::UPSCALING);
+        graph.add_node_edge(core_3d::graph::node::GIZMO, "ui_pass");
     }
 }
 
