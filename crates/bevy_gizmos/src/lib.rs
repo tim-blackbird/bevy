@@ -68,7 +68,6 @@ impl Plugin for GizmoPlugin {
         #[cfg(feature = "bevy_sprite")]
         {
             use pipeline_2d::*;
-
             render_app
                 .init_resource::<GizmoPipeline2d>()
                 .init_resource::<SpecializedMeshPipelines<GizmoPipeline2d>>()
@@ -79,7 +78,6 @@ impl Plugin for GizmoPlugin {
         #[cfg(feature = "bevy_pbr")]
         {
             use pipeline_3d::*;
-
             render_app
                 .init_resource::<GizmoPipeline3d>()
                 .init_resource::<SpecializedMeshPipelines<GizmoPipeline3d>>()
