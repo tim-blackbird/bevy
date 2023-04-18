@@ -149,22 +149,18 @@ fn update_gizmo_meshes(
     handles: Res<MeshHandles>,
     mut storage: ResMut<GizmoStorage>,
 ) {
-    let list_mesh = meshes.get_mut(&handles.list).unwrap();
-
     storage.in_use = false;
 
-    if !storage.list_positions.is_empty() {
+    if !storage.list_positions.is_empty() || !storage.strip_positions.is_empty() {
         storage.in_use = true;
+
+        let list_mesh = meshes.get_mut(&handles.list).unwrap();
 
         let positions = mem::take(&mut storage.list_positions);
         list_mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, positions);
 
         let colors = mem::take(&mut storage.list_colors);
         list_mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, colors);
-    }
-
-    if !storage.strip_positions.is_empty() {
-        storage.in_use = true;
 
         let strip_mesh = meshes.get_mut(&handles.strip).unwrap();
 
