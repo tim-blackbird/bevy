@@ -18,9 +18,13 @@ var<uniform> line_gizmo: LineGizmoUniform;
 
 struct VertexInput {
     @location(0) position_a: vec3<f32>,
+#ifdef GIZMO_NORMAL
+    @location(1) normal: vec3<f32>,
+#elseif
     @location(1) position_b: vec3<f32>,
     @location(2) color_a: vec4<f32>,
     @location(3) color_b: vec4<f32>,
+#endif
     @builtin(vertex_index) index: u32,
 };
 
@@ -42,8 +46,14 @@ fn vertex(vertex: VertexInput) -> VertexOutput {
     let position = positions[vertex.index];
 
     // algorithm based on https://wwwtyro.net/2019/11/18/instanced-lines.html
+    
     let clip_a = view.view_proj * vec4(vertex.position_a, 1.);
+#ifdef GIZMO_NORMAL
+    let clip_b = view.view_proj * vec4(vertex.position_a + vertex.normal * 0.005 , 1.);
+#elseif
     let clip_b = view.view_proj * vec4(vertex.position_b, 1.);
+#endif
+
     let clip = mix(clip_a, clip_b, position.z);
 
     let resolution = view.viewport.zw;
@@ -52,9 +62,12 @@ fn vertex(vertex: VertexInput) -> VertexOutput {
 
     let x_basis = normalize(screen_a - screen_b);
     let y_basis = vec2(-x_basis.y, x_basis.x);
-
+#ifdef GIZMO_NORMAL
+    // var color = vec4(vertex.normal, 1.);
+    var color = vec4(1.);
+#elseif
     var color = mix(vertex.color_a, vertex.color_b, position.z);
-
+#endif
     var line_width = line_gizmo.line_width;
     var alpha = 1.;
 

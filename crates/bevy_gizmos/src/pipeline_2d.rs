@@ -1,7 +1,4 @@
-use crate::{
-    line_gizmo_vertex_buffer_layouts, DrawLineGizmo, LineGizmo, LineGizmoUniform,
-    LINE_SHADER_HANDLE,
-};
+use crate::{vertex_buffer_layout, DrawLineGizmo, LineGizmo, LineGizmoUniform, LINE_SHADER_HANDLE};
 use bevy_app::{App, Plugin};
 use bevy_asset::Handle;
 use bevy_core_pipeline::core_2d::Transparent2d;
@@ -103,7 +100,7 @@ impl SpecializedRenderPipeline for GizmoLinePipeline {
                 shader: LINE_SHADER_HANDLE.typed(),
                 entry_point: "vertex".into(),
                 shader_defs: shader_defs.clone(),
-                buffers: line_gizmo_vertex_buffer_layouts(strip),
+                buffers: vertex_buffer_layout(strip),
             },
             fragment: Some(FragmentState {
                 shader: LINE_SHADER_HANDLE.typed(),

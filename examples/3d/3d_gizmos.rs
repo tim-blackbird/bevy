@@ -2,7 +2,7 @@
 
 use std::f32::consts::PI;
 
-use bevy::prelude::*;
+use bevy::{gizmos::NormalsGizmo, prelude::*};
 
 fn main() {
     App::new()
@@ -19,22 +19,31 @@ fn setup(
     asset_server: Res<AssetServer>,
 ) {
     commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(0., 1.5, 6.).looking_at(Vec3::ZERO, Vec3::Y),
+        transform: Transform::from_xyz(0., 2., 5.).looking_at(Vec3::ZERO, Vec3::Y),
         ..default()
     });
-    // plane
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Plane::from_size(5.0))),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
-        ..default()
-    });
-    // cube
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-        material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
-        transform: Transform::from_xyz(0.0, 0.5, 0.0),
-        ..default()
-    });
+
+    let mut e = Mesh::try_from(shape::Icosphere {
+        radius: 1.,
+        subdivisions: 6,
+    })
+    .unwrap();
+
+    // e.duplicate_vertices();
+    // e.compute_flat_normals();
+
+    commands.spawn((
+        PbrBundle {
+            mesh: meshes.add(e),
+            material: materials.add(StandardMaterial {
+                base_color: Color::WHITE,
+                ..default()
+            }),
+            ..default()
+        },
+        NormalsGizmo,
+    ));
+
     // light
     commands.spawn(PointLightBundle {
         point_light: PointLight {
@@ -45,6 +54,7 @@ fn setup(
         transform: Transform::from_xyz(4.0, 8.0, 4.0),
         ..default()
     });
+
     // text
     commands.spawn(TextBundle::from_section(
         "Press 'D' to toggle drawing gizmos on top of everything else in the scene\n\

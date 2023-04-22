@@ -6,6 +6,7 @@
 //! With no arguments it will load the `FlightHelmet` glTF model from the repository assets subdirectory.
 
 use bevy::{
+    gizmos::NormalsGizmo,
     math::Vec3A,
     prelude::*,
     render::primitives::{Aabb, Sphere},
@@ -39,10 +40,25 @@ fn main() {
                 watch_for_changes: true,
             }),
     )
+    .insert_resource(GizmoConfig {
+        // line_perspective: true,
+        line_width: 1.0,
+        ..default()
+    })
     .add_plugin(CameraControllerPlugin)
     .add_plugin(SceneViewerPlugin)
     .add_systems(Startup, setup)
-    .add_systems(PreUpdate, setup_scene_after_load);
+    .add_systems(
+        PreUpdate,
+        (
+            setup_scene_after_load,
+            |mut commands: Commands, query: Query<Entity, Added<Handle<Mesh>>>| {
+                for entity in &query {
+                    commands.entity(entity).insert(NormalsGizmo);
+                }
+            },
+        ),
+    );
 
     app.run();
 }
@@ -109,7 +125,11 @@ fn setup_scene_after_load(
         let mut projection = PerspectiveProjection::default();
         projection.far = projection.far.max(size * 10.0);
 
-        let camera_controller = CameraController::default();
+        let camera_controller = CameraController {
+            sensitivity: 0.3,
+            walk_speed: 0.3,
+            ..default()
+        };
 
         // Display the controls of the scene viewer
         info!("{}", camera_controller);

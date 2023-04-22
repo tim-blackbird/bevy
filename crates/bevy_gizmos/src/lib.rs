@@ -22,17 +22,17 @@ use bevy_app::{Last, Plugin};
 use bevy_asset::{load_internal_asset, AddAsset, Assets, Handle, HandleUntyped};
 use bevy_core::cast_slice;
 use bevy_ecs::{
-    prelude::{Component, DetectChanges},
-    query::ROQueryItem,
+    prelude::{Component, DetectChanges, Entity},
+    query::{ROQueryItem, With},
     system::{
         lifetimeless::{Read, SRes},
-        Commands, Res, ResMut, Resource, SystemParamItem,
+        Commands, Query, Res, ResMut, Resource, SystemParamItem,
     },
-    world::{FromWorld, World},
 };
 use bevy_reflect::TypeUuid;
 use bevy_render::{
     extract_component::UniformComponentPlugin,
+    prelude::Mesh,
     render_asset::{PrepareAssetError, RenderAsset, RenderAssetPlugin, RenderAssets},
     render_phase::{PhaseItem, RenderCommand, RenderCommandResult, TrackedRenderPass},
     render_resource::{
@@ -42,7 +42,6 @@ use bevy_render::{
     renderer::RenderDevice,
     Extract, ExtractSchedule, RenderApp,
 };
-use bevy_utils::default;
 
 pub mod gizmos;
 
@@ -84,7 +83,7 @@ impl Plugin for GizmoPlugin {
 
         let Ok(render_app) = app.get_sub_app_mut(RenderApp) else { return; };
 
-        render_app.add_systems(ExtractSchedule, extract_gizmo_data);
+        render_app.add_systems(ExtractSchedule, (extract_gizmo_data, extract_normal_gizmo));
     }
 }
 
@@ -131,19 +130,10 @@ impl Default for GizmoConfig {
     }
 }
 
-#[derive(Resource)]
+#[derive(Resource, Default)]
 struct LineGizmoHandles {
     list: Option<Handle<LineGizmo>>,
     strip: Option<Handle<LineGizmo>>,
-}
-
-impl FromWorld for LineGizmoHandles {
-    fn from_world(_world: &mut World) -> Self {
-        LineGizmoHandles {
-            list: None,
-            strip: None,
-        }
-    }
 }
 
 fn update_gizmo_meshes(
@@ -161,7 +151,7 @@ fn update_gizmo_meshes(
     } else {
         let mut list = LineGizmo {
             strip: false,
-            ..default()
+            ..Default::default()
         };
 
         list.positions = mem::take(&mut storage.list_positions);
@@ -180,7 +170,7 @@ fn update_gizmo_meshes(
     } else {
         let mut strip = LineGizmo {
             strip: true,
-            ..default()
+            ..Default::default()
         };
 
         strip.positions = mem::take(&mut storage.strip_positions);
@@ -203,7 +193,7 @@ fn extract_gizmo_data(
         return;
     }
 
-    for handle in [&handles.list, &handles.strip].into_iter().flatten() {
+    for handle in [&handles.list].into_iter().flatten() {
         commands.spawn((
             LineGizmoUniform {
                 line_width: config.line_width,
@@ -212,6 +202,29 @@ fn extract_gizmo_data(
                 _padding: Default::default(),
             },
             handle.clone_weak(),
+        ));
+    }
+}
+
+/// Adding this [`Component`] to an entity with a [`Handle<Mesh>`] will draw the mesh's normals.
+#[derive(Component, Clone, Copy)]
+pub struct NormalsGizmo;
+
+fn extract_normal_gizmo(
+    mut commands: Commands,
+    query: Extract<Query<(Entity, &Handle<Mesh>), With<NormalsGizmo>>>,
+    config: Extract<Res<GizmoConfig>>,
+) {
+    for (entity, mesh_handle) in &query {
+        commands.get_or_spawn(entity).insert((
+            LineGizmoUniform {
+                line_width: config.line_width,
+                depth_bias: config.depth_bias,
+                #[cfg(feature = "webgl")]
+                _padding: bevy_math::Vec2::ZERO,
+            },
+            NormalsGizmo,
+            mesh_handle.clone_weak(),
         ));
     }
 }
@@ -313,7 +326,7 @@ impl<P: PhaseItem> RenderCommand<P> for DrawLineGizmo {
     }
 }
 
-fn line_gizmo_vertex_buffer_layouts(strip: bool) -> Vec<VertexBufferLayout> {
+fn vertex_buffer_layout(strip: bool) -> Vec<VertexBufferLayout> {
     let stride_multiplier = if strip { 1 } else { 2 };
     vec![
         // Positions

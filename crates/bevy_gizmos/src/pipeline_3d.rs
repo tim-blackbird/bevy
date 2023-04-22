@@ -1,5 +1,5 @@
 use crate::{
-    line_gizmo_vertex_buffer_layouts, DrawLineGizmo, GizmoConfig, LineGizmo, LineGizmoUniform,
+    vertex_buffer_layout, DrawLineGizmo, GizmoConfig, LineGizmo, LineGizmoUniform, NormalsGizmo,
     LINE_SHADER_HANDLE,
 };
 use bevy_app::{App, Plugin};
@@ -22,6 +22,8 @@ use bevy_pbr::{
 };
 use bevy_render::{
     extract_component::{ComponentUniforms, DynamicUniformIndex},
+    mesh::MeshVertexBufferLayout,
+    prelude::Mesh,
     render_asset::RenderAssets,
     render_phase::{
         AddRenderCommand, DrawFunctions, PhaseItem, RenderCommand, RenderCommandResult,
@@ -41,11 +43,19 @@ impl Plugin for LineGizmo3dPlugin {
 
         render_app
             .add_render_command::<Transparent3d, DrawLineGizmo3d>()
+            .add_render_command::<Transparent3d, DrawNormalsGizmo3d>()
             .init_resource::<GizmoLinePipeline>()
+            .init_resource::<GizmoNormalsPipeline>()
             .init_resource::<SpecializedRenderPipelines<GizmoLinePipeline>>()
+            .init_resource::<SpecializedMeshPipelines<GizmoNormalsPipeline>>()
             .add_systems(
                 Render,
-                (queue_polyline_bind_group, queue_line_gizmos_3d).in_set(RenderSet::Queue),
+                (
+                    queue_polyline_bind_group,
+                    queue_line_gizmos_3d,
+                    queue_normal_gizmos_3d,
+                )
+                    .in_set(RenderSet::Queue),
             );
     }
 }
@@ -124,7 +134,7 @@ impl SpecializedRenderPipeline for GizmoLinePipeline {
                 shader: LINE_SHADER_HANDLE.typed(),
                 entry_point: "vertex".into(),
                 shader_defs: shader_defs.clone(),
-                buffers: line_gizmo_vertex_buffer_layouts(strip),
+                buffers: vertex_buffer_layout(strip),
             },
             fragment: Some(FragmentState {
                 shader: LINE_SHADER_HANDLE.typed(),
@@ -241,5 +251,121 @@ fn queue_line_gizmos_3d(
                 distance: 0.,
             });
         }
+    }
+}
+
+type DrawNormalsGizmo3d = (
+    SetItemPipeline,
+    SetMeshViewBindGroup<0>,
+    SetLineGizmoBindGroup<1>,
+    DrawNormalsGizmo,
+);
+
+#[allow(clippy::too_many_arguments)]
+fn queue_normal_gizmos_3d(
+    draw_functions: Res<DrawFunctions<Transparent3d>>,
+    pipeline: Res<GizmoNormalsPipeline>,
+    mut pipelines: ResMut<SpecializedMeshPipelines<GizmoNormalsPipeline>>,
+    pipeline_cache: Res<PipelineCache>,
+    msaa: Res<Msaa>,
+    config: Res<GizmoConfig>,
+    meshes: Query<(Entity, &Handle<Mesh>, &NormalsGizmo)>,
+    mesh_assets: Res<RenderAssets<Mesh>>,
+    mut views: Query<(&ExtractedView, &mut RenderPhase<Transparent3d>)>,
+) {
+    let draw_function = draw_functions
+        .read()
+        .get_id::<DrawNormalsGizmo3d>()
+        .unwrap();
+
+    for (view, mut transparent_phase) in &mut views {
+        let polyline_key = MeshPipelineKey::from_msaa_samples(msaa.samples())
+            | MeshPipelineKey::from_hdr(view.hdr);
+
+        for (entity, handle, _giddoo) in &meshes {
+            let Some(gpu_mesh) = mesh_assets.get(handle) else { continue; };
+
+            let pipeline = pipelines
+                .specialize(
+                    &pipeline_cache,
+                    &pipeline,
+                    (config.line_perspective, polyline_key),
+                    &gpu_mesh.layout,
+                )
+                .unwrap();
+
+            transparent_phase.add(Transparent3d {
+                entity,
+                draw_function,
+                pipeline,
+                distance: 0.,
+            });
+        }
+    }
+}
+
+#[derive(Clone, Resource)]
+struct GizmoNormalsPipeline {
+    line_pipeline: GizmoLinePipeline,
+}
+
+impl FromWorld for GizmoNormalsPipeline {
+    fn from_world(render_world: &mut World) -> Self {
+        GizmoNormalsPipeline {
+            line_pipeline: render_world.resource::<GizmoLinePipeline>().clone(),
+        }
+    }
+}
+
+impl SpecializedMeshPipeline for GizmoNormalsPipeline {
+    type Key = (bool, MeshPipelineKey);
+
+    fn specialize(
+        &self,
+        key: Self::Key,
+        mesh_layout: &MeshVertexBufferLayout,
+    ) -> Result<RenderPipelineDescriptor, SpecializedMeshPipelineError> {
+        let (perspective, key) = key;
+
+        let mut descriptor = self.line_pipeline.specialize((perspective, false, key));
+        descriptor.label = Some("LineNormals Pipeline".into());
+
+        descriptor.vertex.shader_defs.push("GIZMO_NORMAL".into());
+
+        let mut layout = mesh_layout.get_layout(&[
+            Mesh::ATTRIBUTE_POSITION.at_shader_location(0),
+            Mesh::ATTRIBUTE_NORMAL.at_shader_location(1),
+        ])?;
+
+        layout.step_mode = VertexStepMode::Instance;
+
+        descriptor.vertex.buffers = vec![layout];
+
+        Ok(descriptor)
+    }
+}
+
+struct DrawNormalsGizmo;
+impl<P: PhaseItem> RenderCommand<P> for DrawNormalsGizmo {
+    type ViewWorldQuery = ();
+    type ItemWorldQuery = Read<Handle<Mesh>>;
+    type Param = SRes<RenderAssets<Mesh>>;
+
+    #[inline]
+    fn render<'w>(
+        _item: &P,
+        _view: ROQueryItem<'w, Self::ViewWorldQuery>,
+        handle: ROQueryItem<'w, Self::ItemWorldQuery>,
+        polylines: SystemParamItem<'w, '_, Self::Param>,
+        pass: &mut TrackedRenderPass<'w>,
+    ) -> RenderCommandResult {
+        let Some(gpu_mesh) = polylines.into_inner().get(handle) else {
+            return RenderCommandResult::Failure;
+        };
+
+        pass.set_vertex_buffer(0, gpu_mesh.vertex_buffer.slice(..));
+        pass.draw(0..6, 0..gpu_mesh.vertex_count);
+
+        RenderCommandResult::Success
     }
 }
