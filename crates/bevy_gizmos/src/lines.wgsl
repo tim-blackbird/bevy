@@ -57,8 +57,27 @@ fn vertex(vertex: VertexInput) -> VertexOutput {
     }
 
     // algorithm based on https://wwwtyro.net/2019/11/18/instanced-lines.html
-    let clip_a = view.view_proj * vec4(vertex.position_a, 1.);
-    let clip_b = view.view_proj * vec4(vertex.position_b, 1.);
+    var clip_a = view.view_proj * vec4(vertex.position_a, 1.);
+    var clip_b = view.view_proj * vec4(vertex.position_b, 1.);
+
+    // if clip_a.z > clip_a.w {
+    //     // color = vec4(1., 0., 1., 1.);
+
+    //     let direction = normalize(clip_b.xyz - clip_a.xyz);
+    //     let e = intersect_plane(clip_a.xyz, direction, vec3<f32>(0., 0., clip_a.w), vec3(0., 0., 1.));
+    //     clip_a += vec4(direction * (e + 0.0), 0.) / clip_a.w;
+    // }
+
+    // if clip_b.z > clip_b.w {
+    //     // color = vec4(1., 1., 0., 1.);
+
+    //     let direction = normalize(clip_a.xyz - clip_b.xyz);
+    //     let e = intersect_plane(clip_b.xyz, direction, vec3<f32>(0., 0., clip_b.w), vec3(0., 0., 1.));
+    //     clip_b += vec4(direction * (e + 0.0), 0.) / clip_b.w;
+    // }
+
+    // color = vec4((clip_a.zzz + 1.) / 2., 1.);
+
     let clip = mix(clip_a, clip_b, position.x);
 
     let screen_a = clip_to_screen(clip_a);
@@ -67,12 +86,12 @@ fn vertex(vertex: VertexInput) -> VertexOutput {
     let x_basis = normalize(screen_b - screen_a);
     let y_basis = vec2(-x_basis.y, x_basis.x);
 
-    let screen_offset = y_basis * position.y * line_width;
+    let screen_offset = y_basis * -position.y * line_width;
+    let screen = mix(screen_a, screen_b, position.x) + screen_offset;
+    let clip_xy = screen_to_clip(screen, clip);
 
-    let resolution = view.viewport.zw;
-    let offset = screen_offset / resolution;
-
-    // TODO: Fix depth :\
+    // let resolution = view.viewport.zw;
+    // let offset = screen_offset / resolution * clip.w;
 
     // var depth: f32;
     // if line_gizmo.depth_bias >= 0. {
@@ -89,9 +108,23 @@ fn vertex(vertex: VertexInput) -> VertexOutput {
     //     depth = clip.z * exp2(-line_gizmo.depth_bias * log2(clip.w / clip.z - epsilon));
     // }
 
-    var clip_position = vec4(clip.xy + offset, 1., 1.);
+    // var clip_position = vec4((clip.xy + offset) / clip.w, clip.z / clip.w, 1.);
+    var clip_position = vec4(clip_xy, clip.z, clip.w);
 
     return VertexOutput(clip_position, color);
+}
+
+
+fn intersect_plane(ray_origin: vec3<f32>, ray_direction: vec3<f32>, plane_origin: vec3<f32>, plane_normal: vec3<f32>) -> f32 {
+    let denominator = dot(plane_normal, ray_direction);
+    let epsilon = 4.88e-04;
+    if abs(denominator) > epsilon {
+        let distance = dot(plane_origin - ray_origin, plane_normal) / denominator;
+        if distance > epsilon {
+            return distance;
+        }
+    }
+    return 0.;
 }
 
 fn clip_to_screen(clip: vec4<f32>) -> vec2<f32> {
