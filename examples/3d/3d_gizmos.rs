@@ -3,12 +3,13 @@
 use std::f32::consts::PI;
 
 use bevy::prelude::*;
+use bevy_internal::gizmos::{PolylineGizmoBundle, Polyline};
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
-        .add_systems(Update, (system, rotate_camera, update_config))
+        // .add_systems(Update, (system, rotate_camera, update_config))
         .run();
 }
 
@@ -16,6 +17,7 @@ fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut polylines: ResMut<Assets<Polyline>>,
 ) {
     commands.spawn(Camera3dBundle {
         transform: Transform::from_xyz(0., 1.5, 6.).looking_at(Vec3::ZERO, Vec3::Y),
@@ -27,42 +29,49 @@ fn setup(
         material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
         ..default()
     });
-    // cube
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-        material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
-        transform: Transform::from_xyz(0.0, 0.5, 0.0),
-        ..default()
-    });
-    // light
-    commands.spawn(PointLightBundle {
-        point_light: PointLight {
-            intensity: 1500.0,
-            shadows_enabled: true,
-            ..default()
+    commands.spawn(PolylineBundle {
+        transform: Transform::from_xyz(0., 1., 0.),
+        polyline: Polyline {
+            points: vec![(Vec3::X, Color::RED), (Vec3::Y, Color::BLUE)]
         },
-        transform: Transform::from_xyz(4.0, 8.0, 4.0),
         ..default()
     });
+    // cube
+    // commands.spawn(PbrBundle {
+    //     mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
+    //     material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
+    //     transform: Transform::from_xyz(0.0, 0.5, 0.0),
+    //     ..default()
+    // });
+    // // light
+    // commands.spawn(PointLightBundle {
+    //     point_light: PointLight {
+    //         intensity: 1500.0,
+    //         shadows_enabled: true,
+    //         ..default()
+    //     },
+    //     transform: Transform::from_xyz(4.0, 8.0, 4.0),
+    //     ..default()
+    // });
 
-    // example instructions
-    commands.spawn(
-        TextBundle::from_section(
-            "Press 'D' to toggle drawing gizmos on top of everything else in the scene\n\
-            Press 'P' to toggle perspective for line gizmos\n\
-            Hold 'Left' or 'Right' to change the line width",
-            TextStyle {
-                font_size: 20.,
-                ..default()
-            },
-        )
-        .with_style(Style {
-            position_type: PositionType::Absolute,
-            top: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        }),
-    );
+    // // example instructions
+    // commands.spawn(
+    //     TextBundle::from_section(
+    //         "Press 'D' to toggle drawing gizmos on top of everything else in the scene\n\
+    //         Press 'P' to toggle perspective for line gizmos\n\
+    //         Hold 'Left' or 'Right' to change the line width",
+    //         TextStyle {
+    //             font_size: 20.,
+    //             ..default()
+    //         },
+    //     )
+    //     .with_style(Style {
+    //         position_type: PositionType::Absolute,
+    //         top: Val::Px(12.0),
+    //         left: Val::Px(12.0),
+    //         ..default()
+    //     }),
+    // );
 }
 
 fn system(mut gizmos: Gizmos, time: Res<Time>) {

@@ -33,6 +33,7 @@ use bevy_app::{Last, Plugin, PostUpdate};
 use bevy_asset::{load_internal_asset, Asset, AssetApp, Assets, Handle};
 use bevy_core::cast_slice;
 use bevy_ecs::{
+    bundle::Bundle,
     change_detection::DetectChanges,
     component::Component,
     entity::Entity,
@@ -44,6 +45,7 @@ use bevy_ecs::{
         Commands, Query, Res, ResMut, Resource, SystemParamItem,
     },
 };
+use bevy_math::{Mat4, Vec3};
 use bevy_reflect::{std_traits::ReflectDefault, Reflect, TypePath};
 use bevy_render::{
     color::Color,
@@ -58,7 +60,7 @@ use bevy_render::{
         VertexFormat, VertexStepMode,
     },
     renderer::RenderDevice,
-    view::RenderLayers,
+    view::{InheritedVisibility, RenderLayers, Visibility},
     Extract, ExtractSchedule, Render, RenderApp, RenderSet,
 };
 use bevy_transform::{
@@ -83,7 +85,7 @@ impl Plugin for GizmoPlugin {
             .init_resource::<LineGizmoHandles>()
             .init_resource::<GizmoConfig>()
             .init_resource::<GizmoStorage>()
-            .add_systems(Last, update_gizmo_meshes)
+            .add_systems(Last, (update_gizmo_meshes /* extract_polylines */,).chain())
             .add_systems(
                 PostUpdate,
                 (
@@ -265,6 +267,15 @@ fn aabb_transform(aabb: Aabb, transform: GlobalTransform) -> GlobalTransform {
         )
 }
 
+#[derive(Bundle, Default)]
+pub struct PolylineGizmoBundle {
+    pub polyline: Handle<Polyline>,
+    pub transform: Transform,
+    pub global_transform: GlobalTransform,
+    pub visibility: Visibility,
+    pub computed_visibility: InheritedVisibility,
+}
+
 #[derive(Resource, Default)]
 struct LineGizmoHandles {
     list: Option<Handle<LineGizmo>>,
@@ -275,6 +286,7 @@ fn update_gizmo_meshes(
     mut line_gizmos: ResMut<Assets<LineGizmo>>,
     mut handles: ResMut<LineGizmoHandles>,
     mut storage: ResMut<GizmoStorage>,
+    query: Query<(&Handle<Polyline>, &GlobalTransform, &InheritedVisibility)>,
 ) {
     if storage.list_positions.is_empty() {
         handles.list = None;
@@ -315,6 +327,28 @@ fn update_gizmo_meshes(
     }
 }
 
+#[derive(Debug, TypePath)]
+pub enum PolylineInternal {
+    Solid(Vec<Vec3>, Color),
+    Gradient(Vec<(Vec3, Color)>),
+}
+
+#[derive(Asset, Debug, TypePath)]
+pub struct Polyline {
+    value: PolylineInternal,
+}
+
+impl<T> From<T> for Polyline
+where
+    T: Into<PolylineInternal>,
+{
+    fn from(value: T) -> Self {
+        Polyline {
+            value: value.into(),
+        }
+    }
+}
+
 fn extract_gizmo_data(
     mut commands: Commands,
     handles: Extract<Res<LineGizmoHandles>>,
@@ -333,6 +367,7 @@ fn extract_gizmo_data(
             LineGizmoUniform {
                 line_width: config.line_width,
                 depth_bias: config.depth_bias,
+                transform: Mat4::IDENTITY,
                 #[cfg(feature = "webgl")]
                 _padding: Default::default(),
             },
@@ -345,6 +380,7 @@ fn extract_gizmo_data(
 struct LineGizmoUniform {
     line_width: f32,
     depth_bias: f32,
+    transform: Mat4,
     /// WebGL2 structs must be 16 byte aligned.
     #[cfg(feature = "webgl")]
     _padding: bevy_math::Vec2,
