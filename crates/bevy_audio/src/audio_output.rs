@@ -70,8 +70,8 @@ impl<'w, 's> EarPositions<'w, 's> {
             .next()
             .map(|(_, transform, settings)| {
                 (
-                    transform.transform_point(settings.left_ear_offset) * self.scale.0,
-                    transform.transform_point(settings.right_ear_offset) * self.scale.0,
+                    transform.transform_point_from_local(settings.left_ear_offset) * self.scale.0,
+                    transform.transform_point_from_local(settings.right_ear_offset) * self.scale.0,
                 )
             })
             .unwrap_or_else(|| {

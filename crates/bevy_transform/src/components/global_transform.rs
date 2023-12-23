@@ -183,11 +183,29 @@ impl GlobalTransform {
         (self.0.matrix3 * extents).length()
     }
 
+    /// Transforms the given `point`, applying the inverse of shear, scale, rotation and translation.
+    ///
+    /// This moves `point` from global space into the local space of this [`GlobalTransform`].
+    ///
+    /// ## Notes
+    /// Calling this method repeatedly is expensive. Consider caching the inverse affine transform and using it directly:
+    /// ```
+    /// # let transform = bevy_transform::components::GlobalTransform::default();
+    /// # let point = bevy_math::Vec3::ZERO;
+    /// let inverse = transform.affine().inverse();
+    /// inverse.transform_point3(point);
+    /// inverse.transform_point3(point);
+    /// ```
+    #[inline]
+    pub fn transform_point_to_local(&self, point: Vec3) -> Vec3 {
+        self.0.inverse().transform_point3(point)
+    }
+
     /// Transforms the given `point`, applying shear, scale, rotation and translation.
     ///
-    /// This moves `point` into the local space of this [`GlobalTransform`].
+    /// This moves `point` from the local space of this [`GlobalTransform`] into global space.
     #[inline]
-    pub fn transform_point(&self, point: Vec3) -> Vec3 {
+    pub fn transform_point_from_local(&self, point: Vec3) -> Vec3 {
         self.0.transform_point3(point)
     }
 
@@ -246,12 +264,14 @@ impl Mul<Vec3> for GlobalTransform {
 
     #[inline]
     fn mul(self, value: Vec3) -> Self::Output {
-        self.transform_point(value)
+        self.transform_point_from_local(value)
     }
 }
 
 #[cfg(test)]
 mod test {
+    use std::f32::consts::TAU;
+
     use super::*;
 
     use bevy_math::EulerRot::XYZ;
@@ -304,5 +324,18 @@ mod test {
             t1.compute_transform(),
             t1_prime.compute_transform(),
         );
+    }
+
+    #[test]
+    fn transform_point() {
+        let point = Vec3::ONE;
+        let transform: GlobalTransform = Transform::from_translation(Vec3::new(1., 2., 3.))
+            .with_rotation(Quat::from_axis_angle(Vec3::ONE.normalize(), TAU / 5.))
+            .with_scale(Vec3::new(3., 2., 1.))
+            .into();
+
+        let local_point = transform.transform_point_to_local(point);
+        let result = transform.transform_point_from_local(local_point);
+        approx::assert_abs_diff_eq!(point, result);
     }
 }

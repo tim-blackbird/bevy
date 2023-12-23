@@ -143,14 +143,14 @@ pub trait TransformPoint {
 impl TransformPoint for Transform {
     #[inline]
     fn transform_point(&self, point: impl Into<Vec3>) -> Vec3 {
-        self.transform_point(point.into())
+        self.transform_point_from_local(point.into())
     }
 }
 
 impl TransformPoint for GlobalTransform {
     #[inline]
     fn transform_point(&self, point: impl Into<Vec3>) -> Vec3 {
-        self.transform_point(point.into())
+        self.transform_point_from_local(point.into())
     }
 }
 
