@@ -3,7 +3,7 @@ use bevy_ecs::{
     bundle::Bundle,
     entity::Entity,
     prelude::Events,
-    system::{Command, Commands, EntityCommands},
+    system::{Command, Commands, EntityCommands, CommandQueue, Remove},
     world::{EntityWorldMut, World},
 };
 use smallvec::SmallVec;
@@ -119,43 +119,28 @@ fn update_old_parents(world: &mut World, parent: Entity, children: &[Entity]) {
 
 /// Removes entities in `children` from `parent`'s [`Children`], removing the component if it ends up empty.
 /// Also removes [`Parent`] component from `children`.
-fn remove_children(parent: Entity, children: &[Entity], world: &mut World) {
-    let mut events: SmallVec<[HierarchyEvent; 8]> = SmallVec::new();
+pub(crate) fn remove_children(parent: Entity, children: &[Entity], world: &mut World) {
+    let mut queue = CommandQueue::default();
     if let Some(parent_children) = world.get::<Children>(parent) {
         for &child in children {
             if parent_children.contains(&child) {
-                events.push(HierarchyEvent::ChildRemoved { child, parent });
+                queue.push(Remove::<Parent>::new(child));
             }
         }
-    } else {
-        return;
     }
-    for event in &events {
-        if let &HierarchyEvent::ChildRemoved { child, .. } = event {
-            world.entity_mut(child).remove::<Parent>();
-        }
-    }
-    push_events(world, events);
-
-    let mut parent = world.entity_mut(parent);
-    if let Some(mut parent_children) = parent.get_mut::<Children>() {
-        parent_children
-            .0
-            .retain(|parent_child| !children.contains(parent_child));
-
-        if parent_children.is_empty() {
-            parent.remove::<Children>();
-        }
-    }
+    queue.apply(world);
 }
 
 /// Removes all children from `parent` by removing its [`Children`] component, as well as removing
 /// [`Parent`] component from its children.
 fn clear_children(parent: Entity, world: &mut World) {
-    if let Some(children) = world.entity_mut(parent).take::<Children>() {
-        for &child in &children.0 {
+    // We can't remove the Children component from the parent before removing the Parent components from
+    // the children or the children will be despawned by the on_remove hook on the Children component.
+    if let Some(children) = world.entity_mut(parent).get::<Children>().map(|c| c.0.clone()) {
+        for &child in &children {
             world.entity_mut(child).remove::<Parent>();
         }
+        world.entity_mut(parent).remove::<Children>();
     }
 }
 
@@ -666,13 +651,7 @@ impl<'w> BuildWorldChildren for EntityWorldMut<'w> {
     }
 
     fn remove_parent(&mut self) -> &mut Self {
-        let child = self.id();
-        if let Some(parent) = self.take::<Parent>().map(|p| p.get()) {
-            self.world_scope(|world| {
-                remove_from_children(world, parent, child);
-                push_events(world, [HierarchyEvent::ChildRemoved { child, parent }]);
-            });
-        }
+        self.remove::<Parent>();
         self
     }
 
@@ -694,8 +673,9 @@ mod tests {
     use super::{BuildChildren, BuildWorldChildren};
     use crate::{
         components::{Children, Parent},
-        HierarchyEvent::{self, ChildAdded, ChildMoved, ChildRemoved},
+        HierarchyEvent::{self, ChildAdded, ChildMoved, ChildRemoved}, HierarchyPlugin,
     };
+    use bevy_app::App;
     use smallvec::{smallvec, SmallVec};
 
     use bevy_ecs::{
@@ -819,7 +799,9 @@ mod tests {
 
     #[test]
     fn remove_parent() {
-        let world = &mut World::new();
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let world = &mut app.world;
         world.insert_resource(Events::<HierarchyEvent>::default());
 
         let [a, b, c] = std::array::from_fn(|_| world.spawn_empty().id());
@@ -840,6 +822,7 @@ mod tests {
         );
 
         world.entity_mut(c).remove_parent();
+        world.flush_commands();
         assert_parent(world, c, None);
         assert_children(world, a, None);
         assert_events(
@@ -856,7 +839,9 @@ mod tests {
 
     #[test]
     fn build_children() {
-        let mut world = World::default();
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let mut world = &mut app.world;
         let mut queue = CommandQueue::default();
         let mut commands = Commands::new(&mut queue, &world);
 
@@ -884,7 +869,9 @@ mod tests {
 
     #[test]
     fn push_and_insert_and_remove_children_commands() {
-        let mut world = World::default();
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let mut world = &mut app.world;
         let entities = world
             .spawn_batch(vec![C(1), C(2), C(3), C(4), C(5)])
             .collect::<Vec<Entity>>();
@@ -945,7 +932,9 @@ mod tests {
 
     #[test]
     fn push_and_clear_children_commands() {
-        let mut world = World::default();
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let mut world = &mut app.world;
         let entities = world
             .spawn_batch(vec![C(1), C(2), C(3), C(4), C(5)])
             .collect::<Vec<Entity>>();
@@ -1027,7 +1016,9 @@ mod tests {
 
     #[test]
     fn push_and_insert_and_remove_children_world() {
-        let mut world = World::default();
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let world = &mut app.world;
         let entities = world
             .spawn_batch(vec![C(1), C(2), C(3), C(4), C(5)])
             .collect::<Vec<Entity>>();
@@ -1070,7 +1061,9 @@ mod tests {
 
     #[test]
     fn push_and_insert_and_clear_children_world() {
-        let mut world = World::default();
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let world = &mut app.world;
         let entities = world
             .spawn_batch(vec![C(1), C(2), C(3)])
             .collect::<Vec<Entity>>();
@@ -1133,7 +1126,9 @@ mod tests {
     /// Tests what happens when all children are removed from a parent using world functions
     #[test]
     fn children_removed_when_empty_world() {
-        let mut world = World::default();
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let world = &mut app.world;
         let entities = world
             .spawn_batch(vec![C(1), C(2), C(3)])
             .collect::<Vec<Entity>>();
@@ -1165,7 +1160,9 @@ mod tests {
     /// Tests what happens when all children are removed form a parent using commands
     #[test]
     fn children_removed_when_empty_commands() {
-        let mut world = World::default();
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let world = &mut app.world;
         let entities = world
             .spawn_batch(vec![C(1), C(2), C(3)])
             .collect::<Vec<Entity>>();
@@ -1178,9 +1175,9 @@ mod tests {
 
         // push child into parent1
         {
-            let mut commands = Commands::new(&mut queue, &world);
+            let mut commands = Commands::new(&mut queue, world);
             commands.entity(parent1).push_children(&[child]);
-            queue.apply(&mut world);
+            queue.apply(world);
         }
         assert_eq!(
             world.get::<Children>(parent1).unwrap().0.as_slice(),
@@ -1189,33 +1186,33 @@ mod tests {
 
         // move only child from parent1 with `push_children`
         {
-            let mut commands = Commands::new(&mut queue, &world);
+            let mut commands = Commands::new(&mut queue, world);
             commands.entity(parent2).push_children(&[child]);
-            queue.apply(&mut world);
+            queue.apply(world);
         }
         assert!(world.get::<Children>(parent1).is_none());
 
         // move only child from parent2 with `insert_children`
         {
-            let mut commands = Commands::new(&mut queue, &world);
+            let mut commands = Commands::new(&mut queue, world);
             commands.entity(parent1).insert_children(0, &[child]);
-            queue.apply(&mut world);
+            queue.apply(world);
         }
         assert!(world.get::<Children>(parent2).is_none());
 
         // move only child from parent1 with `add_child`
         {
-            let mut commands = Commands::new(&mut queue, &world);
+            let mut commands = Commands::new(&mut queue, world);
             commands.entity(parent2).add_child(child);
-            queue.apply(&mut world);
+            queue.apply(world);
         }
         assert!(world.get::<Children>(parent1).is_none());
 
         // remove only child from parent2 with `remove_children`
         {
-            let mut commands = Commands::new(&mut queue, &world);
+            let mut commands = Commands::new(&mut queue, world);
             commands.entity(parent2).remove_children(&[child]);
-            queue.apply(&mut world);
+            queue.apply(world);
         }
         assert!(world.get::<Children>(parent2).is_none());
     }

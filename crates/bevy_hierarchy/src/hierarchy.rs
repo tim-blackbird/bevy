@@ -1,70 +1,15 @@
-use crate::components::{Children, Parent};
+use crate::components::Children;
 use bevy_ecs::{
     entity::Entity,
     system::{Command, EntityCommands},
     world::{EntityWorldMut, World},
 };
-use bevy_utils::tracing::debug;
-
-/// Despawns the given entity and all its children recursively
-#[derive(Debug)]
-pub struct DespawnRecursive {
-    /// Target entity
-    pub entity: Entity,
-}
 
 /// Despawns the given entity's children recursively
 #[derive(Debug)]
 pub struct DespawnChildrenRecursive {
     /// Target entity
     pub entity: Entity,
-}
-
-/// Function for despawning an entity and all its children
-pub fn despawn_with_children_recursive(world: &mut World, entity: Entity) {
-    // first, make the entity's own parent forget about it
-    if let Some(parent) = world.get::<Parent>(entity).map(|parent| parent.0) {
-        if let Some(mut children) = world.get_mut::<Children>(parent) {
-            children.0.retain(|c| *c != entity);
-        }
-    }
-
-    // then despawn the entity and all of its children
-    despawn_with_children_recursive_inner(world, entity);
-}
-
-// Should only be called by `despawn_with_children_recursive`!
-fn despawn_with_children_recursive_inner(world: &mut World, entity: Entity) {
-    if let Some(mut children) = world.get_mut::<Children>(entity) {
-        for e in std::mem::take(&mut children.0) {
-            despawn_with_children_recursive_inner(world, e);
-        }
-    }
-
-    if !world.despawn(entity) {
-        debug!("Failed to despawn entity {:?}", entity);
-    }
-}
-
-fn despawn_children_recursive(world: &mut World, entity: Entity) {
-    if let Some(children) = world.entity_mut(entity).take::<Children>() {
-        for e in children.0 {
-            despawn_with_children_recursive_inner(world, e);
-        }
-    }
-}
-
-impl Command for DespawnRecursive {
-    fn apply(self, world: &mut World) {
-        #[cfg(feature = "trace")]
-        let _span = bevy_utils::tracing::info_span!(
-            "command",
-            name = "DespawnRecursive",
-            entity = bevy_utils::tracing::field::debug(self.entity)
-        )
-        .entered();
-        despawn_with_children_recursive(world, self.entity);
-    }
 }
 
 impl Command for DespawnChildrenRecursive {
@@ -76,26 +21,18 @@ impl Command for DespawnChildrenRecursive {
             entity = bevy_utils::tracing::field::debug(self.entity)
         )
         .entered();
-        despawn_children_recursive(world, self.entity);
+
+        world.entity_mut(self.entity).remove::<Children>();
     }
 }
 
 /// Trait that holds functions for despawning recursively down the transform hierarchy
 pub trait DespawnRecursiveExt {
-    /// Despawns the provided entity alongside all descendants.
-    fn despawn_recursive(self);
-
     /// Despawns all descendants of the given entity.
     fn despawn_descendants(&mut self) -> &mut Self;
 }
 
 impl<'w, 's, 'a> DespawnRecursiveExt for EntityCommands<'w, 's, 'a> {
-    /// Despawns the provided entity and its children.
-    fn despawn_recursive(mut self) {
-        let entity = self.id();
-        self.commands().add(DespawnRecursive { entity });
-    }
-
     fn despawn_descendants(&mut self) -> &mut Self {
         let entity = self.id();
         self.commands().add(DespawnChildrenRecursive { entity });
@@ -104,20 +41,6 @@ impl<'w, 's, 'a> DespawnRecursiveExt for EntityCommands<'w, 's, 'a> {
 }
 
 impl<'w> DespawnRecursiveExt for EntityWorldMut<'w> {
-    /// Despawns the provided entity and its children.
-    fn despawn_recursive(self) {
-        let entity = self.id();
-
-        #[cfg(feature = "trace")]
-        let _span = bevy_utils::tracing::info_span!(
-            "despawn_recursive",
-            entity = bevy_utils::tracing::field::debug(entity)
-        )
-        .entered();
-
-        despawn_with_children_recursive(self.into_world_mut(), entity);
-    }
-
     fn despawn_descendants(&mut self) -> &mut Self {
         let entity = self.id();
 
@@ -129,7 +52,7 @@ impl<'w> DespawnRecursiveExt for EntityWorldMut<'w> {
         .entered();
 
         self.world_scope(|world| {
-            despawn_children_recursive(world, entity);
+            world.entity_mut(entity).remove::<Children>();
         });
         self
     }
@@ -137,14 +60,14 @@ impl<'w> DespawnRecursiveExt for EntityWorldMut<'w> {
 
 #[cfg(test)]
 mod tests {
+    use bevy_app::App;
     use bevy_ecs::{
         component::Component,
         system::{CommandQueue, Commands},
-        world::World,
     };
 
     use super::DespawnRecursiveExt;
-    use crate::{child_builder::BuildChildren, components::Children};
+    use crate::{child_builder::BuildChildren, components::Children, HierarchyPlugin};
 
     #[derive(Component, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Debug)]
     struct Idx(u32);
@@ -153,8 +76,10 @@ mod tests {
     struct N(String);
 
     #[test]
-    fn despawn_recursive() {
-        let mut world = World::default();
+    fn despawn() {
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let world = &mut app.world;
         let mut queue = CommandQueue::default();
         let grandparent_entity;
         {
@@ -189,17 +114,17 @@ mod tests {
 
             commands.spawn((N("An innocent bystander".to_owned()), Idx(7)));
         }
-        queue.apply(&mut world);
+        queue.apply(world);
 
         let parent_entity = world.get::<Children>(grandparent_entity).unwrap()[0];
 
         {
             let mut commands = Commands::new(&mut queue, &world);
-            commands.entity(parent_entity).despawn_recursive();
+            commands.entity(parent_entity).despawn();
             // despawning the same entity twice should not panic
-            commands.entity(parent_entity).despawn_recursive();
+            commands.entity(parent_entity).despawn();
         }
-        queue.apply(&mut world);
+        queue.apply(world);
 
         let mut results = world
             .query::<(&N, &Idx)>()
@@ -209,10 +134,10 @@ mod tests {
         results.sort_unstable_by_key(|(_, index)| *index);
 
         {
-            let children = world.get::<Children>(grandparent_entity).unwrap();
+            let children = world.get::<Children>(grandparent_entity);
             assert!(
-                !children.iter().any(|&i| i == parent_entity),
-                "grandparent should no longer know about its child which has been removed"
+                children.is_none(),
+                "grandparent should no longer have a Children component because its last child has been removed"
             );
         }
 
@@ -229,7 +154,9 @@ mod tests {
 
     #[test]
     fn despawn_descendants() {
-        let mut world = World::default();
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let world = &mut app.world;
         let mut queue = CommandQueue::default();
         let mut commands = Commands::new(&mut queue, &world);
 
@@ -241,7 +168,7 @@ mod tests {
             .add_child(child)
             .despawn_descendants();
 
-        queue.apply(&mut world);
+        queue.apply(world);
 
         // The parent's Children component should be removed.
         assert!(world.entity(parent).get::<Children>().is_none());
@@ -251,7 +178,9 @@ mod tests {
 
     #[test]
     fn spawn_children_after_despawn_descendants() {
-        let mut world = World::default();
+        let mut app = App::new();
+        app.add_plugins(HierarchyPlugin::default());
+        let world = &mut app.world;
         let mut queue = CommandQueue::default();
         let mut commands = Commands::new(&mut queue, &world);
 
@@ -267,7 +196,7 @@ mod tests {
                 parent.spawn_empty();
             });
 
-        queue.apply(&mut world);
+        queue.apply(world);
 
         // The parent's Children component should still have two children.
         let children = world.entity(parent).get::<Children>();
