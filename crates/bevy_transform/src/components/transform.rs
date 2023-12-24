@@ -378,7 +378,7 @@ impl Transform {
         }
     }
 
-    /// Transforms the given `point`, applying scale, rotation and translation.
+    /// Transforms the given `point`, applying the inverse of scale, rotation and translation.
     ///
     /// If this [`Transform`] has a parent, this will transform a `point` that is
     /// relative to the parent's [`Transform`] into one relative to this [`Transform`].
@@ -387,7 +387,25 @@ impl Transform {
     /// that is in global space into one relative to this [`Transform`].
     ///
     /// If you want to transform a `point` in global space to the local space of this [`Transform`],
-    /// consider using [`GlobalTransform::transform_point()`] instead.
+    /// consider using [`GlobalTransform::transform_point_to_local()`] instead.
+    #[inline]
+    pub fn inverse_transform_point(&self, mut point: Vec3) -> Vec3 {
+        point -= self.translation;
+        point = self.rotation.inverse() * point;
+        point = point / self.scale;
+        point
+    }
+
+    /// Transforms the given `point`, applying scale, rotation and translation.
+    ///
+    /// If this [`Transform`] has a parent, this will transform a `point` that is
+    /// relative to this [`Transform`] into one relative to the parent's [`Transform`].
+    ///
+    /// If this [`Transform`] does not have a parent, this will transform a `point`
+    /// relative to this [`Transform`] into one that is in global space.
+    ///
+    /// If you want to transform a `point` in the local space of this [`Transform`] to global space,
+    /// consider using [`GlobalTransform::transform_point_from_local()`] instead.
     #[inline]
     pub fn transform_point(&self, mut point: Vec3) -> Vec3 {
         point = self.scale * point;
@@ -442,5 +460,26 @@ impl Mul<Vec3> for Transform {
 
     fn mul(self, value: Vec3) -> Self::Output {
         self.transform_point(value)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::f32::consts::TAU;
+
+    use bevy_math::{Quat, Vec3};
+
+    use crate::prelude::Transform;
+
+    #[test]
+    fn transform_point() {
+        let point = Vec3::ONE;
+        let transform = Transform::from_translation(Vec3::new(1., 2., 3.))
+            .with_rotation(Quat::from_axis_angle(Vec3::ONE.normalize(), TAU / 5.))
+            .with_scale(Vec3::new(3., 2., 1.));
+
+        let local_point = transform.inverse_transform_point(point);
+        let result = transform.transform_point(local_point);
+        approx::assert_abs_diff_eq!(point, result);
     }
 }
