@@ -135,6 +135,9 @@ fn setup(e: Res<Workspaces>, colors: Res<BColors>, mut commands: Commands) {
             },
             ..default()
         })
+        .observe(|trigger: Trigger<Pointer<Click>>| {
+            println!("Click {}", trigger.entity());
+        })
         .id();
 
     let workspaces_root = commands
@@ -188,9 +191,8 @@ fn setup_recursive(
                     },
                     ..default()
                 })
-                .insert(Pickable::default())
-                .observe(|trigger: Trigger<Pointer<Down>>| {
-                    print!("Down {}", trigger.entity());
+                .observe(|trigger: Trigger<Pointer<DragEnd>>| {
+                    println!("DragEnd {}", trigger.entity());
                 })
                 .set_parent(parent)
                 .id();
@@ -202,10 +204,9 @@ fn setup_recursive(
                     ..default()
                 })
                 .set_parent(area_root)
-                .insert(Pickable::default())
-                .observe(|trigger: Trigger<Pointer<DragStart>>| {
-                    print!("DragStart {}", trigger.entity());
-                })
+                // .observe(|trigger: Trigger<Pointer<Click>>| {
+                //     println!("Down {}", trigger.entity());
+                // })
                 .id();
 
             commands
@@ -221,6 +222,9 @@ fn setup_recursive(
                             ..default()
                         },
                     )
+                })
+                .observe(|trigger: Trigger<Pointer<DragStart>>| {
+                    println!("DragStart {}", trigger.entity());
                 })
                 .set_parent(bar_root);
         }
