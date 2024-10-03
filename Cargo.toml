@@ -2719,6 +2719,10 @@ category = "Tools"
 wasm = true
 
 [[example]]
+name = "editor_areas"
+path = "examples/tools/editor_areas/main.rs"
+
+[[example]]
 name = "gamepad_viewer"
 path = "examples/tools/gamepad_viewer.rs"
 doc-scrape-examples = true
