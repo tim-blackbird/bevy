@@ -22,6 +22,7 @@ impl Default for BColors {
 const SPACING: f32 = 5.;
 const BORDER_RADIUS: f32 = 4.;
 
+#[derive(Clone, Copy)]
 enum Mode {
     AreaA,
     AreaB,
@@ -52,9 +53,9 @@ impl Mode {
     }
 }
 
-enum SplitDirection {
-    Horizontal,
-    Vertical,
+struct Workspace {
+    name: String,
+    child: Child,
 }
 
 enum Child {
@@ -67,9 +68,22 @@ enum Child {
     },
 }
 
-struct Workspace {
-    name: String,
-    child: Child,
+enum SplitDirection {
+    Horizontal,
+    Vertical,
+}
+
+/// Must have at least 2 children. If reduced to one child it must be replaced with that child.
+/// The flex_grow style property of its children should add up to one.
+#[derive(Component)]
+struct Split;
+
+#[derive(Component)]
+struct Spacer;
+
+#[derive(Component)]
+struct Area {
+    mode: Mode,
 }
 
 #[derive(Resource)]
@@ -108,15 +122,16 @@ fn main() {
         },
     }]));
 
-    app.init_resource::<BColors>();
-    app.add_plugins(DefaultPlugins.set(WindowPlugin {
-        primary_window: Some(Window {
-            title: "Bevy Editor".to_string(),
+    app.init_resource::<BColors>()
+        .init_resource::<Dragging>()
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                title: "Bevy Editor".to_string(),
+                ..default()
+            }),
             ..default()
-        }),
-        ..default()
-    }))
-    .add_systems(Startup, setup);
+        }))
+        .add_systems(Startup, setup);
     app.run();
 }
 
@@ -171,29 +186,38 @@ fn setup(e: Res<Workspaces>, colors: Res<BColors>, mut commands: Commands) {
     }
 }
 
+#[derive(Resource, Default)]
+struct Dragging(Option<Entity>);
+
 fn setup_recursive(
     commands: &mut Commands,
     colors: &BColors,
     child: &Child,
-    g: f32,
+    grow_factor: f32,
     parent: Entity,
 ) {
     match child {
-        Child::Area { mode } => {
+        &Child::Area { mode } => {
             let area_root = commands
-                .spawn(NodeBundle {
-                    background_color: colors.background.into(),
-                    border_radius: BorderRadius::all(Val::Px(BORDER_RADIUS)),
-                    style: Style {
-                        flex_grow: g,
-                        flex_direction: FlexDirection::Column,
+                .spawn((
+                    NodeBundle {
+                        background_color: colors.background.into(),
+                        border_radius: BorderRadius::all(Val::Px(BORDER_RADIUS)),
+                        style: Style {
+                            flex_grow: grow_factor,
+                            flex_direction: FlexDirection::Column,
+                            ..default()
+                        },
                         ..default()
                     },
-                    ..default()
-                })
-                .observe(|trigger: Trigger<Pointer<DragEnd>>| {
-                    println!("DragEnd {}", trigger.entity());
-                })
+                    Area { mode },
+                ))
+                .observe(
+                    |trigger: Trigger<Pointer<DragEnd>>, mut dragging: ResMut<Dragging>| {
+                        println!("DragEnd {}", trigger.entity());
+                        
+                    },
+                )
                 .set_parent(parent)
                 .id();
             let bar_root = commands
@@ -223,9 +247,12 @@ fn setup_recursive(
                         },
                     )
                 })
-                .observe(|trigger: Trigger<Pointer<DragStart>>| {
-                    println!("DragStart {}", trigger.entity());
-                })
+                .observe(
+                    |trigger: Trigger<Pointer<DragStart>>, mut dragging: ResMut<Dragging>| {
+                        println!("DragStart {}", trigger.entity());
+                        dragging.0 = Some(trigger.entity());
+                    },
+                )
                 .set_parent(bar_root);
         }
         Child::Split {
@@ -233,17 +260,20 @@ fn setup_recursive(
             children,
         } => {
             let split_root = commands
-                .spawn(NodeBundle {
-                    style: Style {
-                        flex_grow: g,
-                        flex_direction: match direction {
-                            SplitDirection::Horizontal => FlexDirection::Row,
-                            SplitDirection::Vertical => FlexDirection::Column,
+                .spawn((
+                    NodeBundle {
+                        style: Style {
+                            flex_grow: grow_factor,
+                            flex_direction: match direction {
+                                SplitDirection::Horizontal => FlexDirection::Row,
+                                SplitDirection::Vertical => FlexDirection::Column,
+                            },
+                            ..default()
                         },
                         ..default()
                     },
-                    ..default()
-                })
+                    Split,
+                ))
                 .set_parent(parent)
                 .id();
             let count = children.len();
@@ -254,26 +284,29 @@ fn setup_recursive(
                 // Add spacers
                 if i < count - 1 {
                     commands
-                        .spawn(NodeBundle {
-                            // background_color: RED_100.into(),
-                            style: match direction {
-                                SplitDirection::Horizontal => Style {
-                                    width: Val::Px(SPACING),
-                                    height: Val::Percent(100.),
-                                    // flex_grow: *g,
-                                    // flex_basis: Val::Percent(100. * g),
-                                    ..default()
+                        .spawn((
+                            NodeBundle {
+                                // background_color: RED_100.into(),
+                                style: match direction {
+                                    SplitDirection::Horizontal => Style {
+                                        width: Val::Px(SPACING),
+                                        height: Val::Percent(100.),
+                                        // flex_grow: *g,
+                                        // flex_basis: Val::Percent(100. * g),
+                                        ..default()
+                                    },
+                                    SplitDirection::Vertical => Style {
+                                        width: Val::Percent(100.),
+                                        height: Val::Px(SPACING),
+                                        // flex_grow: *g,
+                                        // flex_basis: Val::Percent(100. * g),
+                                        ..default()
+                                    },
                                 },
-                                SplitDirection::Vertical => Style {
-                                    width: Val::Percent(100.),
-                                    height: Val::Px(SPACING),
-                                    // flex_grow: *g,
-                                    // flex_basis: Val::Percent(100. * g),
-                                    ..default()
-                                },
+                                ..default()
                             },
-                            ..default()
-                        })
+                            Spacer,
+                        ))
                         .set_parent(split_root);
                 }
             }
