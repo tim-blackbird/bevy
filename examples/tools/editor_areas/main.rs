@@ -82,6 +82,11 @@ impl Child {
     fn new(flex: f32, kind: ChildKind) -> Self {
         Child { flex, kind }
     }
+
+    // // fn find(&self, entity: Entity)
+    // fn find_mut(&self, entity: Entity) -> &mut Child {
+
+    // }
 }
 
 enum ChildKind {
@@ -152,42 +157,43 @@ struct WorkspacesSettings {
 fn main() {
     let mut app = App::new();
 
-    app.insert_resource(WorkspacesSettings {
-        workspaces: vec![Workspace {
-            name: "Default".to_string(),
+    app.add_event::<RedoLayout>()
+        .insert_resource(WorkspacesSettings {
+            workspaces: vec![Workspace {
+                name: "Default".to_string(),
 
-            child: Child::new(
-                1.,
-                ChildKind::Split {
-                    direction: SplitDirection::Horizontal,
-                    children: vec![
-                        Child::new(
-                            0.15,
-                            ChildKind::Split {
-                                direction: SplitDirection::Vertical,
-                                children: vec![
-                                    Child::new(0.8, ChildKind::area(Mode::AreaD)),
-                                    Child::new(0.2, ChildKind::area(Mode::AreaE)),
-                                ],
-                            },
-                        ),
-                        Child::new(
-                            0.7,
-                            ChildKind::Split {
-                                direction: SplitDirection::Vertical,
-                                children: vec![
-                                    Child::new(0.85, ChildKind::area(Mode::AreaA)),
-                                    Child::new(0.15, ChildKind::area(Mode::AreaC)),
-                                ],
-                            },
-                        ),
-                        Child::new(0.15, ChildKind::area(Mode::AreaB)),
-                    ],
-                },
-            ),
-        }],
-        ..default()
-    });
+                child: Child::new(
+                    1.,
+                    ChildKind::Split {
+                        direction: SplitDirection::Horizontal,
+                        children: vec![
+                            Child::new(
+                                0.15,
+                                ChildKind::Split {
+                                    direction: SplitDirection::Vertical,
+                                    children: vec![
+                                        Child::new(0.8, ChildKind::area(Mode::AreaD)),
+                                        Child::new(0.2, ChildKind::area(Mode::AreaE)),
+                                    ],
+                                },
+                            ),
+                            Child::new(
+                                0.7,
+                                ChildKind::Split {
+                                    direction: SplitDirection::Vertical,
+                                    children: vec![
+                                        Child::new(0.85, ChildKind::area(Mode::AreaA)),
+                                        Child::new(0.15, ChildKind::area(Mode::AreaC)),
+                                    ],
+                                },
+                            ),
+                            Child::new(0.15, ChildKind::area(Mode::AreaB)),
+                        ],
+                    },
+                ),
+            }],
+            ..default()
+        });
 
     app.init_resource::<BColors>()
         .init_resource::<Dragging>()
@@ -243,7 +249,7 @@ fn main() {
     app.run();
 }
 
-#[derive(Event)]
+#[derive(Event, Default)]
 struct RedoLayout;
 
 fn setup(
@@ -300,6 +306,45 @@ fn setup(
 
 #[derive(Resource, Default)]
 struct Dragging(Option<Entity>);
+
+/// Marks this entity as bing part of the shadow dom.
+#[derive(Component)]
+struct ShadowDom;
+
+/// Marks this entity as bing part of the real dom. Contains the id of the shadow dom entity
+#[derive(Component)]
+struct RealDom(Option<Entity>);
+
+fn setup_shadow_dom_recursive(commands: &mut Commands, child: &mut Child, parent: Entity) {
+    match &mut child.kind {
+        ChildKind::Area { mode, entity } => {
+            commands
+                .spawn((
+                    ShadowDom,
+                    AreaComponent {
+                        mode: *mode,
+                        flex_grow: child.flex,
+                    },
+                ))
+                .set_parent(parent);
+
+            *entity = None;
+        }
+        ChildKind::Split {
+            direction,
+            children,
+        } => {
+            let split_root = create_split(commands, *direction, child.flex)
+                .remove::<NodeBundle>()
+                .insert(ShadowDom)
+                .set_parent(parent)
+                .id();
+            for child in children.iter_mut() {
+                setup_shadow_dom_recursive(commands, child, split_root);
+            }
+        }
+    }
+}
 
 fn setup_recursive(commands: &mut Commands, colors: &BColors, child: &mut Child, parent: Entity) {
     match &mut child.kind {
@@ -447,7 +492,7 @@ fn area_drag_drop(
 
     let old_parent = parent_query.get(dropped).unwrap().get();
     let old_siblings = children_query.get(old_parent).unwrap();
-    let cleanup_requires_flatten = old_siblings.len() == 3;
+    // let cleanup_requires_flatten = old_siblings.len() == 3;
     let old_area_index = old_siblings.iter().position(|e| *e == dropped).unwrap();
 
     let mut target_area = area_query.get_mut(target).unwrap();
