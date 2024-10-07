@@ -142,7 +142,7 @@ struct Spacer {
     direction: SplitDirection,
 }
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 struct AreaComponent {
     mode: Mode,
     flex_grow: f32,
@@ -313,7 +313,7 @@ struct ShadowDom;
 
 /// Marks this entity as bing part of the real dom. Contains the id of the shadow dom entity
 #[derive(Component)]
-struct RealDom(Option<Entity>);
+struct RealDom(Entity);
 
 fn setup_shadow_dom_recursive(commands: &mut Commands, child: &mut Child, parent: Entity) {
     match &mut child.kind {
@@ -475,6 +475,7 @@ fn setup_recursive(commands: &mut Commands, colors: &BColors, child: &mut Child,
 fn area_drag_drop(
     trigger: Trigger<Pointer<DragDrop>>,
     mut dragging: ResMut<Dragging>,
+    realdom_query: Query<&RealDom>,
     parent_query: Query<&Parent>,
     children_query: Query<&Children>,
     mut split_query: Query<&mut Split>,
@@ -489,10 +490,12 @@ fn area_drag_drop(
     if target == dropped {
         return;
     }
+    let dropped = realdom_query.get(dropped).unwrap().0;
+    let target = realdom_query.get(target).unwrap().0;
 
     let old_parent = parent_query.get(dropped).unwrap().get();
     let old_siblings = children_query.get(old_parent).unwrap();
-    // let cleanup_requires_flatten = old_siblings.len() == 3;
+    let cleanup_requires_flatten = old_siblings.len() == 2;
     let old_area_index = old_siblings.iter().position(|e| *e == dropped).unwrap();
 
     let mut target_area = area_query.get_mut(target).unwrap();
@@ -502,12 +505,6 @@ fn area_drag_drop(
     let mut dropped_area = area_query.get_mut(dropped).unwrap();
     let old_flex_grow = dropped_area.flex_grow;
     dropped_area.flex_grow = new_flex_grow;
-
-    let spacer_to_remove = if old_area_index == 0 {
-        1
-    } else {
-        old_area_index - 1
-    };
 
     // Move
 
@@ -522,10 +519,9 @@ fn area_drag_drop(
     let target_index = siblings.iter().position(|e| *e == target).unwrap();
 
     // if index == 0 {
-    let id = create_spacer(&mut commands, parent_split.direction).id();
     commands
         .entity(parent)
-        .insert_children(target_index + 1, &[id, dropped]);
+        .insert_children(target_index + 1, &[dropped]);
     // } else {
     // }
 
@@ -534,7 +530,7 @@ fn area_drag_drop(
 
     // Cleanup
     if cleanup_requires_flatten {
-        let other_area = old_siblings[if old_area_index == 0 { 2 } else { 0 }];
+        let other_area = old_siblings[if old_area_index == 0 { 1 } else { 0 }];
         let grandparent = parent_query.get(old_parent).unwrap().get();
         let parent_siblings = children_query.get(grandparent).unwrap();
         let parent_index = parent_siblings
@@ -549,15 +545,11 @@ fn area_drag_drop(
         commands
             .entity(grandparent)
             .insert_children(parent_index, &[other_area]);
-        commands.entity(old_parent).despawn_recursive();
     } else {
-        commands
-            .entity(old_siblings[spacer_to_remove])
-            .despawn_recursive();
         let sibling_index = if old_area_index == 0 {
-            2
+            1
         } else {
-            old_area_index - 2
+            old_area_index - 1
         };
 
         if let Ok(mut area) = area_query.get_mut(old_siblings[sibling_index]) {
