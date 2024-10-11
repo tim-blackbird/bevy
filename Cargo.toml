@@ -1574,7 +1574,7 @@ doc-scrape-examples = true
 name = "Custom Asset"
 description = "Implements a custom asset loader"
 category = "Assets"
-wasm = true
+wasm = false
 
 [[example]]
 name = "custom_asset_reader"
