@@ -55,27 +55,24 @@ impl SpecializedRenderPipeline for UiPipeline {
     type Key = UiPipelineKey;
 
     fn specialize(&self, key: Self::Key) -> RenderPipelineDescriptor {
-        let vertex_layout = VertexBufferLayout::from_vertex_formats(
-            VertexStepMode::Vertex,
-            vec![
-                // position
-                VertexFormat::Float32x3,
-                // uv
-                VertexFormat::Float32x2,
-                // color
-                VertexFormat::Float32x4,
-                // mode
-                VertexFormat::Uint32,
-                // border radius
-                VertexFormat::Float32x4,
-                // border thickness
-                VertexFormat::Float32x4,
-                // border size
-                VertexFormat::Float32x2,
-                // position relative to the center
-                VertexFormat::Float32x2,
-            ],
-        );
+        let vertex_layout = VertexBufferLayout::from_vertex_formats(VertexStepMode::Vertex, vec![
+            // position
+            VertexFormat::Float32x3,
+            // uv
+            VertexFormat::Float32x2,
+            // color
+            VertexFormat::Float32x4,
+            // mode
+            VertexFormat::Uint32,
+            // border radius
+            VertexFormat::Float32x4,
+            // border thickness
+            VertexFormat::Float32x4,
+            // border size
+            VertexFormat::Float32x2,
+            // position relative to the center
+            VertexFormat::Float32x2,
+        ]);
         let shader_defs = if key.anti_alias {
             vec!["ANTI_ALIAS".into()]
         } else {

@@ -237,15 +237,12 @@ fn spawn_trees(
 
 fn setup_ui(mut commands: Commands) {
     commands
-        .spawn((
-            Text::default(),
-            Node {
-                position_type: PositionType::Absolute,
-                top: Val::Px(12.0),
-                left: Val::Px(12.0),
-                ..default()
-            },
-        ))
+        .spawn((Text::default(), Node {
+            position_type: PositionType::Absolute,
+            top: Val::Px(12.0),
+            left: Val::Px(12.0),
+            ..default()
+        }))
         .with_children(|p| {
             p.spawn(TextSpan::default());
             p.spawn(TextSpan::default());

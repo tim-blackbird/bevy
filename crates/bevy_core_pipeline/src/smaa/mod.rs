@@ -706,50 +706,41 @@ fn prepare_smaa_textures(
         };
 
         // Create the two-channel RG texture for phase 1 (edge detection).
-        let edge_detection_color_texture = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("SMAA edge detection color texture"),
-                size: texture_size,
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::Rg8Unorm,
-                usage: TextureUsages::TEXTURE_BINDING | TextureUsages::RENDER_ATTACHMENT,
-                view_formats: &[],
-            },
-        );
+        let edge_detection_color_texture = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("SMAA edge detection color texture"),
+            size: texture_size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::Rg8Unorm,
+            usage: TextureUsages::TEXTURE_BINDING | TextureUsages::RENDER_ATTACHMENT,
+            view_formats: &[],
+        });
 
         // Create the stencil texture for phase 1 (edge detection).
-        let edge_detection_stencil_texture = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("SMAA edge detection stencil texture"),
-                size: texture_size,
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::Stencil8,
-                usage: TextureUsages::RENDER_ATTACHMENT,
-                view_formats: &[],
-            },
-        );
+        let edge_detection_stencil_texture = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("SMAA edge detection stencil texture"),
+            size: texture_size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::Stencil8,
+            usage: TextureUsages::RENDER_ATTACHMENT,
+            view_formats: &[],
+        });
 
         // Create the four-channel RGBA texture for phase 2 (blending weight
         // calculation).
-        let blend_texture = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("SMAA blend texture"),
-                size: texture_size,
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::Rgba8Unorm,
-                usage: TextureUsages::TEXTURE_BINDING | TextureUsages::RENDER_ATTACHMENT,
-                view_formats: &[],
-            },
-        );
+        let blend_texture = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("SMAA blend texture"),
+            size: texture_size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::Rgba8Unorm,
+            usage: TextureUsages::TEXTURE_BINDING | TextureUsages::RENDER_ATTACHMENT,
+            view_formats: &[],
+        });
 
         commands.entity(entity).insert(SmaaTextures {
             edge_detection_color_texture,
@@ -1062,11 +1053,8 @@ fn perform_neighborhood_blending(
         .command_encoder()
         .begin_render_pass(&pass_descriptor);
     neighborhood_blending_render_pass.set_pipeline(neighborhood_blending_pipeline);
-    neighborhood_blending_render_pass.set_bind_group(
-        0,
-        &postprocess_bind_group,
-        &[**view_smaa_uniform_offset],
-    );
+    neighborhood_blending_render_pass
+        .set_bind_group(0, &postprocess_bind_group, &[**view_smaa_uniform_offset]);
     neighborhood_blending_render_pass.set_bind_group(
         1,
         &view_smaa_bind_groups.neighborhood_blending_bind_group,

@@ -3913,15 +3913,12 @@ mod tests {
 
         let drop_log = helper.finish(res);
 
-        assert_eq!(
-            &*drop_log,
-            [
-                DropLogItem::Create(0),
-                DropLogItem::Create(1),
-                DropLogItem::Drop(0),
-                DropLogItem::Drop(1),
-            ]
-        );
+        assert_eq!(&*drop_log, [
+            DropLogItem::Create(0),
+            DropLogItem::Create(1),
+            DropLogItem::Drop(0),
+            DropLogItem::Drop(1),
+        ]);
     }
 
     #[derive(Resource)]

@@ -595,11 +595,9 @@ impl<const I: usize, P: PhaseItem> RenderCommand<P> for SetLineGizmoBindGroup<I>
         let Some(uniform_index) = uniform_index else {
             return RenderCommandResult::Skip;
         };
-        pass.set_bind_group(
-            I,
-            &bind_group.into_inner().bindgroup,
-            &[uniform_index.index()],
-        );
+        pass.set_bind_group(I, &bind_group.into_inner().bindgroup, &[
+            uniform_index.index()
+        ]);
         RenderCommandResult::Success
     }
 }

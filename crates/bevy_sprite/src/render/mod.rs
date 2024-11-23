@@ -420,9 +420,9 @@ pub fn extract_sprites(
             };
 
             // PERF: we don't check in this function that the `Image` asset is ready, since it should be in most cases and hashing the handle is expensive
-            extracted_sprites.sprites.insert(
-                (entity, original_entity.into()),
-                ExtractedSprite {
+            extracted_sprites
+                .sprites
+                .insert((entity, original_entity.into()), ExtractedSprite {
                     color: sprite.color.into(),
                     transform: *transform,
                     rect,
@@ -433,8 +433,7 @@ pub fn extract_sprites(
                     image_handle_id: sprite.image.id(),
                     anchor: sprite.anchor.as_vec(),
                     original_entity: Some(original_entity),
-                },
-            );
+                });
         }
     }
 }
@@ -746,13 +745,10 @@ pub fn prepare_sprite_image_bind_groups(
             if batch_image_changed {
                 batch_item_index = item_index;
 
-                batches.push((
-                    item.entity(),
-                    SpriteBatch {
-                        image_handle_id: batch_image_handle,
-                        range: index..index,
-                    },
-                ));
+                batches.push((item.entity(), SpriteBatch {
+                    image_handle_id: batch_image_handle,
+                    range: index..index,
+                }));
             }
 
             transparent_phase.items[batch_item_index]

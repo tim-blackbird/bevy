@@ -30,13 +30,10 @@ impl Plugin for ColorMaterialPlugin {
         // Initialize the default material handle.
         app.world_mut()
             .resource_mut::<Assets<ColorMaterial>>()
-            .insert(
-                &Handle::<ColorMaterial>::default(),
-                ColorMaterial {
-                    color: Color::srgb(1.0, 0.0, 1.0),
-                    ..Default::default()
-                },
-            );
+            .insert(&Handle::<ColorMaterial>::default(), ColorMaterial {
+                color: Color::srgb(1.0, 0.0, 1.0),
+                ..Default::default()
+            });
     }
 }
 

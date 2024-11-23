@@ -415,10 +415,9 @@ mod test {
 
         // check the `Children` structure is spawned
         assert_eq!(&**app.world().get::<Children>(parent).unwrap(), &[child]);
-        assert_eq!(
-            &**app.world().get::<Children>(child).unwrap(),
-            &[grandchild]
-        );
+        assert_eq!(&**app.world().get::<Children>(child).unwrap(), &[
+            grandchild
+        ]);
         // Note that at this point, the `GlobalTransform`s will not have updated yet, due to `Commands` delay
         app.update();
 

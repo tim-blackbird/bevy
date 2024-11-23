@@ -83,24 +83,18 @@ fn setup(
 
         // Set up UI
         commands
-            .spawn((
-                TargetCamera(camera),
-                Node {
-                    width: Val::Percent(100.),
-                    height: Val::Percent(100.),
-                    ..default()
-                },
-            ))
+            .spawn((TargetCamera(camera), Node {
+                width: Val::Percent(100.),
+                height: Val::Percent(100.),
+                ..default()
+            }))
             .with_children(|parent| {
-                parent.spawn((
-                    Text::new(*camera_name),
-                    Node {
-                        position_type: PositionType::Absolute,
-                        top: Val::Px(12.),
-                        left: Val::Px(12.),
-                        ..default()
-                    },
-                ));
+                parent.spawn((Text::new(*camera_name), Node {
+                    position_type: PositionType::Absolute,
+                    top: Val::Px(12.),
+                    left: Val::Px(12.),
+                    ..default()
+                }));
                 buttons_panel(parent);
             });
     }

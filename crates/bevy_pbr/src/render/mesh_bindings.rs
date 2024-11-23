@@ -287,11 +287,9 @@ impl MeshLayouts {
     // ---------- BindGroup methods ----------
 
     pub fn model_only(&self, render_device: &RenderDevice, model: &BindingResource) -> BindGroup {
-        render_device.create_bind_group(
-            "model_only_mesh_bind_group",
-            &self.model_only,
-            &[entry::model(0, model.clone())],
-        )
+        render_device.create_bind_group("model_only_mesh_bind_group", &self.model_only, &[
+            entry::model(0, model.clone()),
+        ])
     }
 
     pub fn lightmapped(
@@ -300,15 +298,11 @@ impl MeshLayouts {
         model: &BindingResource,
         lightmap: &GpuImage,
     ) -> BindGroup {
-        render_device.create_bind_group(
-            "lightmapped_mesh_bind_group",
-            &self.lightmapped,
-            &[
-                entry::model(0, model.clone()),
-                entry::lightmaps_texture_view(4, &lightmap.texture_view),
-                entry::lightmaps_sampler(5, &lightmap.sampler),
-            ],
-        )
+        render_device.create_bind_group("lightmapped_mesh_bind_group", &self.lightmapped, &[
+            entry::model(0, model.clone()),
+            entry::lightmaps_texture_view(4, &lightmap.texture_view),
+            entry::lightmaps_sampler(5, &lightmap.sampler),
+        ])
     }
 
     /// Creates the bind group for skinned meshes with no morph targets.
@@ -318,14 +312,10 @@ impl MeshLayouts {
         model: &BindingResource,
         current_skin: &Buffer,
     ) -> BindGroup {
-        render_device.create_bind_group(
-            "skinned_mesh_bind_group",
-            &self.skinned,
-            &[
-                entry::model(0, model.clone()),
-                entry::skinning(1, current_skin),
-            ],
-        )
+        render_device.create_bind_group("skinned_mesh_bind_group", &self.skinned, &[
+            entry::model(0, model.clone()),
+            entry::skinning(1, current_skin),
+        ])
     }
 
     /// Creates the bind group for skinned meshes with no morph targets, with
@@ -342,15 +332,11 @@ impl MeshLayouts {
         current_skin: &Buffer,
         prev_skin: &Buffer,
     ) -> BindGroup {
-        render_device.create_bind_group(
-            "skinned_motion_mesh_bind_group",
-            &self.skinned_motion,
-            &[
-                entry::model(0, model.clone()),
-                entry::skinning(1, current_skin),
-                entry::skinning(6, prev_skin),
-            ],
-        )
+        render_device.create_bind_group("skinned_motion_mesh_bind_group", &self.skinned_motion, &[
+            entry::model(0, model.clone()),
+            entry::skinning(1, current_skin),
+            entry::skinning(6, prev_skin),
+        ])
     }
 
     /// Creates the bind group for meshes with no skins but morph targets.
@@ -361,15 +347,11 @@ impl MeshLayouts {
         current_weights: &Buffer,
         targets: &TextureView,
     ) -> BindGroup {
-        render_device.create_bind_group(
-            "morphed_mesh_bind_group",
-            &self.morphed,
-            &[
-                entry::model(0, model.clone()),
-                entry::weights(2, current_weights),
-                entry::targets(3, targets),
-            ],
-        )
+        render_device.create_bind_group("morphed_mesh_bind_group", &self.morphed, &[
+            entry::model(0, model.clone()),
+            entry::weights(2, current_weights),
+            entry::targets(3, targets),
+        ])
     }
 
     /// Creates the bind group for meshes with no skins but morph targets, in
@@ -387,16 +369,12 @@ impl MeshLayouts {
         targets: &TextureView,
         prev_weights: &Buffer,
     ) -> BindGroup {
-        render_device.create_bind_group(
-            "morphed_motion_mesh_bind_group",
-            &self.morphed_motion,
-            &[
-                entry::model(0, model.clone()),
-                entry::weights(2, current_weights),
-                entry::targets(3, targets),
-                entry::weights(7, prev_weights),
-            ],
-        )
+        render_device.create_bind_group("morphed_motion_mesh_bind_group", &self.morphed_motion, &[
+            entry::model(0, model.clone()),
+            entry::weights(2, current_weights),
+            entry::targets(3, targets),
+            entry::weights(7, prev_weights),
+        ])
     }
 
     /// Creates the bind group for meshes with skins and morph targets.

@@ -329,13 +329,10 @@ mod tests {
 
         let args = ArgList::default().push_owned(25_i32);
         let error = func.call(args).unwrap_err();
-        assert!(matches!(
-            error,
-            FunctionError::ArgCountMismatch {
-                expected: 2,
-                received: 1
-            }
-        ));
+        assert!(matches!(error, FunctionError::ArgCountMismatch {
+            expected: 2,
+            received: 1
+        }));
     }
 
     #[test]

@@ -122,13 +122,10 @@ pub(crate) fn check(what_to_run: Command) {
             .map(|(key, mut examples)| {
                 examples.sort();
                 let description = categories.get(&key).cloned();
-                (
-                    key,
-                    Category {
-                        description,
-                        examples,
-                    },
-                )
+                (key, Category {
+                    description,
+                    examples,
+                })
             })
             .collect();
 

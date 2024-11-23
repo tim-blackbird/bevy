@@ -452,11 +452,9 @@ impl ViewNode for DepthOfFieldNode {
             // Set the per-view bind group.
             render_pass.set_bind_group(0, &view_bind_group, &[view_uniform_offset.offset]);
             // Set the global bind group shared among all invocations of the shader.
-            render_pass.set_bind_group(
-                1,
-                global_bind_group,
-                &[depth_of_field_uniform_index.index()],
-            );
+            render_pass.set_bind_group(1, global_bind_group, &[
+                depth_of_field_uniform_index.index()
+            ]);
             // Render the full-screen pass.
             render_pass.draw(0..3, 0..1);
         }
@@ -847,20 +845,17 @@ fn extract_depth_of_field_settings(
             calculate_focal_length(depth_of_field.sensor_height, perspective_projection.fov);
 
         // Convert `DepthOfField` to `DepthOfFieldUniform`.
-        entity_commands.insert((
-            *depth_of_field,
-            DepthOfFieldUniform {
-                focal_distance: depth_of_field.focal_distance,
-                focal_length,
-                coc_scale_factor: focal_length * focal_length
-                    / (depth_of_field.sensor_height * depth_of_field.aperture_f_stops),
-                max_circle_of_confusion_diameter: depth_of_field.max_circle_of_confusion_diameter,
-                max_depth: depth_of_field.max_depth,
-                pad_a: 0,
-                pad_b: 0,
-                pad_c: 0,
-            },
-        ));
+        entity_commands.insert((*depth_of_field, DepthOfFieldUniform {
+            focal_distance: depth_of_field.focal_distance,
+            focal_length,
+            coc_scale_factor: focal_length * focal_length
+                / (depth_of_field.sensor_height * depth_of_field.aperture_f_stops),
+            max_circle_of_confusion_diameter: depth_of_field.max_circle_of_confusion_diameter,
+            max_depth: depth_of_field.max_depth,
+            pad_a: 0,
+            pad_b: 0,
+            pad_c: 0,
+        }));
     }
 }
 

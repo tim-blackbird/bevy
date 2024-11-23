@@ -184,11 +184,8 @@ impl ViewNode for BloomNode {
                     occlusion_query_set: None,
                 });
             downsampling_first_pass.set_render_pipeline(downsampling_first_pipeline);
-            downsampling_first_pass.set_bind_group(
-                0,
-                &downsampling_first_bind_group,
-                &[uniform_index.index()],
-            );
+            downsampling_first_pass
+                .set_bind_group(0, &downsampling_first_bind_group, &[uniform_index.index()]);
             downsampling_first_pass.draw(0..3, 0..1);
         }
 
@@ -367,18 +364,15 @@ fn prepare_bloom_textures(
             #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
             let texture: Vec<CachedTexture> = (0..mip_count)
                 .map(|mip| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            size: Extent3d {
-                                width: (texture_descriptor.size.width >> mip).max(1),
-                                height: (texture_descriptor.size.height >> mip).max(1),
-                                depth_or_array_layers: 1,
-                            },
-                            mip_level_count: 1,
-                            ..texture_descriptor.clone()
+                    texture_cache.get(&render_device, TextureDescriptor {
+                        size: Extent3d {
+                            width: (texture_descriptor.size.width >> mip).max(1),
+                            height: (texture_descriptor.size.height >> mip).max(1),
+                            depth_or_array_layers: 1,
                         },
-                    )
+                        mip_level_count: 1,
+                        ..texture_descriptor.clone()
+                    })
                 })
                 .collect();
 

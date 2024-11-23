@@ -341,16 +341,12 @@ fn queue_line_gizmos_3d(
                 continue;
             };
 
-            let pipeline = pipelines.specialize(
-                &pipeline_cache,
-                &pipeline,
-                LineGizmoPipelineKey {
-                    view_key,
-                    strip: line_gizmo.strip,
-                    perspective: config.line_perspective,
-                    line_style: config.line_style,
-                },
-            );
+            let pipeline = pipelines.specialize(&pipeline_cache, &pipeline, LineGizmoPipelineKey {
+                view_key,
+                strip: line_gizmo.strip,
+                perspective: config.line_perspective,
+                line_style: config.line_style,
+            });
 
             transparent_phase.add(Transparent3d {
                 entity: (entity, *main_entity),
@@ -437,15 +433,12 @@ fn queue_line_joint_gizmos_3d(
                 continue;
             }
 
-            let pipeline = pipelines.specialize(
-                &pipeline_cache,
-                &pipeline,
-                LineJointGizmoPipelineKey {
+            let pipeline =
+                pipelines.specialize(&pipeline_cache, &pipeline, LineJointGizmoPipelineKey {
                     view_key,
                     perspective: config.line_perspective,
                     joints: line_gizmo.joints,
-                },
-            );
+                });
 
             transparent_phase.add(Transparent3d {
                 entity: (entity, *main_entity),

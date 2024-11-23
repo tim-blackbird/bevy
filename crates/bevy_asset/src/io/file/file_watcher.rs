@@ -31,15 +31,12 @@ impl FileWatcher {
         debounce_wait_time: Duration,
     ) -> Result<Self, notify::Error> {
         let root = normalize_path(super::get_base_path().join(root).as_path());
-        let watcher = new_asset_event_debouncer(
-            root.clone(),
-            debounce_wait_time,
-            FileEventHandler {
+        let watcher =
+            new_asset_event_debouncer(root.clone(), debounce_wait_time, FileEventHandler {
                 root,
                 sender,
                 last_event: None,
-            },
-        )?;
+            })?;
         Ok(FileWatcher { _watcher: watcher })
     }
 }
@@ -159,13 +156,10 @@ pub(crate) fn new_asset_event_debouncer(
                                 };
                                 // only the new "real" path is considered a directory
                                 if event.paths[1].is_dir() {
-                                    handler.handle(
-                                        &event.paths,
-                                        AssetSourceEvent::RenamedFolder {
-                                            old: old_path,
-                                            new: new_path,
-                                        },
-                                    );
+                                    handler.handle(&event.paths, AssetSourceEvent::RenamedFolder {
+                                        old: old_path,
+                                        new: new_path,
+                                    });
                                 } else {
                                     match (old_is_meta, new_is_meta) {
                                         (true, true) => {

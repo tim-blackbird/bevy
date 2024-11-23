@@ -124,15 +124,12 @@ fn setup(
     ));
 
     commands
-        .spawn((
-            Text::default(),
-            Node {
-                position_type: PositionType::Absolute,
-                top: Val::Px(12.0),
-                left: Val::Px(12.0),
-                ..default()
-            },
-        ))
+        .spawn((Text::default(), Node {
+            position_type: PositionType::Absolute,
+            top: Val::Px(12.0),
+            left: Val::Px(12.0),
+            ..default()
+        }))
         .with_children(|p| {
             p.spawn(TextSpan::new("Prepass Output: transparent\n"));
             p.spawn(TextSpan::new("\n\n"));

@@ -58,13 +58,10 @@ pub(crate) static TYPE_NAME_ATTRIBUTE_NAME: &str = "type_name";
 /// [`impl_reflect`]: macro@impl_reflect
 /// [`derive_reflect`]: derive_reflect()
 fn match_reflect_impls(ast: DeriveInput, source: ReflectImplSource) -> TokenStream {
-    let derive_data = match ReflectDerive::from_input(
-        &ast,
-        ReflectProvenance {
-            source,
-            trait_: ReflectTraitToImpl::Reflect,
-        },
-    ) {
+    let derive_data = match ReflectDerive::from_input(&ast, ReflectProvenance {
+        source,
+        trait_: ReflectTraitToImpl::Reflect,
+    }) {
         Ok(data) => data,
         Err(err) => return err.into_compile_error().into(),
     };
@@ -405,13 +402,10 @@ pub fn derive_reflect(input: TokenStream) -> TokenStream {
 pub fn derive_from_reflect(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
 
-    let derive_data = match ReflectDerive::from_input(
-        &ast,
-        ReflectProvenance {
-            source: ReflectImplSource::DeriveLocalType,
-            trait_: ReflectTraitToImpl::FromReflect,
-        },
-    ) {
+    let derive_data = match ReflectDerive::from_input(&ast, ReflectProvenance {
+        source: ReflectImplSource::DeriveLocalType,
+        trait_: ReflectTraitToImpl::FromReflect,
+    }) {
         Ok(data) => data,
         Err(err) => return err.into_compile_error().into(),
     };
@@ -450,13 +444,10 @@ pub fn derive_from_reflect(input: TokenStream) -> TokenStream {
 #[proc_macro_derive(TypePath, attributes(type_path, type_name))]
 pub fn derive_type_path(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
-    let derive_data = match ReflectDerive::from_input(
-        &ast,
-        ReflectProvenance {
-            source: ReflectImplSource::DeriveLocalType,
-            trait_: ReflectTraitToImpl::TypePath,
-        },
-    ) {
+    let derive_data = match ReflectDerive::from_input(&ast, ReflectProvenance {
+        source: ReflectImplSource::DeriveLocalType,
+        trait_: ReflectTraitToImpl::TypePath,
+    }) {
         Ok(data) => data,
         Err(err) => return err.into_compile_error().into(),
     };

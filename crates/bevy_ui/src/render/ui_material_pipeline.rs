@@ -145,19 +145,16 @@ where
     type Key = UiMaterialKey<M>;
 
     fn specialize(&self, key: Self::Key) -> RenderPipelineDescriptor {
-        let vertex_layout = VertexBufferLayout::from_vertex_formats(
-            VertexStepMode::Vertex,
-            vec![
-                // position
-                VertexFormat::Float32x3,
-                // uv
-                VertexFormat::Float32x2,
-                // size
-                VertexFormat::Float32x2,
-                // border_widths
-                VertexFormat::Float32x4,
-            ],
-        );
+        let vertex_layout = VertexBufferLayout::from_vertex_formats(VertexStepMode::Vertex, vec![
+            // position
+            VertexFormat::Float32x3,
+            // uv
+            VertexFormat::Float32x2,
+            // size
+            VertexFormat::Float32x2,
+            // border_widths
+            VertexFormat::Float32x4,
+        ]);
         let shader_defs = Vec::new();
 
         let mut descriptor = RenderPipelineDescriptor {
@@ -632,14 +629,11 @@ pub fn queue_ui_material_nodes<M: UiMaterial>(
             continue;
         };
 
-        let pipeline = pipelines.specialize(
-            &pipeline_cache,
-            &ui_material_pipeline,
-            UiMaterialKey {
+        let pipeline =
+            pipelines.specialize(&pipeline_cache, &ui_material_pipeline, UiMaterialKey {
                 hdr: view.hdr,
                 bind_group_data: material.key.clone(),
-            },
-        );
+            });
         if transparent_phase.items.capacity() < extracted_uinodes.uinodes.len() {
             transparent_phase.items.reserve_exact(
                 extracted_uinodes.uinodes.len() - transparent_phase.items.capacity(),

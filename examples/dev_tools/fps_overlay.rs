@@ -15,24 +15,21 @@ impl OverlayColor {
 
 fn main() {
     App::new()
-        .add_plugins((
-            DefaultPlugins,
-            FpsOverlayPlugin {
-                config: FpsOverlayConfig {
-                    text_config: TextFont {
-                        // Here we define size of our overlay
-                        font_size: 42.0,
-                        // If we want, we can use a custom font
-                        font: default(),
-                        // We could also disable font smoothing,
-                        font_smoothing: FontSmoothing::default(),
-                    },
-                    // We can also change color of the overlay
-                    text_color: OverlayColor::GREEN,
-                    enabled: true,
+        .add_plugins((DefaultPlugins, FpsOverlayPlugin {
+            config: FpsOverlayConfig {
+                text_config: TextFont {
+                    // Here we define size of our overlay
+                    font_size: 42.0,
+                    // If we want, we can use a custom font
+                    font: default(),
+                    // We could also disable font smoothing,
+                    font_smoothing: FontSmoothing::default(),
                 },
+                // We can also change color of the overlay
+                text_color: OverlayColor::GREEN,
+                enabled: true,
             },
-        ))
+        }))
         .add_systems(Startup, setup)
         .add_systems(Update, customize_config)
         .run();

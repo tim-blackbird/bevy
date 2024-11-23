@@ -345,17 +345,14 @@ pub fn get_transcoded_formats(
             // space as BC7 (128-bits per 4x4 texel block) so prefer ASTC over BC for
             // transcoding speed and quality.
             if supported_compressed_formats.contains(CompressedImageFormats::ASTC_LDR) {
-                (
-                    TranscoderBlockFormat::ASTC_4x4,
-                    TextureFormat::Astc {
-                        block: AstcBlock::B4x4,
-                        channel: if is_srgb {
-                            AstcChannel::UnormSrgb
-                        } else {
-                            AstcChannel::Unorm
-                        },
+                (TranscoderBlockFormat::ASTC_4x4, TextureFormat::Astc {
+                    block: AstcBlock::B4x4,
+                    channel: if is_srgb {
+                        AstcChannel::UnormSrgb
+                    } else {
+                        AstcChannel::Unorm
                     },
-                )
+                })
             } else if supported_compressed_formats.contains(CompressedImageFormats::BC) {
                 (
                     TranscoderBlockFormat::BC7,

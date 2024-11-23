@@ -142,23 +142,17 @@ pub fn prepare_downsampling_pipeline(
     for (entity, bloom) in &views {
         let prefilter = bloom.prefilter.threshold > 0.0;
 
-        let pipeline_id = pipelines.specialize(
-            &pipeline_cache,
-            &pipeline,
-            BloomDownsamplingPipelineKeys {
+        let pipeline_id =
+            pipelines.specialize(&pipeline_cache, &pipeline, BloomDownsamplingPipelineKeys {
                 prefilter,
                 first_downsample: false,
-            },
-        );
+            });
 
-        let pipeline_first_id = pipelines.specialize(
-            &pipeline_cache,
-            &pipeline,
-            BloomDownsamplingPipelineKeys {
+        let pipeline_first_id =
+            pipelines.specialize(&pipeline_cache, &pipeline, BloomDownsamplingPipelineKeys {
                 prefilter,
                 first_downsample: true,
-            },
-        );
+            });
 
         commands
             .entity(entity)

@@ -120,21 +120,18 @@ impl ExtractComponent for Skybox {
             .map(Exposure::exposure)
             .unwrap_or_else(|| Exposure::default().exposure());
 
-        Some((
-            skybox.clone(),
-            SkyboxUniforms {
-                brightness: skybox.brightness * exposure,
-                transform: Transform::from_rotation(skybox.rotation)
-                    .compute_matrix()
-                    .inverse(),
-                #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
-                _wasm_padding_8b: 0,
-                #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
-                _wasm_padding_12b: 0,
-                #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
-                _wasm_padding_16b: 0,
-            },
-        ))
+        Some((skybox.clone(), SkyboxUniforms {
+            brightness: skybox.brightness * exposure,
+            transform: Transform::from_rotation(skybox.rotation)
+                .compute_matrix()
+                .inverse(),
+            #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
+            _wasm_padding_8b: 0,
+            #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
+            _wasm_padding_12b: 0,
+            #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
+            _wasm_padding_16b: 0,
+        }))
     }
 }
 
@@ -250,15 +247,11 @@ fn prepare_skybox_pipelines(
     views: Query<(Entity, &ExtractedView, &Msaa), With<Skybox>>,
 ) {
     for (entity, view, msaa) in &views {
-        let pipeline_id = pipelines.specialize(
-            &pipeline_cache,
-            &pipeline,
-            SkyboxPipelineKey {
-                hdr: view.hdr,
-                samples: msaa.samples(),
-                depth_format: CORE_3D_DEPTH_FORMAT,
-            },
-        );
+        let pipeline_id = pipelines.specialize(&pipeline_cache, &pipeline, SkyboxPipelineKey {
+            hdr: view.hdr,
+            samples: msaa.samples(),
+            depth_format: CORE_3D_DEPTH_FORMAT,
+        });
 
         commands
             .entity(entity)

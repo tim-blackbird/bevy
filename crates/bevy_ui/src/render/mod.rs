@@ -709,22 +709,19 @@ pub fn extract_text_sections(
             {
                 let id = commands.spawn(TemporaryRenderEntity).id();
 
-                extracted_uinodes.uinodes.insert(
-                    id,
-                    ExtractedUiNode {
-                        stack_index: uinode.stack_index,
-                        color,
-                        image: atlas_info.texture.id(),
-                        clip: clip.map(|clip| clip.clip),
-                        camera_entity: render_camera_entity.id(),
-                        rect,
-                        item: ExtractedUiItem::Glyphs {
-                            atlas_scaling: Vec2::ONE,
-                            range: start..end,
-                        },
-                        main_entity: entity.into(),
+                extracted_uinodes.uinodes.insert(id, ExtractedUiNode {
+                    stack_index: uinode.stack_index,
+                    color,
+                    image: atlas_info.texture.id(),
+                    clip: clip.map(|clip| clip.clip),
+                    camera_entity: render_camera_entity.id(),
+                    rect,
+                    item: ExtractedUiItem::Glyphs {
+                        atlas_scaling: Vec2::ONE,
+                        range: start..end,
                     },
-                );
+                    main_entity: entity.into(),
+                });
                 start = end;
             }
 
@@ -817,14 +814,10 @@ pub fn queue_uinodes(
             continue;
         };
 
-        let pipeline = pipelines.specialize(
-            &pipeline_cache,
-            &ui_pipeline,
-            UiPipelineKey {
-                hdr: view.hdr,
-                anti_alias: matches!(ui_anti_alias, None | Some(UiAntiAlias::On)),
-            },
-        );
+        let pipeline = pipelines.specialize(&pipeline_cache, &ui_pipeline, UiPipelineKey {
+            hdr: view.hdr,
+            anti_alias: matches!(ui_anti_alias, None | Some(UiAntiAlias::On)),
+        });
         transparent_phase.add(TransparentUi {
             draw_function,
             pipeline,

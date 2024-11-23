@@ -976,13 +976,10 @@ mod tests {
 
         let (mut world, mut ui_schedule) = setup_ui_test_world();
 
-        world.spawn((
-            Camera2d,
-            Camera {
-                order: 1,
-                ..default()
-            },
-        ));
+        world.spawn((Camera2d, Camera {
+            order: 1,
+            ..default()
+        }));
 
         world.spawn((
             Node {

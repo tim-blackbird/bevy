@@ -60,14 +60,11 @@ pub fn gilrs_event_system(
                     entity
                 });
 
-                let event = GamepadConnectionEvent::new(
-                    entity,
-                    GamepadConnection::Connected {
-                        name: pad.name().to_string(),
-                        vendor_id: pad.vendor_id(),
-                        product_id: pad.product_id(),
-                    },
-                );
+                let event = GamepadConnectionEvent::new(entity, GamepadConnection::Connected {
+                    name: pad.name().to_string(),
+                    vendor_id: pad.vendor_id(),
+                    product_id: pad.product_id(),
+                });
 
                 events.send(event.clone().into());
                 connection_events.send(event);

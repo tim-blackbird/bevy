@@ -441,14 +441,12 @@ impl<'de, P: ReflectDeserializerProcessor> DeserializeSeed<'de>
                     Ok(Box::new(dynamic_list))
                 }
                 TypeInfo::Array(array_info) => {
-                    let mut dynamic_array = deserializer.deserialize_tuple(
-                        array_info.capacity(),
-                        ArrayVisitor {
+                    let mut dynamic_array =
+                        deserializer.deserialize_tuple(array_info.capacity(), ArrayVisitor {
                             array_info,
                             registry: self.registry,
                             processor: self.processor,
-                        },
-                    )?;
+                        })?;
                     dynamic_array.set_represented_type(Some(self.registration.type_info()));
                     Ok(Box::new(dynamic_array))
                 }
@@ -471,15 +469,13 @@ impl<'de, P: ReflectDeserializerProcessor> DeserializeSeed<'de>
                     Ok(Box::new(dynamic_set))
                 }
                 TypeInfo::Tuple(tuple_info) => {
-                    let mut dynamic_tuple = deserializer.deserialize_tuple(
-                        tuple_info.field_len(),
-                        TupleVisitor {
+                    let mut dynamic_tuple =
+                        deserializer.deserialize_tuple(tuple_info.field_len(), TupleVisitor {
                             tuple_info,
                             registration: self.registration,
                             registry: self.registry,
                             processor: self.processor,
-                        },
-                    )?;
+                        })?;
                     dynamic_tuple.set_represented_type(Some(self.registration.type_info()));
                     Ok(Box::new(dynamic_tuple))
                 }

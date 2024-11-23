@@ -144,13 +144,10 @@ fn prepare_uniform_components<C>(
     };
     let entities = components_iter
         .map(|(entity, component)| {
-            (
-                entity,
-                DynamicUniformIndex::<C> {
-                    index: writer.write(component),
-                    marker: PhantomData,
-                },
-            )
+            (entity, DynamicUniformIndex::<C> {
+                index: writer.write(component),
+                marker: PhantomData,
+            })
         })
         .collect::<Vec<_>>();
     commands.insert_or_spawn_batch(entities);

@@ -153,13 +153,10 @@ fn setup(mut commands: Commands) {
             .add_child(inner_spot)
             .id();
         let label_node = commands
-            .spawn((
-                Text::new(label),
-                TextFont {
-                    font_size: 9.0,
-                    ..Default::default()
-                },
-            ))
+            .spawn((Text::new(label), TextFont {
+                font_size: 9.0,
+                ..Default::default()
+            }))
             .id();
         let container = commands
             .spawn(Node {
@@ -215,13 +212,10 @@ fn setup(mut commands: Commands) {
             .add_child(inner_spot)
             .id();
         let label_node = commands
-            .spawn((
-                Text::new(label),
-                TextFont {
-                    font_size: 9.0,
-                    ..Default::default()
-                },
-            ))
+            .spawn((Text::new(label), TextFont {
+                font_size: 9.0,
+                ..Default::default()
+            }))
             .id();
         let container = commands
             .spawn(Node {
@@ -248,13 +242,10 @@ fn setup(mut commands: Commands) {
             BackgroundColor(Color::srgb(0.25, 0.25, 0.25)),
         ))
         .with_children(|builder| {
-            builder.spawn((
-                Text::new("Borders"),
-                TextFont {
-                    font_size: 20.0,
-                    ..Default::default()
-                },
-            ));
+            builder.spawn((Text::new("Borders"), TextFont {
+                font_size: 20.0,
+                ..Default::default()
+            }));
         })
         .id();
 
@@ -272,13 +263,10 @@ fn setup(mut commands: Commands) {
             BackgroundColor(Color::srgb(0.25, 0.25, 0.25)),
         ))
         .with_children(|builder| {
-            builder.spawn((
-                Text::new("Borders Rounded"),
-                TextFont {
-                    font_size: 20.0,
-                    ..Default::default()
-                },
-            ));
+            builder.spawn((Text::new("Borders Rounded"), TextFont {
+                font_size: 20.0,
+                ..Default::default()
+            }));
         })
         .id();
 

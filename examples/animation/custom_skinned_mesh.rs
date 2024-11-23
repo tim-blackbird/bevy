@@ -61,38 +61,32 @@ fn setup(
         RenderAssetUsages::RENDER_WORLD,
     )
     // Set mesh vertex positions
-    .with_inserted_attribute(
-        Mesh::ATTRIBUTE_POSITION,
-        vec![
-            [0.0, 0.0, 0.0],
-            [1.0, 0.0, 0.0],
-            [0.0, 0.5, 0.0],
-            [1.0, 0.5, 0.0],
-            [0.0, 1.0, 0.0],
-            [1.0, 1.0, 0.0],
-            [0.0, 1.5, 0.0],
-            [1.0, 1.5, 0.0],
-            [0.0, 2.0, 0.0],
-            [1.0, 2.0, 0.0],
-        ],
-    )
+    .with_inserted_attribute(Mesh::ATTRIBUTE_POSITION, vec![
+        [0.0, 0.0, 0.0],
+        [1.0, 0.0, 0.0],
+        [0.0, 0.5, 0.0],
+        [1.0, 0.5, 0.0],
+        [0.0, 1.0, 0.0],
+        [1.0, 1.0, 0.0],
+        [0.0, 1.5, 0.0],
+        [1.0, 1.5, 0.0],
+        [0.0, 2.0, 0.0],
+        [1.0, 2.0, 0.0],
+    ])
     // Add UV coordinates that map the left half of the texture since its a 1 x
     // 2 rectangle.
-    .with_inserted_attribute(
-        Mesh::ATTRIBUTE_UV_0,
-        vec![
-            [0.0, 0.00],
-            [0.5, 0.00],
-            [0.0, 0.25],
-            [0.5, 0.25],
-            [0.0, 0.50],
-            [0.5, 0.50],
-            [0.0, 0.75],
-            [0.5, 0.75],
-            [0.0, 1.00],
-            [0.5, 1.00],
-        ],
-    )
+    .with_inserted_attribute(Mesh::ATTRIBUTE_UV_0, vec![
+        [0.0, 0.00],
+        [0.5, 0.00],
+        [0.0, 0.25],
+        [0.5, 0.25],
+        [0.0, 0.50],
+        [0.5, 0.50],
+        [0.0, 0.75],
+        [0.5, 0.75],
+        [0.0, 1.00],
+        [0.5, 1.00],
+    ])
     // Set mesh vertex normals
     .with_inserted_attribute(Mesh::ATTRIBUTE_NORMAL, vec![[0.0, 0.0, 1.0]; 10])
     // Set mesh vertex joint indices for mesh skinning.
@@ -118,21 +112,18 @@ fn setup(
     // Set mesh vertex joint weights for mesh skinning.
     // Each vertex gets 4 joint weights corresponding to the 4 joint indices assigned to it.
     // The sum of these weights should equal to 1.
-    .with_inserted_attribute(
-        Mesh::ATTRIBUTE_JOINT_WEIGHT,
-        vec![
-            [1.00, 0.00, 0.0, 0.0],
-            [1.00, 0.00, 0.0, 0.0],
-            [0.75, 0.25, 0.0, 0.0],
-            [0.75, 0.25, 0.0, 0.0],
-            [0.50, 0.50, 0.0, 0.0],
-            [0.50, 0.50, 0.0, 0.0],
-            [0.25, 0.75, 0.0, 0.0],
-            [0.25, 0.75, 0.0, 0.0],
-            [0.00, 1.00, 0.0, 0.0],
-            [0.00, 1.00, 0.0, 0.0],
-        ],
-    )
+    .with_inserted_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, vec![
+        [1.00, 0.00, 0.0, 0.0],
+        [1.00, 0.00, 0.0, 0.0],
+        [0.75, 0.25, 0.0, 0.0],
+        [0.75, 0.25, 0.0, 0.0],
+        [0.50, 0.50, 0.0, 0.0],
+        [0.50, 0.50, 0.0, 0.0],
+        [0.25, 0.75, 0.0, 0.0],
+        [0.25, 0.75, 0.0, 0.0],
+        [0.00, 1.00, 0.0, 0.0],
+        [0.00, 1.00, 0.0, 0.0],
+    ])
     // Tell bevy to construct triangles from a list of vertex indices,
     //  where each 3 vertex indices form an triangle.
     .with_inserted_indices(Indices::U16(vec![

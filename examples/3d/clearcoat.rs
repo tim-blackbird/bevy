@@ -217,15 +217,12 @@ fn spawn_camera(commands: &mut Commands, asset_server: &AssetServer) {
 
 /// Spawns the help text.
 fn spawn_text(commands: &mut Commands, light_mode: &LightMode) {
-    commands.spawn((
-        light_mode.create_help_text(),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((light_mode.create_help_text(), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 /// Moves the light around.

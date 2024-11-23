@@ -999,23 +999,20 @@ pub fn prepare_lights(
     let mut point_light_depth_attachments = HashMap::<u32, DepthAttachment>::default();
     let mut directional_light_depth_attachments = HashMap::<u32, DepthAttachment>::default();
 
-    let point_light_depth_texture = texture_cache.get(
-        &render_device,
-        TextureDescriptor {
-            size: Extent3d {
-                width: point_light_shadow_map.size as u32,
-                height: point_light_shadow_map.size as u32,
-                depth_or_array_layers: point_light_shadow_maps_count.max(1) as u32 * 6,
-            },
-            mip_level_count: 1,
-            sample_count: 1,
-            dimension: TextureDimension::D2,
-            format: CORE_3D_DEPTH_FORMAT,
-            label: Some("point_light_shadow_map_texture"),
-            usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
-            view_formats: &[],
+    let point_light_depth_texture = texture_cache.get(&render_device, TextureDescriptor {
+        size: Extent3d {
+            width: point_light_shadow_map.size as u32,
+            height: point_light_shadow_map.size as u32,
+            depth_or_array_layers: point_light_shadow_maps_count.max(1) as u32 * 6,
         },
-    );
+        mip_level_count: 1,
+        sample_count: 1,
+        dimension: TextureDimension::D2,
+        format: CORE_3D_DEPTH_FORMAT,
+        label: Some("point_light_shadow_map_texture"),
+        usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+        view_formats: &[],
+    });
 
     let point_light_depth_texture_view =
         point_light_depth_texture
@@ -1046,27 +1043,23 @@ pub fn prepare_lights(
                 array_layer_count: None,
             });
 
-    let directional_light_depth_texture = texture_cache.get(
-        &render_device,
-        TextureDescriptor {
-            size: Extent3d {
-                width: (directional_light_shadow_map.size as u32)
-                    .min(render_device.limits().max_texture_dimension_2d),
-                height: (directional_light_shadow_map.size as u32)
-                    .min(render_device.limits().max_texture_dimension_2d),
-                depth_or_array_layers: (num_directional_cascades_enabled
-                    + spot_light_shadow_maps_count)
-                    .max(1) as u32,
-            },
-            mip_level_count: 1,
-            sample_count: 1,
-            dimension: TextureDimension::D2,
-            format: CORE_3D_DEPTH_FORMAT,
-            label: Some("directional_light_shadow_map_texture"),
-            usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
-            view_formats: &[],
+    let directional_light_depth_texture = texture_cache.get(&render_device, TextureDescriptor {
+        size: Extent3d {
+            width: (directional_light_shadow_map.size as u32)
+                .min(render_device.limits().max_texture_dimension_2d),
+            height: (directional_light_shadow_map.size as u32)
+                .min(render_device.limits().max_texture_dimension_2d),
+            depth_or_array_layers: (num_directional_cascades_enabled + spot_light_shadow_maps_count)
+                .max(1) as u32,
         },
-    );
+        mip_level_count: 1,
+        sample_count: 1,
+        dimension: TextureDimension::D2,
+        format: CORE_3D_DEPTH_FORMAT,
+        label: Some("directional_light_shadow_map_texture"),
+        usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+        view_formats: &[],
+    });
 
     let directional_light_depth_texture_view =
         directional_light_depth_texture

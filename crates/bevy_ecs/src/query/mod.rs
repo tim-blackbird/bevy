@@ -465,10 +465,10 @@ mod tests {
         let values: Vec<(Option<&A>, Option<&B>)> =
             world.query::<AnyOf<(&A, &B)>>().iter(&world).collect();
 
-        assert_eq!(
-            values,
-            vec![(Some(&A(1)), Some(&B(2))), (Some(&A(2)), None),]
-        );
+        assert_eq!(values, vec![
+            (Some(&A(1)), Some(&B(2))),
+            (Some(&A(2)), None),
+        ]);
     }
 
     #[test]

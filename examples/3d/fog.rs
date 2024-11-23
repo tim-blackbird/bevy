@@ -33,17 +33,14 @@ fn main() {
 }
 
 fn setup_camera_fog(mut commands: Commands) {
-    commands.spawn((
-        Camera3d::default(),
-        DistanceFog {
-            color: Color::srgb(0.25, 0.25, 0.25),
-            falloff: FogFalloff::Linear {
-                start: 5.0,
-                end: 20.0,
-            },
-            ..default()
+    commands.spawn((Camera3d::default(), DistanceFog {
+        color: Color::srgb(0.25, 0.25, 0.25),
+        falloff: FogFalloff::Linear {
+            start: 5.0,
+            end: 20.0,
         },
-    ));
+        ..default()
+    }));
 }
 
 fn setup_pyramid_scene(
@@ -116,15 +113,12 @@ fn setup_pyramid_scene(
 }
 
 fn setup_instructions(mut commands: Commands) {
-    commands.spawn((
-        Text::default(),
-        Node {
-            position_type: PositionType::Absolute,
-            top: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((Text::default(), Node {
+        position_type: PositionType::Absolute,
+        top: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 fn update_system(

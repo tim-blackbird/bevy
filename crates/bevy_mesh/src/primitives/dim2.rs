@@ -729,12 +729,9 @@ pub struct RhombusMeshBuilder {
 impl MeshBuilder for RhombusMeshBuilder {
     fn build(&self) -> Mesh {
         let [hhd, vhd] = [self.half_diagonals.x, self.half_diagonals.y];
-        let positions = vec![
-            [hhd, 0.0, 0.0],
-            [-hhd, 0.0, 0.0],
-            [0.0, vhd, 0.0],
-            [0.0, -vhd, 0.0],
-        ];
+        let positions = vec![[hhd, 0.0, 0.0], [-hhd, 0.0, 0.0], [0.0, vhd, 0.0], [
+            0.0, -vhd, 0.0,
+        ]];
         let normals = vec![[0.0, 0.0, 1.0]; 4];
         let uvs = vec![[1.0, 0.5], [0.0, 0.5], [0.5, 0.0], [0.5, 1.0]];
         let indices = Indices::U32(vec![1, 0, 2, 1, 3, 0]);
@@ -846,12 +843,9 @@ pub struct RectangleMeshBuilder {
 impl MeshBuilder for RectangleMeshBuilder {
     fn build(&self) -> Mesh {
         let [hw, hh] = [self.half_size.x, self.half_size.y];
-        let positions = vec![
-            [hw, hh, 0.0],
-            [-hw, hh, 0.0],
-            [-hw, -hh, 0.0],
-            [hw, -hh, 0.0],
-        ];
+        let positions = vec![[hw, hh, 0.0], [-hw, hh, 0.0], [-hw, -hh, 0.0], [
+            hw, -hh, 0.0,
+        ]];
         let normals = vec![[0.0, 0.0, 1.0]; 4];
         let uvs = vec![[1.0, 0.0], [0.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
         let indices = Indices::U32(vec![0, 1, 2, 0, 2, 3]);
@@ -1118,12 +1112,9 @@ mod tests {
         fix_floats(&mut uvs);
 
         assert_eq!(
-            [
-                [0.0, 7.0, 0.0],
-                [-7.0, 0.0, 0.0],
-                [0.0, -7.0, 0.0],
-                [7.0, 0.0, 0.0],
-            ],
+            [[0.0, 7.0, 0.0], [-7.0, 0.0, 0.0], [0.0, -7.0, 0.0], [
+                7.0, 0.0, 0.0
+            ],],
             &positions[..]
         );
 

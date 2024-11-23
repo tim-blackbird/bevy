@@ -137,23 +137,17 @@ pub fn prepare_upsampling_pipeline(
     views: Query<(Entity, &Bloom)>,
 ) {
     for (entity, bloom) in &views {
-        let pipeline_id = pipelines.specialize(
-            &pipeline_cache,
-            &pipeline,
-            BloomUpsamplingPipelineKeys {
+        let pipeline_id =
+            pipelines.specialize(&pipeline_cache, &pipeline, BloomUpsamplingPipelineKeys {
                 composite_mode: bloom.composite_mode,
                 final_pipeline: false,
-            },
-        );
+            });
 
-        let pipeline_final_id = pipelines.specialize(
-            &pipeline_cache,
-            &pipeline,
-            BloomUpsamplingPipelineKeys {
+        let pipeline_final_id =
+            pipelines.specialize(&pipeline_cache, &pipeline, BloomUpsamplingPipelineKeys {
                 composite_mode: bloom.composite_mode,
                 final_pipeline: true,
-            },
-        );
+            });
 
         commands.entity(entity).insert(UpsamplingPipelineIds {
             id_main: pipeline_id,

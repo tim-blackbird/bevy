@@ -44,13 +44,13 @@ impl Dir {
         if let Some(parent) = path.parent() {
             dir = self.get_or_insert_dir(parent);
         }
-        dir.0.write().assets.insert(
-            path.file_name().unwrap().to_string_lossy().into(),
-            Data {
+        dir.0
+            .write()
+            .assets
+            .insert(path.file_name().unwrap().to_string_lossy().into(), Data {
                 value: value.into(),
                 path: path.to_owned(),
-            },
-        );
+            });
     }
 
     /// Removes the stored asset at `path` and returns the `Data` stored if found and otherwise `None`.
@@ -69,13 +69,13 @@ impl Dir {
         if let Some(parent) = path.parent() {
             dir = self.get_or_insert_dir(parent);
         }
-        dir.0.write().metadata.insert(
-            path.file_name().unwrap().to_string_lossy().into(),
-            Data {
+        dir.0
+            .write()
+            .metadata
+            .insert(path.file_name().unwrap().to_string_lossy().into(), Data {
                 value: value.into(),
                 path: path.to_owned(),
-            },
-        );
+            });
     }
 
     pub fn get_or_insert_dir(&self, path: &Path) -> Dir {

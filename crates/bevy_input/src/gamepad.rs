@@ -1348,14 +1348,11 @@ pub fn gamepad_connection_system(
                     warn!("Gamepad {:} removed before handling connection event.", id);
                     continue;
                 };
-                gamepad.insert((
-                    Name::new(name.clone()),
-                    Gamepad {
-                        vendor_id: *vendor_id,
-                        product_id: *product_id,
-                        ..Default::default()
-                    },
-                ));
+                gamepad.insert((Name::new(name.clone()), Gamepad {
+                    vendor_id: *vendor_id,
+                    product_id: *product_id,
+                    ..Default::default()
+                }));
                 info!("Gamepad {:?} connected.", id);
             }
             GamepadConnection::Disconnected => {
@@ -2008,14 +2005,11 @@ mod tests {
             self.app
                 .world_mut()
                 .resource_mut::<Events<GamepadConnectionEvent>>()
-                .send(GamepadConnectionEvent::new(
-                    gamepad,
-                    Connected {
-                        name: "Test gamepad".to_string(),
-                        vendor_id: None,
-                        product_id: None,
-                    },
-                ));
+                .send(GamepadConnectionEvent::new(gamepad, Connected {
+                    name: "Test gamepad".to_string(),
+                    vendor_id: None,
+                    product_id: None,
+                }));
             gamepad
         }
 

@@ -1421,15 +1421,10 @@ fn load_node(
                     Projection::Perspective(perspective_projection)
                 }
             };
-            node.insert((
-                Camera3d::default(),
-                projection,
-                transform,
-                Camera {
-                    is_active: !*active_camera_found,
-                    ..Default::default()
-                },
-            ));
+            node.insert((Camera3d::default(), projection, transform, Camera {
+                is_active: !*active_camera_found,
+                ..Default::default()
+            }));
 
             *active_camera_found = true;
         }

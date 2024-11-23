@@ -1122,15 +1122,12 @@ impl Components {
             .0
             .iter()
             .map(|(component_id, required_component)| {
-                (
-                    *component_id,
-                    RequiredComponent {
-                        constructor: required_component.constructor.clone(),
-                        // Add `1` to the inheritance depth since this will be registered
-                        // for the component that requires `required`.
-                        inheritance_depth: required_component.inheritance_depth + 1,
-                    },
-                )
+                (*component_id, RequiredComponent {
+                    constructor: required_component.constructor.clone(),
+                    // Add `1` to the inheritance depth since this will be registered
+                    // for the component that requires `required`.
+                    inheritance_depth: required_component.inheritance_depth + 1,
+                })
             })
             .collect();
 

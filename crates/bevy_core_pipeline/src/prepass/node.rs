@@ -159,11 +159,10 @@ impl ViewNode for PrepassNode {
                     pipeline_cache.get_render_pipeline(skybox_prepass_pipeline.0)
                 {
                     render_pass.set_render_pipeline(pipeline);
-                    render_pass.set_bind_group(
-                        0,
-                        &skybox_prepass_bind_group.0,
-                        &[view_uniform_offset.offset, view_prev_uniform_offset.offset],
-                    );
+                    render_pass.set_bind_group(0, &skybox_prepass_bind_group.0, &[
+                        view_uniform_offset.offset,
+                        view_prev_uniform_offset.offset,
+                    ]);
                     render_pass.draw(0..3, 0..1);
                 }
             }

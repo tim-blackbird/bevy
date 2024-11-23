@@ -432,13 +432,10 @@ impl<'a> LoadContext<'a> {
         let handle = self
             .asset_server
             .get_or_create_path_handle(labeled_path, None);
-        self.labeled_assets.insert(
-            label,
-            LabeledAsset {
-                asset: loaded_asset,
-                handle: handle.clone().untyped(),
-            },
-        );
+        self.labeled_assets.insert(label, LabeledAsset {
+            asset: loaded_asset,
+            handle: handle.clone().untyped(),
+        });
         handle
     }
 

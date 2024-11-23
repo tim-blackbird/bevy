@@ -1456,15 +1456,12 @@ mod tests {
         stepping.skipped_systems(&schedule_d);
         assert!(stepping.schedules().is_ok());
 
-        assert_eq!(
-            *stepping.schedules().unwrap(),
-            vec![
-                TestScheduleB.intern(),
-                TestScheduleA.intern(),
-                TestScheduleC.intern(),
-                TestScheduleD.intern(),
-            ]
-        );
+        assert_eq!(*stepping.schedules().unwrap(), vec![
+            TestScheduleB.intern(),
+            TestScheduleA.intern(),
+            TestScheduleC.intern(),
+            TestScheduleD.intern(),
+        ]);
     }
 
     #[test]

@@ -70,12 +70,9 @@ impl<P: VectorSpace> CubicGenerator<P> for CubicBezier<P> {
         // A derivation for this matrix can be found in "General Matrix Representations for B-splines" by Kaihuai Qin.
         // <https://xiaoxingchen.github.io/2020/03/02/bspline_in_so3/general_matrix_representation_for_bsplines.pdf>
         // See section 4.2 and equation 11.
-        let char_matrix = [
-            [1., 0., 0., 0.],
-            [-3., 3., 0., 0.],
-            [3., -6., 3., 0.],
-            [-1., 3., -3., 1.],
-        ];
+        let char_matrix = [[1., 0., 0., 0.], [-3., 3., 0., 0.], [3., -6., 3., 0.], [
+            -1., 3., -3., 1.,
+        ]];
 
         let segments = self
             .control_points
@@ -164,12 +161,9 @@ impl<P: VectorSpace> CubicHermite<P> {
     /// `(p_{i+1}, v_{i+1})` are consecutive control points with tangents.
     #[inline]
     fn char_matrix(&self) -> [[f32; 4]; 4] {
-        [
-            [1., 0., 0., 0.],
-            [0., 1., 0., 0.],
-            [-3., -2., 3., -1.],
-            [2., 1., -2., 1.],
-        ]
+        [[1., 0., 0., 0.], [0., 1., 0., 0.], [-3., -2., 3., -1.], [
+            2., 1., -2., 1.,
+        ]]
     }
 }
 impl<P: VectorSpace> CubicGenerator<P> for CubicHermite<P> {

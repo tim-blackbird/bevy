@@ -209,15 +209,12 @@ fn setup(
     // example instructions
 
     commands
-        .spawn((
-            Text::default(),
-            Node {
-                position_type: PositionType::Absolute,
-                top: Val::Px(12.0),
-                left: Val::Px(12.0),
-                ..default()
-            },
-        ))
+        .spawn((Text::default(), Node {
+            position_type: PositionType::Absolute,
+            top: Val::Px(12.0),
+            left: Val::Px(12.0),
+            ..default()
+        }))
         .with_children(|p| {
             p.spawn(TextSpan(format!(
                 "Aperture: f/{:.0}\n",

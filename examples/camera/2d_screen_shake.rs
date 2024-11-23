@@ -63,30 +63,24 @@ fn setup_scene(
 }
 
 fn setup_instructions(mut commands: Commands) {
-    commands.spawn((
-        Text::new("Hold space to trigger a screen shake"),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((Text::new("Hold space to trigger a screen shake"), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 fn setup_camera(mut commands: Commands) {
-    commands.spawn((
-        Camera2d,
-        Camera {
-            sub_camera_view: Some(SubCameraView {
-                full_size: UVec2::new(1000, 700),
-                offset: Vec2::new(0.0, 0.0),
-                size: UVec2::new(1000, 700),
-            }),
-            order: 1,
-            ..default()
-        },
-    ));
+    commands.spawn((Camera2d, Camera {
+        sub_camera_view: Some(SubCameraView {
+            full_size: UVec2::new(1000, 700),
+            offset: Vec2::new(0.0, 0.0),
+            size: UVec2::new(1000, 700),
+        }),
+        order: 1,
+        ..default()
+    }));
 }
 
 #[derive(Resource, Clone)]

@@ -85,14 +85,11 @@ mod splash {
                 OnSplashScreen,
             ))
             .with_children(|parent| {
-                parent.spawn((
-                    ImageNode::new(icon),
-                    Node {
-                        // This will set the logo to be 200px wide, and auto adjust its height
-                        width: Val::Px(200.0),
-                        ..default()
-                    },
-                ));
+                parent.spawn((ImageNode::new(icon), Node {
+                    // This will set the logo to be 200px wide, and auto adjust its height
+                    width: Val::Px(200.0),
+                    ..default()
+                }));
             });
         // Insert the timer as a resource
         commands.insert_resource(SplashTimer(Timer::from_seconds(1.0, TimerMode::Once)));
@@ -178,13 +175,10 @@ mod game {
                                 ..default()
                             },
                         ));
-                        p.spawn((
-                            Text::default(),
-                            Node {
-                                margin: UiRect::all(Val::Px(50.0)),
-                                ..default()
-                            },
-                        ))
+                        p.spawn((Text::default(), Node {
+                            margin: UiRect::all(Val::Px(50.0)),
+                            ..default()
+                        }))
                         .with_children(|p| {
                             p.spawn((
                                 TextSpan(format!("quality: {:?}", *display_quality)),

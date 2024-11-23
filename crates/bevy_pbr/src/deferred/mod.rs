@@ -213,18 +213,14 @@ impl ViewNode for DeferredOpaquePass3dPbrLightingNode {
         });
 
         render_pass.set_render_pipeline(pipeline);
-        render_pass.set_bind_group(
-            0,
-            &mesh_view_bind_group.value,
-            &[
-                view_uniform_offset.offset,
-                view_lights_offset.offset,
-                view_fog_offset.offset,
-                **view_light_probes_offset,
-                **view_ssr_offset,
-                **view_environment_map_offset,
-            ],
-        );
+        render_pass.set_bind_group(0, &mesh_view_bind_group.value, &[
+            view_uniform_offset.offset,
+            view_lights_offset.offset,
+            view_fog_offset.offset,
+            **view_light_probes_offset,
+            **view_ssr_offset,
+            **view_environment_map_offset,
+        ]);
         render_pass.set_bind_group(1, &bind_group_1, &[]);
         render_pass.draw(0..3, 0..1);
 

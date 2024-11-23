@@ -421,17 +421,14 @@ impl Plugin for RemotePlugin {
 
         let plugin_methods = &mut *self.methods.write().unwrap();
         for (name, handler) in plugin_methods.drain(..) {
-            remote_methods.insert(
-                name,
-                match handler {
-                    RemoteMethodHandler::Instant(system) => RemoteMethodSystemId::Instant(
-                        app.main_mut().world_mut().register_boxed_system(system),
-                    ),
-                    RemoteMethodHandler::Watching(system) => RemoteMethodSystemId::Watching(
-                        app.main_mut().world_mut().register_boxed_system(system),
-                    ),
-                },
-            );
+            remote_methods.insert(name, match handler {
+                RemoteMethodHandler::Instant(system) => RemoteMethodSystemId::Instant(
+                    app.main_mut().world_mut().register_boxed_system(system),
+                ),
+                RemoteMethodHandler::Watching(system) => RemoteMethodSystemId::Watching(
+                    app.main_mut().world_mut().register_boxed_system(system),
+                ),
+            });
         }
 
         app.init_schedule(RemoteLast)

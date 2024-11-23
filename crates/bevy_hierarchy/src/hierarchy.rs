@@ -282,15 +282,12 @@ mod tests {
             );
         }
 
-        assert_eq!(
-            results,
-            vec![
-                (N("Another parent".to_owned()), Idx(0)),
-                (N("Another child".to_owned()), Idx(1)),
-                (N("Grandparent".to_owned()), Idx(2)),
-                (N("An innocent bystander".to_owned()), Idx(7))
-            ]
-        );
+        assert_eq!(results, vec![
+            (N("Another parent".to_owned()), Idx(0)),
+            (N("Another child".to_owned()), Idx(1)),
+            (N("Grandparent".to_owned()), Idx(2)),
+            (N("An innocent bystander".to_owned()), Idx(7))
+        ]);
     }
 
     #[test]

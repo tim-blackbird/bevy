@@ -457,23 +457,17 @@ impl ViewNode for VolumetricFogNode {
 
             render_pass.set_vertex_buffer(0, *vertex_buffer_slice.buffer.slice(..));
             render_pass.set_pipeline(pipeline);
-            render_pass.set_bind_group(
-                0,
-                &view_bind_group.value,
-                &[
-                    view_uniform_offset.offset,
-                    view_lights_offset.offset,
-                    view_fog_offset.offset,
-                    **view_light_probes_offset,
-                    **view_ssr_offset,
-                    **view_environment_map_offset,
-                ],
-            );
-            render_pass.set_bind_group(
-                1,
-                &volumetric_view_bind_group,
-                &[view_fog_volume.uniform_buffer_offset],
-            );
+            render_pass.set_bind_group(0, &view_bind_group.value, &[
+                view_uniform_offset.offset,
+                view_lights_offset.offset,
+                view_fog_offset.offset,
+                **view_light_probes_offset,
+                **view_ssr_offset,
+                **view_environment_map_offset,
+            ]);
+            render_pass.set_bind_group(1, &volumetric_view_bind_group, &[
+                view_fog_volume.uniform_buffer_offset
+            ]);
 
             // Draw elements or arrays, as appropriate.
             match &render_mesh.buffer_info {

@@ -171,15 +171,12 @@ impl TextPipeline {
         buffer.set_metrics(font_system, metrics);
         buffer.set_size(font_system, bounds.width, bounds.height);
 
-        buffer.set_wrap(
-            font_system,
-            match linebreak {
-                LineBreak::WordBoundary => Wrap::Word,
-                LineBreak::AnyCharacter => Wrap::Glyph,
-                LineBreak::WordOrCharacter => Wrap::WordOrGlyph,
-                LineBreak::NoWrap => Wrap::None,
-            },
-        );
+        buffer.set_wrap(font_system, match linebreak {
+            LineBreak::WordBoundary => Wrap::Word,
+            LineBreak::AnyCharacter => Wrap::Glyph,
+            LineBreak::WordOrCharacter => Wrap::WordOrGlyph,
+            LineBreak::NoWrap => Wrap::None,
+        });
 
         buffer.set_rich_text(font_system, spans_iter, Attrs::new(), Shaping::Advanced);
 

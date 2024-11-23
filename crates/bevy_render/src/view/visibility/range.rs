@@ -278,13 +278,10 @@ impl RenderVisibilityRanges {
                 .unwrap_or_default()
             });
 
-        self.entities.insert(
-            entity,
-            RenderVisibilityEntityInfo {
-                buffer_index,
-                is_abrupt: visibility_range.is_abrupt(),
-            },
-        );
+        self.entities.insert(entity, RenderVisibilityEntityInfo {
+            buffer_index,
+            is_abrupt: visibility_range.is_abrupt(),
+        });
     }
 
     /// Returns the index in the GPU buffer corresponding to the visible range

@@ -152,15 +152,12 @@ fn spawn_reflection_probe(commands: &mut Commands, cubemaps: &Cubemaps) {
 // Spawns the help text.
 fn spawn_text(commands: &mut Commands, app_status: &AppStatus) {
     // Create the text.
-    commands.spawn((
-        app_status.create_text(),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((app_status.create_text(), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 // Adds a world environment map to the camera. This separate system is needed because the camera is

@@ -20,14 +20,10 @@ pub(crate) fn impl_opaque(meta: &ReflectMeta) -> proc_macro2::TokenStream {
     let with_docs: Option<proc_macro2::TokenStream> = None;
 
     let where_clause_options = WhereClauseOptions::new(meta);
-    let typed_impl = impl_typed(
-        meta,
-        &where_clause_options,
-        quote! {
-            let info = #bevy_reflect_path::OpaqueInfo::new::<Self>() #with_docs;
-            #bevy_reflect_path::TypeInfo::Opaque(info)
-        },
-    );
+    let typed_impl = impl_typed(meta, &where_clause_options, quote! {
+        let info = #bevy_reflect_path::OpaqueInfo::new::<Self>() #with_docs;
+        #bevy_reflect_path::TypeInfo::Opaque(info)
+    });
 
     let type_path_impl = impl_type_path(meta);
     let full_reflect_impl = impl_full_reflect(meta, &where_clause_options);

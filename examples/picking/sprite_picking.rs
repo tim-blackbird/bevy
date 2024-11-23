@@ -130,13 +130,10 @@ fn setup_atlas(
     let animation_indices = AnimationIndices { first: 1, last: 6 };
     commands
         .spawn((
-            Sprite::from_atlas_image(
-                texture_handle,
-                TextureAtlas {
-                    layout: texture_atlas_layout_handle,
-                    index: animation_indices.first,
-                },
-            ),
+            Sprite::from_atlas_image(texture_handle, TextureAtlas {
+                layout: texture_atlas_layout_handle,
+                index: animation_indices.first,
+            }),
             Transform::from_xyz(300.0, 0.0, 0.0).with_scale(Vec3::splat(6.0)),
             animation_indices,
             AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),

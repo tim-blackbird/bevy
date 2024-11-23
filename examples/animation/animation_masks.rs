@@ -267,14 +267,10 @@ fn add_mask_group_control(parent: &mut ChildBuilder, label: &str, width: Val, ma
                     },
                     BackgroundColor(Color::BLACK),
                 ))
-                .with_child((
-                    Text::new(label),
-                    label_text_style.clone(),
-                    Node {
-                        margin: UiRect::vertical(Val::Px(3.0)),
-                        ..default()
-                    },
-                ));
+                .with_child((Text::new(label), label_text_style.clone(), Node {
+                    margin: UiRect::vertical(Val::Px(3.0)),
+                    ..default()
+                }));
 
             builder
                 .spawn((

@@ -157,14 +157,10 @@ pub(crate) fn prepare_motion_blur_pipelines(
     views: Query<(Entity, &ExtractedView, &Msaa), With<MotionBlur>>,
 ) {
     for (entity, view, msaa) in &views {
-        let pipeline_id = pipelines.specialize(
-            &pipeline_cache,
-            &pipeline,
-            MotionBlurPipelineKey {
-                hdr: view.hdr,
-                samples: msaa.samples(),
-            },
-        );
+        let pipeline_id = pipelines.specialize(&pipeline_cache, &pipeline, MotionBlurPipelineKey {
+            hdr: view.hdr,
+            samples: msaa.samples(),
+        });
 
         commands
             .entity(entity)

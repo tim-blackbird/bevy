@@ -222,18 +222,15 @@ pub fn extract_mesh2d(
         if !view_visibility.get() {
             continue;
         }
-        render_mesh_instances.insert(
-            entity.into(),
-            RenderMesh2dInstance {
-                transforms: Mesh2dTransforms {
-                    world_from_local: (&transform.affine()).into(),
-                    flags: MeshFlags::empty().bits(),
-                },
-                mesh_asset_id: handle.0.id(),
-                material_bind_group_id: Material2dBindGroupId::default(),
-                automatic_batching: !no_automatic_batching,
+        render_mesh_instances.insert(entity.into(), RenderMesh2dInstance {
+            transforms: Mesh2dTransforms {
+                world_from_local: (&transform.affine()).into(),
+                flags: MeshFlags::empty().bits(),
             },
-        );
+            mesh_asset_id: handle.0.id(),
+            material_bind_group_id: Material2dBindGroupId::default(),
+            automatic_batching: !no_automatic_batching,
+        });
     }
 }
 

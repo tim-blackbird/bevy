@@ -53,22 +53,16 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
         RenderAssetUsages::default(),
     )
     .with_inserted_indices(Indices::U32(vec![0, 1, 2]))
-    .with_inserted_attribute(
-        Mesh::ATTRIBUTE_POSITION,
-        vec![
-            vec3(-0.5, -0.5, 0.0),
-            vec3(0.5, -0.5, 0.0),
-            vec3(0.0, 0.25, 0.0),
-        ],
-    )
-    .with_inserted_attribute(
-        Mesh::ATTRIBUTE_COLOR,
-        vec![
-            vec4(1.0, 0.0, 0.0, 1.0),
-            vec4(0.0, 1.0, 0.0, 1.0),
-            vec4(0.0, 0.0, 1.0, 1.0),
-        ],
-    );
+    .with_inserted_attribute(Mesh::ATTRIBUTE_POSITION, vec![
+        vec3(-0.5, -0.5, 0.0),
+        vec3(0.5, -0.5, 0.0),
+        vec3(0.0, 0.25, 0.0),
+    ])
+    .with_inserted_attribute(Mesh::ATTRIBUTE_COLOR, vec![
+        vec4(1.0, 0.0, 0.0, 1.0),
+        vec4(0.0, 1.0, 0.0, 1.0),
+        vec4(0.0, 0.0, 1.0, 1.0),
+    ]);
 
     // spawn 3 triangles to show that batching works
     for (x, y) in [-0.5, 0.0, 0.5].into_iter().zip([-0.25, 0.5, -0.25]) {

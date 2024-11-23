@@ -152,10 +152,13 @@ mod tests {
             ));
             schedule.run(&mut world);
 
-            assert_eq!(
-                world.resource::<SystemOrder>().0,
-                vec![1, u32::MAX, 3, 0, 4]
-            );
+            assert_eq!(world.resource::<SystemOrder>().0, vec![
+                1,
+                u32::MAX,
+                3,
+                0,
+                4
+            ]);
         }
 
         #[test]
@@ -1092,26 +1095,18 @@ mod tests {
                 .collect();
 
             let expected = &[
-                (
-                    "system_d".to_string(),
-                    "system_a".to_string(),
-                    vec!["bevy_ecs::schedule::tests::system_ambiguity::R"],
-                ),
-                (
-                    "system_d".to_string(),
-                    "system_e".to_string(),
-                    vec!["bevy_ecs::schedule::tests::system_ambiguity::R"],
-                ),
-                (
-                    "system_b".to_string(),
-                    "system_a".to_string(),
-                    vec!["bevy_ecs::schedule::tests::system_ambiguity::R"],
-                ),
-                (
-                    "system_b".to_string(),
-                    "system_e".to_string(),
-                    vec!["bevy_ecs::schedule::tests::system_ambiguity::R"],
-                ),
+                ("system_d".to_string(), "system_a".to_string(), vec![
+                    "bevy_ecs::schedule::tests::system_ambiguity::R",
+                ]),
+                ("system_d".to_string(), "system_e".to_string(), vec![
+                    "bevy_ecs::schedule::tests::system_ambiguity::R",
+                ]),
+                ("system_b".to_string(), "system_a".to_string(), vec![
+                    "bevy_ecs::schedule::tests::system_ambiguity::R",
+                ]),
+                ("system_b".to_string(), "system_e".to_string(), vec![
+                    "bevy_ecs::schedule::tests::system_ambiguity::R",
+                ]),
             ];
 
             // ordering isn't stable so do this

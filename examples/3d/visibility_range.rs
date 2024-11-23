@@ -153,15 +153,12 @@ fn setup(
         });
 
     // Create the text.
-    commands.spawn((
-        app_status.create_text(),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((app_status.create_text(), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 // We need to add the `VisibilityRange` components manually, as glTF currently

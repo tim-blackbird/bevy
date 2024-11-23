@@ -1152,10 +1152,9 @@ impl Mesh {
                                 if i % 2 == 0 {
                                     indices_to_triangle(vertices, indices)
                                 } else {
-                                    indices_to_triangle(
-                                        vertices,
-                                        &[indices[1], indices[0], indices[2]],
-                                    )
+                                    indices_to_triangle(vertices, &[
+                                        indices[1], indices[0], indices[2],
+                                    ])
                                 }
                             },
                         ))
@@ -1166,10 +1165,9 @@ impl Mesh {
                                 if i % 2 == 0 {
                                     indices_to_triangle(vertices, indices)
                                 } else {
-                                    indices_to_triangle(
-                                        vertices,
-                                        &[indices[1], indices[0], indices[2]],
-                                    )
+                                    indices_to_triangle(vertices, &[
+                                        indices[1], indices[0], indices[2],
+                                    ])
                                 }
                             },
                         ))
@@ -1232,18 +1230,16 @@ mod tests {
             PrimitiveTopology::TriangleList,
             RenderAssetUsages::default(),
         )
-        .with_inserted_attribute(
-            Mesh::ATTRIBUTE_POSITION,
-            vec![[-1., -1., 2.], [1., -1., 2.], [0., 1., 2.]],
-        )
-        .with_inserted_attribute(
-            Mesh::ATTRIBUTE_NORMAL,
-            vec![
-                Vec3::new(-1., -1., 1.).normalize().to_array(),
-                Vec3::new(1., -1., 1.).normalize().to_array(),
-                [0., 0., 1.],
-            ],
-        )
+        .with_inserted_attribute(Mesh::ATTRIBUTE_POSITION, vec![
+            [-1., -1., 2.],
+            [1., -1., 2.],
+            [0., 1., 2.],
+        ])
+        .with_inserted_attribute(Mesh::ATTRIBUTE_NORMAL, vec![
+            Vec3::new(-1., -1., 1.).normalize().to_array(),
+            Vec3::new(1., -1., 1.).normalize().to_array(),
+            [0., 0., 1.],
+        ])
         .with_inserted_attribute(Mesh::ATTRIBUTE_UV_0, vec![[0., 0.], [1., 0.], [0.5, 1.]]);
 
         let mesh = mesh.transformed_by(
@@ -1255,10 +1251,9 @@ mod tests {
         {
             // All positions are first scaled resulting in `vec![[-2, 0., -2.], [2., 0., -2.], [0., 0., -2.]]`
             // and then shifted by `-2.` along each axis
-            assert_eq!(
-                positions,
-                &vec![[-4.0, -2.0, -4.0], [0.0, -2.0, -4.0], [-2.0, -2.0, -4.0]]
-            );
+            assert_eq!(positions, &vec![[-4.0, -2.0, -4.0], [0.0, -2.0, -4.0], [
+                -2.0, -2.0, -4.0
+            ]]);
         } else {
             panic!("Mesh does not have a position attribute");
         }
@@ -1380,10 +1375,12 @@ mod tests {
         //  | /  \
         //  0-----1--x
 
-        mesh.insert_attribute(
-            Mesh::ATTRIBUTE_POSITION,
-            vec![[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]],
-        );
+        mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, vec![
+            [0., 0., 0.],
+            [1., 0., 0.],
+            [0., 1., 0.],
+            [0., 0., 1.],
+        ]);
         mesh.insert_indices(Indices::U16(vec![0, 1, 2, 0, 2, 3]));
         mesh.compute_smooth_normals();
         let normals = mesh
@@ -1408,10 +1405,12 @@ mod tests {
             PrimitiveTopology::TriangleList,
             RenderAssetUsages::default(),
         );
-        mesh.insert_attribute(
-            Mesh::ATTRIBUTE_POSITION,
-            vec![[0., 0., 0.], [1., 0., 0.], [1., 1., 0.], [0., 1., 0.]],
-        );
+        mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, vec![
+            [0., 0., 0.],
+            [1., 0., 0.],
+            [1., 1., 0.],
+            [0., 1., 0.],
+        ]);
         mesh.insert_indices(Indices::U32(vec![0, 1, 2, 2, 3, 0]));
         assert_eq!(
             vec![

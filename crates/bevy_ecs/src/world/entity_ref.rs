@@ -1426,15 +1426,12 @@ impl<'w> EntityWorldMut<'w> {
         if let Some(swapped_entity) = remove_result.swapped_entity {
             let swapped_location = entities.get(swapped_entity).unwrap();
 
-            entities.set(
-                swapped_entity.index(),
-                EntityLocation {
-                    archetype_id: swapped_location.archetype_id,
-                    archetype_row: old_location.archetype_row,
-                    table_id: swapped_location.table_id,
-                    table_row: swapped_location.table_row,
-                },
-            );
+            entities.set(swapped_entity.index(), EntityLocation {
+                archetype_id: swapped_location.archetype_id,
+                archetype_row: old_location.archetype_row,
+                table_id: swapped_location.table_id,
+                table_row: swapped_location.table_row,
+            });
         }
         let old_table_row = remove_result.table_row;
         let old_table_id = old_archetype.table_id();
@@ -1462,15 +1459,12 @@ impl<'w> EntityWorldMut<'w> {
             if let Some(swapped_entity) = move_result.swapped_entity {
                 let swapped_location = entities.get(swapped_entity).unwrap();
 
-                entities.set(
-                    swapped_entity.index(),
-                    EntityLocation {
-                        archetype_id: swapped_location.archetype_id,
-                        archetype_row: swapped_location.archetype_row,
-                        table_id: swapped_location.table_id,
-                        table_row: old_location.table_row,
-                    },
-                );
+                entities.set(swapped_entity.index(), EntityLocation {
+                    archetype_id: swapped_location.archetype_id,
+                    archetype_row: swapped_location.archetype_row,
+                    table_id: swapped_location.table_id,
+                    table_row: old_location.table_row,
+                });
                 archetypes[swapped_location.archetype_id]
                     .set_entity_table_row(swapped_location.archetype_row, old_table_row);
             }
@@ -1712,15 +1706,12 @@ impl<'w> EntityWorldMut<'w> {
                 // SAFETY: swapped_entity is valid and the swapped entity's components are
                 // moved to the new location immediately after.
                 unsafe {
-                    world.entities.set(
-                        swapped_entity.index(),
-                        EntityLocation {
-                            archetype_id: swapped_location.archetype_id,
-                            archetype_row: location.archetype_row,
-                            table_id: swapped_location.table_id,
-                            table_row: swapped_location.table_row,
-                        },
-                    );
+                    world.entities.set(swapped_entity.index(), EntityLocation {
+                        archetype_id: swapped_location.archetype_id,
+                        archetype_row: location.archetype_row,
+                        table_id: swapped_location.table_id,
+                        table_row: swapped_location.table_row,
+                    });
                 }
             }
             table_row = remove_result.table_row;
@@ -1740,15 +1731,12 @@ impl<'w> EntityWorldMut<'w> {
             // SAFETY: `moved_entity` is valid and the provided `EntityLocation` accurately reflects
             //         the current location of the entity and its component data.
             unsafe {
-                world.entities.set(
-                    moved_entity.index(),
-                    EntityLocation {
-                        archetype_id: moved_location.archetype_id,
-                        archetype_row: moved_location.archetype_row,
-                        table_id: moved_location.table_id,
-                        table_row,
-                    },
-                );
+                world.entities.set(moved_entity.index(), EntityLocation {
+                    archetype_id: moved_location.archetype_id,
+                    archetype_row: moved_location.archetype_row,
+                    table_id: moved_location.table_id,
+                    table_row,
+                });
             }
             world.archetypes[moved_location.archetype_id]
                 .set_entity_table_row(moved_location.archetype_row, table_row);
@@ -3848,10 +3836,10 @@ mod tests {
             .iter(&world)
             .collect();
 
-        assert_eq!(
-            dynamic_components,
-            vec![(&TestComponent(42), &TestComponent2(84))]
-        );
+        assert_eq!(dynamic_components, vec![(
+            &TestComponent(42),
+            &TestComponent2(84)
+        )]);
 
         // Compare with `World` generated using static type equivalents
         let mut static_world = World::new();

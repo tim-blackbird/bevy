@@ -587,15 +587,12 @@ impl AnimationClip {
         self.duration = self.duration.max(time);
         let triggers = self.events.entry(target).or_default();
         match triggers.binary_search_by_key(&FloatOrd(time), |e| FloatOrd(e.time)) {
-            Ok(index) | Err(index) => triggers.insert(
-                index,
-                TimedAnimationEvent {
-                    time,
-                    event: AnimationEvent {
-                        trigger: AnimationEventFn(Arc::new(trigger_fn)),
-                    },
+            Ok(index) | Err(index) => triggers.insert(index, TimedAnimationEvent {
+                time,
+                event: AnimationEvent {
+                    trigger: AnimationEventFn(Arc::new(trigger_fn)),
                 },
-            ),
+            }),
         }
     }
 }

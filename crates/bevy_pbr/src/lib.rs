@@ -427,13 +427,10 @@ impl Plugin for PbrPlugin {
         // Initialize the default material handle.
         app.world_mut()
             .resource_mut::<Assets<StandardMaterial>>()
-            .insert(
-                &Handle::<StandardMaterial>::default(),
-                StandardMaterial {
-                    base_color: Color::srgb(1.0, 0.0, 0.5),
-                    ..Default::default()
-                },
-            );
+            .insert(&Handle::<StandardMaterial>::default(), StandardMaterial {
+                base_color: Color::srgb(1.0, 0.0, 0.5),
+                ..Default::default()
+            });
 
         let Some(render_app) = app.get_sub_app_mut(RenderApp) else {
             return;

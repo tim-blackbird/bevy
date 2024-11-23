@@ -884,20 +884,16 @@ pub fn prepare_prepass_textures(
             normal_textures
                 .entry(camera.target.clone())
                 .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("prepass_normal_texture"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: msaa.samples(),
-                            dimension: TextureDimension::D2,
-                            format: NORMAL_PREPASS_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
+                    texture_cache.get(&render_device, TextureDescriptor {
+                        label: Some("prepass_normal_texture"),
+                        size,
+                        mip_level_count: 1,
+                        sample_count: msaa.samples(),
+                        dimension: TextureDimension::D2,
+                        format: NORMAL_PREPASS_FORMAT,
+                        usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                        view_formats: &[],
+                    })
                 })
                 .clone()
         });
@@ -906,20 +902,16 @@ pub fn prepare_prepass_textures(
             motion_vectors_textures
                 .entry(camera.target.clone())
                 .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("prepass_motion_vectors_textures"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: msaa.samples(),
-                            dimension: TextureDimension::D2,
-                            format: MOTION_VECTOR_PREPASS_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
+                    texture_cache.get(&render_device, TextureDescriptor {
+                        label: Some("prepass_motion_vectors_textures"),
+                        size,
+                        mip_level_count: 1,
+                        sample_count: msaa.samples(),
+                        dimension: TextureDimension::D2,
+                        format: MOTION_VECTOR_PREPASS_FORMAT,
+                        usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                        view_formats: &[],
+                    })
                 })
                 .clone()
         });
@@ -928,20 +920,16 @@ pub fn prepare_prepass_textures(
             deferred_textures
                 .entry(camera.target.clone())
                 .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("prepass_deferred_texture"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: 1,
-                            dimension: TextureDimension::D2,
-                            format: DEFERRED_PREPASS_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
+                    texture_cache.get(&render_device, TextureDescriptor {
+                        label: Some("prepass_deferred_texture"),
+                        size,
+                        mip_level_count: 1,
+                        sample_count: 1,
+                        dimension: TextureDimension::D2,
+                        format: DEFERRED_PREPASS_FORMAT,
+                        usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                        view_formats: &[],
+                    })
                 })
                 .clone()
         });
@@ -950,20 +938,16 @@ pub fn prepare_prepass_textures(
             deferred_lighting_id_textures
                 .entry(camera.target.clone())
                 .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("deferred_lighting_pass_id_texture"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: 1,
-                            dimension: TextureDimension::D2,
-                            format: DEFERRED_LIGHTING_PASS_ID_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
+                    texture_cache.get(&render_device, TextureDescriptor {
+                        label: Some("deferred_lighting_pass_id_texture"),
+                        size,
+                        mip_level_count: 1,
+                        sample_count: 1,
+                        dimension: TextureDimension::D2,
+                        format: DEFERRED_LIGHTING_PASS_ID_FORMAT,
+                        usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                        view_formats: &[],
+                    })
                 })
                 .clone()
         });

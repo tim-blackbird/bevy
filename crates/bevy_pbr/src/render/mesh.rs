@@ -799,16 +799,13 @@ impl RenderMeshInstanceGpuBuilder {
         });
 
         // Record the [`RenderMeshInstance`].
-        render_mesh_instances.insert(
-            entity,
-            RenderMeshInstanceGpu {
-                translation: self.world_from_local.translation,
-                shared: self.shared,
-                current_uniform_index: (current_uniform_index as u32)
-                    .try_into()
-                    .unwrap_or_default(),
-            },
-        );
+        render_mesh_instances.insert(entity, RenderMeshInstanceGpu {
+            translation: self.world_from_local.translation,
+            shared: self.shared,
+            current_uniform_index: (current_uniform_index as u32)
+                .try_into()
+                .unwrap_or_default(),
+        });
 
         current_uniform_index
     }
@@ -925,20 +922,17 @@ pub fn extract_meshes_for_cpu_building(
             );
 
             let world_from_local = transform.affine();
-            queue.push((
-                entity,
-                RenderMeshInstanceCpu {
-                    transforms: MeshTransforms {
-                        world_from_local: (&world_from_local).into(),
-                        previous_world_from_local: (&previous_transform
-                            .map(|t| t.0)
-                            .unwrap_or(world_from_local))
-                            .into(),
-                        flags: mesh_flags.bits(),
-                    },
-                    shared,
+            queue.push((entity, RenderMeshInstanceCpu {
+                transforms: MeshTransforms {
+                    world_from_local: (&world_from_local).into(),
+                    previous_world_from_local: (&previous_transform
+                        .map(|t| t.0)
+                        .unwrap_or(world_from_local))
+                        .into(),
+                    flags: mesh_flags.bits(),
                 },
-            ));
+                shared,
+            }));
         },
     );
 

@@ -30,13 +30,10 @@ pub(crate) fn reflect_remote(args: TokenStream, input: TokenStream) -> TokenStre
     let ast = parse_macro_input!(input as DeriveInput);
     let wrapper_definition = generate_remote_wrapper(&ast, &remote_ty);
 
-    let mut derive_data = match ReflectDerive::from_input(
-        &ast,
-        ReflectProvenance {
-            source: ReflectImplSource::RemoteReflect,
-            trait_: ReflectTraitToImpl::Reflect,
-        },
-    ) {
+    let mut derive_data = match ReflectDerive::from_input(&ast, ReflectProvenance {
+        source: ReflectImplSource::RemoteReflect,
+        trait_: ReflectTraitToImpl::Reflect,
+    }) {
         Ok(data) => data,
         Err(err) => return err.into_compile_error().into(),
     };

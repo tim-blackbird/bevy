@@ -265,11 +265,9 @@ impl ViewNode for SsaoNode {
                     });
             preprocess_depth_pass.set_pipeline(preprocess_depth_pipeline);
             preprocess_depth_pass.set_bind_group(0, &bind_groups.preprocess_depth_bind_group, &[]);
-            preprocess_depth_pass.set_bind_group(
-                1,
-                &bind_groups.common_bind_group,
-                &[view_uniform_offset.offset],
-            );
+            preprocess_depth_pass.set_bind_group(1, &bind_groups.common_bind_group, &[
+                view_uniform_offset.offset,
+            ]);
             preprocess_depth_pass.dispatch_workgroups(
                 camera_size.x.div_ceil(16),
                 camera_size.y.div_ceil(16),
@@ -287,11 +285,9 @@ impl ViewNode for SsaoNode {
                     });
             ssao_pass.set_pipeline(ssao_pipeline);
             ssao_pass.set_bind_group(0, &bind_groups.ssao_bind_group, &[]);
-            ssao_pass.set_bind_group(
-                1,
-                &bind_groups.common_bind_group,
-                &[view_uniform_offset.offset],
-            );
+            ssao_pass.set_bind_group(1, &bind_groups.common_bind_group, &[
+                view_uniform_offset.offset
+            ]);
             ssao_pass.dispatch_workgroups(camera_size.x.div_ceil(8), camera_size.y.div_ceil(8), 1);
         }
 
@@ -305,11 +301,9 @@ impl ViewNode for SsaoNode {
                     });
             spatial_denoise_pass.set_pipeline(spatial_denoise_pipeline);
             spatial_denoise_pass.set_bind_group(0, &bind_groups.spatial_denoise_bind_group, &[]);
-            spatial_denoise_pass.set_bind_group(
-                1,
-                &bind_groups.common_bind_group,
-                &[view_uniform_offset.offset],
-            );
+            spatial_denoise_pass.set_bind_group(1, &bind_groups.common_bind_group, &[
+                view_uniform_offset.offset,
+            ]);
             spatial_denoise_pass.dispatch_workgroups(
                 camera_size.x.div_ceil(8),
                 camera_size.y.div_ceil(8),
@@ -573,61 +567,49 @@ fn prepare_ssao_textures(
             depth_or_array_layers: 1,
         };
 
-        let preprocessed_depth_texture = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("ssao_preprocessed_depth_texture"),
-                size,
-                mip_level_count: 5,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::R16Float,
-                usage: TextureUsages::STORAGE_BINDING | TextureUsages::TEXTURE_BINDING,
-                view_formats: &[],
-            },
-        );
+        let preprocessed_depth_texture = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("ssao_preprocessed_depth_texture"),
+            size,
+            mip_level_count: 5,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::R16Float,
+            usage: TextureUsages::STORAGE_BINDING | TextureUsages::TEXTURE_BINDING,
+            view_formats: &[],
+        });
 
-        let ssao_noisy_texture = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("ssao_noisy_texture"),
-                size,
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::R16Float,
-                usage: TextureUsages::STORAGE_BINDING | TextureUsages::TEXTURE_BINDING,
-                view_formats: &[],
-            },
-        );
+        let ssao_noisy_texture = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("ssao_noisy_texture"),
+            size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::R16Float,
+            usage: TextureUsages::STORAGE_BINDING | TextureUsages::TEXTURE_BINDING,
+            view_formats: &[],
+        });
 
-        let ssao_texture = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("ssao_texture"),
-                size,
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::R16Float,
-                usage: TextureUsages::STORAGE_BINDING | TextureUsages::TEXTURE_BINDING,
-                view_formats: &[],
-            },
-        );
+        let ssao_texture = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("ssao_texture"),
+            size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::R16Float,
+            usage: TextureUsages::STORAGE_BINDING | TextureUsages::TEXTURE_BINDING,
+            view_formats: &[],
+        });
 
-        let depth_differences_texture = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("ssao_depth_differences_texture"),
-                size,
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::R32Uint,
-                usage: TextureUsages::STORAGE_BINDING | TextureUsages::TEXTURE_BINDING,
-                view_formats: &[],
-            },
-        );
+        let depth_differences_texture = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("ssao_depth_differences_texture"),
+            size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::R32Uint,
+            usage: TextureUsages::STORAGE_BINDING | TextureUsages::TEXTURE_BINDING,
+            view_formats: &[],
+        });
 
         let thickness_buffer = render_device.create_buffer_with_data(&BufferInitDescriptor {
             label: Some("thickness_buffer"),
@@ -658,14 +640,10 @@ fn prepare_ssao_pipelines(
     views: Query<(Entity, &ScreenSpaceAmbientOcclusion, Has<TemporalJitter>)>,
 ) {
     for (entity, ssao_settings, temporal_jitter) in &views {
-        let pipeline_id = pipelines.specialize(
-            &pipeline_cache,
-            &pipeline,
-            SsaoPipelineKey {
-                quality_level: ssao_settings.quality_level,
-                temporal_jitter,
-            },
-        );
+        let pipeline_id = pipelines.specialize(&pipeline_cache, &pipeline, SsaoPipelineKey {
+            quality_level: ssao_settings.quality_level,
+            temporal_jitter,
+        });
 
         commands.entity(entity).insert(SsaoPipelineId(pipeline_id));
     }

@@ -311,15 +311,11 @@ fn queue_line_gizmos_2d(
                 continue;
             };
 
-            let pipeline = pipelines.specialize(
-                &pipeline_cache,
-                &pipeline,
-                LineGizmoPipelineKey {
-                    mesh_key,
-                    strip: line_gizmo.strip,
-                    line_style: config.line_style,
-                },
-            );
+            let pipeline = pipelines.specialize(&pipeline_cache, &pipeline, LineGizmoPipelineKey {
+                mesh_key,
+                strip: line_gizmo.strip,
+                line_style: config.line_style,
+            });
 
             transparent_phase.add(Transparent2d {
                 entity: (entity, *main_entity),
@@ -371,14 +367,11 @@ fn queue_line_joint_gizmos_2d(
                 continue;
             }
 
-            let pipeline = pipelines.specialize(
-                &pipeline_cache,
-                &pipeline,
-                LineJointGizmoPipelineKey {
+            let pipeline =
+                pipelines.specialize(&pipeline_cache, &pipeline, LineJointGizmoPipelineKey {
                     mesh_key,
                     joints: line_gizmo.joints,
-                },
-            );
+                });
             transparent_phase.add(Transparent2d {
                 entity: (entity, *main_entity),
                 draw_function,

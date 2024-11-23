@@ -184,13 +184,10 @@ mod tests {
             },
         );
 
-        assert_eq!(
-            ids,
-            &[
-                world.register_component::<TableStored>(),
-                world.register_component::<SparseStored>(),
-            ]
-        );
+        assert_eq!(ids, &[
+            world.register_component::<TableStored>(),
+            world.register_component::<SparseStored>(),
+        ]);
 
         let e1 = world
             .spawn(FooBundle {
@@ -238,15 +235,12 @@ mod tests {
             },
         );
 
-        assert_eq!(
-            ids,
-            &[
-                world.register_component::<A>(),
-                world.register_component::<TableStored>(),
-                world.register_component::<SparseStored>(),
-                world.register_component::<B>(),
-            ]
-        );
+        assert_eq!(ids, &[
+            world.register_component::<A>(),
+            world.register_component::<TableStored>(),
+            world.register_component::<SparseStored>(),
+            world.register_component::<B>(),
+        ]);
 
         let e3 = world
             .spawn(NestedBundle {
@@ -355,13 +349,10 @@ mod tests {
             .iter(&world)
             .map(|(e, &i, &s)| (e, i, s))
             .collect::<Vec<_>>();
-        assert_eq!(
-            ents,
-            &[
-                (e, A(123), TableStored("abc")),
-                (f, A(456), TableStored("def"))
-            ]
-        );
+        assert_eq!(ents, &[
+            (e, A(123), TableStored("abc")),
+            (f, A(456), TableStored("def"))
+        ]);
     }
 
     #[test]
@@ -375,13 +366,10 @@ mod tests {
             .query::<(Entity, &A, &TableStored)>()
             .iter(&world)
             .for_each(|(e, &i, &s)| results.push((e, i, s)));
-        assert_eq!(
-            results,
-            &[
-                (e, A(123), TableStored("abc")),
-                (f, A(456), TableStored("def"))
-            ]
-        );
+        assert_eq!(results, &[
+            (e, A(123), TableStored("abc")),
+            (f, A(456), TableStored("def"))
+        ]);
     }
 
     #[test]
@@ -445,10 +433,13 @@ mod tests {
                 results.lock().unwrap().push((e, i));
             });
         results.lock().unwrap().sort();
-        assert_eq!(
-            &*results.lock().unwrap(),
-            &[(e1, 1), (e2, 2), (e3, 3), (e4, 4), (e5, 5)]
-        );
+        assert_eq!(&*results.lock().unwrap(), &[
+            (e1, 1),
+            (e2, 2),
+            (e3, 3),
+            (e4, 4),
+            (e5, 5)
+        ]);
     }
 
     #[test]
@@ -466,10 +457,13 @@ mod tests {
             .par_iter(&world)
             .for_each(|(e, &SparseStored(i))| results.lock().unwrap().push((e, i)));
         results.lock().unwrap().sort();
-        assert_eq!(
-            &*results.lock().unwrap(),
-            &[(e1, 1), (e2, 2), (e3, 3), (e4, 4), (e5, 5)]
-        );
+        assert_eq!(&*results.lock().unwrap(), &[
+            (e1, 1),
+            (e2, 2),
+            (e3, 3),
+            (e4, 4),
+            (e5, 5)
+        ]);
     }
 
     #[test]
@@ -1868,12 +1862,9 @@ mod tests {
         );
 
         let id = world
-            .spawn((
-                X,
-                Y {
-                    value: "foo".to_string(),
-                },
-            ))
+            .spawn((X, Y {
+                value: "foo".to_string(),
+            }))
             .id();
         assert_eq!(
             "foo",
@@ -2230,12 +2221,9 @@ mod tests {
         );
 
         let id = world
-            .spawn((
-                X,
-                Y {
-                    value: "foo".to_string(),
-                },
-            ))
+            .spawn((X, Y {
+                value: "foo".to_string(),
+            }))
             .id();
         assert_eq!(
             "foo",
@@ -2545,10 +2533,13 @@ mod tests {
         assert_eq!(to_vec(required_a), vec![(b, 0), (c, 1)]);
         assert_eq!(to_vec(required_b), vec![(c, 0)]);
         assert_eq!(to_vec(required_c), vec![]);
-        assert_eq!(
-            to_vec(required_x),
-            vec![(a, 0), (b, 1), (c, 2), (y, 0), (z, 1)]
-        );
+        assert_eq!(to_vec(required_x), vec![
+            (a, 0),
+            (b, 1),
+            (c, 2),
+            (y, 0),
+            (z, 1)
+        ]);
         assert_eq!(to_vec(required_y), vec![(b, 1), (c, 2), (z, 0)]);
         assert_eq!(to_vec(required_z), vec![(b, 0), (c, 1)]);
     }

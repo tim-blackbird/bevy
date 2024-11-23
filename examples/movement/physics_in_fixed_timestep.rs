@@ -151,13 +151,10 @@ fn spawn_text(mut commands: Commands) {
             left: Val::Px(12.0),
             ..default()
         })
-        .with_child((
-            Text::new("Move the player with WASD"),
-            TextFont {
-                font_size: 25.0,
-                ..default()
-            },
-        ));
+        .with_child((Text::new("Move the player with WASD"), TextFont {
+            font_size: 25.0,
+            ..default()
+        }));
 }
 
 /// Handle keyboard input and accumulate it in the `AccumulatedInput` component.

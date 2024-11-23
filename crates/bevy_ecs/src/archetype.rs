@@ -233,16 +233,13 @@ impl Edges {
         added: Vec<ComponentId>,
         existing: Vec<ComponentId>,
     ) {
-        self.add_bundle.insert(
-            bundle_id,
-            AddBundle {
-                archetype_id,
-                bundle_status,
-                required_components,
-                added,
-                existing,
-            },
-        );
+        self.add_bundle.insert(bundle_id, AddBundle {
+            archetype_id,
+            bundle_status,
+            required_components,
+            added,
+            existing,
+        });
     }
 
     /// Checks the cache for the target archetype when removing a bundle to the
@@ -390,13 +387,10 @@ impl Archetype {
             let info = unsafe { components.get_info_unchecked(component_id) };
             info.update_archetype_flags(&mut flags);
             observers.update_archetype_flags(component_id, &mut flags);
-            archetype_components.insert(
-                component_id,
-                ArchetypeComponentInfo {
-                    storage_type: StorageType::Table,
-                    archetype_component_id,
-                },
-            );
+            archetype_components.insert(component_id, ArchetypeComponentInfo {
+                storage_type: StorageType::Table,
+                archetype_component_id,
+            });
             // NOTE: the `table_components` are sorted AND they were inserted in the `Table` in the same
             // sorted order, so the index of the `Column` in the `Table` is the same as the index of the
             // component in the `table_components` vector
@@ -411,13 +405,10 @@ impl Archetype {
             let info = unsafe { components.get_info_unchecked(component_id) };
             info.update_archetype_flags(&mut flags);
             observers.update_archetype_flags(component_id, &mut flags);
-            archetype_components.insert(
-                component_id,
-                ArchetypeComponentInfo {
-                    storage_type: StorageType::SparseSet,
-                    archetype_component_id,
-                },
-            );
+            archetype_components.insert(component_id, ArchetypeComponentInfo {
+                storage_type: StorageType::SparseSet,
+                archetype_component_id,
+            });
             component_index
                 .entry(component_id)
                 .or_insert_with(HashMap::new)

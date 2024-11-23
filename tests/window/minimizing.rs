@@ -60,16 +60,13 @@ fn setup_3d(
 
 /// A simple 2d scene, taken from the `rect` example
 fn setup_2d(mut commands: Commands) {
-    commands.spawn((
-        Camera2d,
-        Camera {
-            // render the 2d camera after the 3d camera
-            order: 1,
-            // do not use a clear color
-            clear_color: ClearColorConfig::None,
-            ..default()
-        },
-    ));
+    commands.spawn((Camera2d, Camera {
+        // render the 2d camera after the 3d camera
+        order: 1,
+        // do not use a clear color
+        clear_color: ClearColorConfig::None,
+        ..default()
+    }));
     commands.spawn(Sprite::from_color(
         Color::srgb(0.25, 0.25, 0.75),
         Vec2::new(50.0, 50.0),

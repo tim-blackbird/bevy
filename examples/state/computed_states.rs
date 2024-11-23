@@ -454,20 +454,17 @@ mod ui {
     pub fn setup_paused_screen(mut commands: Commands) {
         info!("Printing Pause");
         commands
-            .spawn((
-                StateScoped(IsPaused::Paused),
-                Node {
-                    // center button
-                    width: Val::Percent(100.),
-                    height: Val::Percent(100.),
-                    justify_content: JustifyContent::Center,
-                    align_items: AlignItems::Center,
-                    flex_direction: FlexDirection::Column,
-                    row_gap: Val::Px(10.),
-                    position_type: PositionType::Absolute,
-                    ..default()
-                },
-            ))
+            .spawn((StateScoped(IsPaused::Paused), Node {
+                // center button
+                width: Val::Percent(100.),
+                height: Val::Percent(100.),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                flex_direction: FlexDirection::Column,
+                row_gap: Val::Px(10.),
+                position_type: PositionType::Absolute,
+                ..default()
+            }))
             .with_children(|parent| {
                 parent
                     .spawn((
@@ -498,20 +495,17 @@ mod ui {
 
     pub fn setup_turbo_text(mut commands: Commands) {
         commands
-            .spawn((
-                StateScoped(TurboMode),
-                Node {
-                    // center button
-                    width: Val::Percent(100.),
-                    height: Val::Percent(100.),
-                    justify_content: JustifyContent::Start,
-                    align_items: AlignItems::Center,
-                    flex_direction: FlexDirection::Column,
-                    row_gap: Val::Px(10.),
-                    position_type: PositionType::Absolute,
-                    ..default()
-                },
-            ))
+            .spawn((StateScoped(TurboMode), Node {
+                // center button
+                width: Val::Percent(100.),
+                height: Val::Percent(100.),
+                justify_content: JustifyContent::Start,
+                align_items: AlignItems::Center,
+                flex_direction: FlexDirection::Column,
+                row_gap: Val::Px(10.),
+                position_type: PositionType::Absolute,
+                ..default()
+            }))
             .with_children(|parent| {
                 parent.spawn((
                     Text::new("TURBO MODE"),
@@ -537,20 +531,17 @@ mod ui {
 
     pub fn movement_instructions(mut commands: Commands) {
         commands
-            .spawn((
-                StateScoped(Tutorial::MovementInstructions),
-                Node {
-                    // center button
-                    width: Val::Percent(100.),
-                    height: Val::Percent(100.),
-                    justify_content: JustifyContent::End,
-                    align_items: AlignItems::Center,
-                    flex_direction: FlexDirection::Column,
-                    row_gap: Val::Px(10.),
-                    position_type: PositionType::Absolute,
-                    ..default()
-                },
-            ))
+            .spawn((StateScoped(Tutorial::MovementInstructions), Node {
+                // center button
+                width: Val::Percent(100.),
+                height: Val::Percent(100.),
+                justify_content: JustifyContent::End,
+                align_items: AlignItems::Center,
+                flex_direction: FlexDirection::Column,
+                row_gap: Val::Px(10.),
+                position_type: PositionType::Absolute,
+                ..default()
+            }))
             .with_children(|parent| {
                 parent.spawn((
                     Text::new("Move the bevy logo with the arrow keys"),
@@ -591,20 +582,17 @@ mod ui {
 
     pub fn pause_instructions(mut commands: Commands) {
         commands
-            .spawn((
-                StateScoped(Tutorial::PauseInstructions),
-                Node {
-                    // center button
-                    width: Val::Percent(100.),
-                    height: Val::Percent(100.),
-                    justify_content: JustifyContent::End,
-                    align_items: AlignItems::Center,
-                    flex_direction: FlexDirection::Column,
-                    row_gap: Val::Px(10.),
-                    position_type: PositionType::Absolute,
-                    ..default()
-                },
-            ))
+            .spawn((StateScoped(Tutorial::PauseInstructions), Node {
+                // center button
+                width: Val::Percent(100.),
+                height: Val::Percent(100.),
+                justify_content: JustifyContent::End,
+                align_items: AlignItems::Center,
+                flex_direction: FlexDirection::Column,
+                row_gap: Val::Px(10.),
+                position_type: PositionType::Absolute,
+                ..default()
+            }))
             .with_children(|parent| {
                 parent.spawn((
                     Text::new("Press SPACE to resume"),

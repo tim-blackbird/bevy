@@ -533,14 +533,11 @@ mod tests {
         world.insert_resource(NextState::Pending(SimpleState::A));
         world.run_schedule(StateTransition);
         assert_eq!(world.resource::<State<SimpleState>>().0, SimpleState::A);
-        assert_eq!(
-            *world.resource::<TransitionCounter>(),
-            TransitionCounter {
-                exit: 0,
-                transition: 1, // Same state transitions are allowed
-                enter: 0
-            }
-        );
+        assert_eq!(*world.resource::<TransitionCounter>(), TransitionCounter {
+            exit: 0,
+            transition: 1, // Same state transitions are allowed
+            enter: 0
+        });
         assert_eq!(
             world
                 .resource::<Events<StateTransitionEvent<SimpleState>>>()

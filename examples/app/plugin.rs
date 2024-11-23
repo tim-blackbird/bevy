@@ -9,13 +9,10 @@ use bevy::{prelude::*, utils::Duration};
 fn main() {
     App::new()
         // plugins are registered as part of the "app building" process
-        .add_plugins((
-            DefaultPlugins,
-            PrintMessagePlugin {
-                wait_duration: Duration::from_secs(1),
-                message: "This is an example plugin".to_string(),
-            },
-        ))
+        .add_plugins((DefaultPlugins, PrintMessagePlugin {
+            wait_duration: Duration::from_secs(1),
+            message: "This is an example plugin".to_string(),
+        }))
         .run();
 }
 

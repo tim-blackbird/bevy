@@ -583,10 +583,10 @@ mod tests {
 
     #[test]
     fn try_from() {
-        assert_eq!(
-            ParsedPath::try_from("w").unwrap().0,
-            &[offset(access_field("w"), 1)]
-        );
+        assert_eq!(ParsedPath::try_from("w").unwrap().0, &[offset(
+            access_field("w"),
+            1
+        )]);
 
         let r = ParsedPath::try_from("w[");
         let matches = matches!(r, Err(ReflectPathError::ParseError { .. }));
@@ -598,53 +598,38 @@ mod tests {
 
     #[test]
     fn parsed_path_parse() {
-        assert_eq!(
-            ParsedPath::parse("w").unwrap().0,
-            &[offset(access_field("w"), 1)]
-        );
-        assert_eq!(
-            ParsedPath::parse("x.foo").unwrap().0,
-            &[offset(access_field("x"), 1), offset(access_field("foo"), 2)]
-        );
-        assert_eq!(
-            ParsedPath::parse("x.łørđ.mосква").unwrap().0,
-            &[
-                offset(access_field("x"), 1),
-                offset(access_field("łørđ"), 2),
-                offset(access_field("mосква"), 10)
-            ]
-        );
-        assert_eq!(
-            ParsedPath::parse("y[1].mосква").unwrap().0,
-            &[
-                offset(access_field("y"), 1),
-                offset(Access::ListIndex(1), 2),
-                offset(access_field("mосква"), 5)
-            ]
-        );
-        assert_eq!(
-            ParsedPath::parse("z.0.1").unwrap().0,
-            &[
-                offset(access_field("z"), 1),
-                offset(Access::TupleIndex(0), 2),
-                offset(Access::TupleIndex(1), 4),
-            ]
-        );
-        assert_eq!(
-            ParsedPath::parse("x#0").unwrap().0,
-            &[
-                offset(access_field("x"), 1),
-                offset(Access::FieldIndex(0), 2)
-            ]
-        );
-        assert_eq!(
-            ParsedPath::parse("x#0#1").unwrap().0,
-            &[
-                offset(access_field("x"), 1),
-                offset(Access::FieldIndex(0), 2),
-                offset(Access::FieldIndex(1), 4)
-            ]
-        );
+        assert_eq!(ParsedPath::parse("w").unwrap().0, &[offset(
+            access_field("w"),
+            1
+        )]);
+        assert_eq!(ParsedPath::parse("x.foo").unwrap().0, &[
+            offset(access_field("x"), 1),
+            offset(access_field("foo"), 2)
+        ]);
+        assert_eq!(ParsedPath::parse("x.łørđ.mосква").unwrap().0, &[
+            offset(access_field("x"), 1),
+            offset(access_field("łørđ"), 2),
+            offset(access_field("mосква"), 10)
+        ]);
+        assert_eq!(ParsedPath::parse("y[1].mосква").unwrap().0, &[
+            offset(access_field("y"), 1),
+            offset(Access::ListIndex(1), 2),
+            offset(access_field("mосква"), 5)
+        ]);
+        assert_eq!(ParsedPath::parse("z.0.1").unwrap().0, &[
+            offset(access_field("z"), 1),
+            offset(Access::TupleIndex(0), 2),
+            offset(Access::TupleIndex(1), 4),
+        ]);
+        assert_eq!(ParsedPath::parse("x#0").unwrap().0, &[
+            offset(access_field("x"), 1),
+            offset(Access::FieldIndex(0), 2)
+        ]);
+        assert_eq!(ParsedPath::parse("x#0#1").unwrap().0, &[
+            offset(access_field("x"), 1),
+            offset(Access::FieldIndex(0), 2),
+            offset(Access::FieldIndex(1), 4)
+        ]);
     }
 
     #[test]
@@ -787,27 +772,21 @@ mod tests {
 
     #[test]
     fn accept_leading_tokens() {
-        assert_eq!(
-            ParsedPath::parse(".w").unwrap().0,
-            &[offset(access_field("w"), 1)]
-        );
-        assert_eq!(
-            ParsedPath::parse("#0.foo").unwrap().0,
-            &[
-                offset(Access::FieldIndex(0), 1),
-                offset(access_field("foo"), 3)
-            ]
-        );
-        assert_eq!(
-            ParsedPath::parse(".5").unwrap().0,
-            &[offset(Access::TupleIndex(5), 1)]
-        );
-        assert_eq!(
-            ParsedPath::parse("[0].łørđ").unwrap().0,
-            &[
-                offset(Access::ListIndex(0), 1),
-                offset(access_field("łørđ"), 4)
-            ]
-        );
+        assert_eq!(ParsedPath::parse(".w").unwrap().0, &[offset(
+            access_field("w"),
+            1
+        )]);
+        assert_eq!(ParsedPath::parse("#0.foo").unwrap().0, &[
+            offset(Access::FieldIndex(0), 1),
+            offset(access_field("foo"), 3)
+        ]);
+        assert_eq!(ParsedPath::parse(".5").unwrap().0, &[offset(
+            Access::TupleIndex(5),
+            1
+        )]);
+        assert_eq!(ParsedPath::parse("[0].łørđ").unwrap().0, &[
+            offset(Access::ListIndex(0), 1),
+            offset(access_field("łørđ"), 4)
+        ]);
     }
 }

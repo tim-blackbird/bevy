@@ -79,20 +79,14 @@ impl<'a> Serialize for SceneSerializer<'a> {
         S: Serializer,
     {
         let mut state = serializer.serialize_struct(SCENE_STRUCT, 2)?;
-        state.serialize_field(
-            SCENE_RESOURCES,
-            &SceneMapSerializer {
-                entries: &self.scene.resources,
-                registry: self.registry,
-            },
-        )?;
-        state.serialize_field(
-            SCENE_ENTITIES,
-            &EntitiesSerializer {
-                entities: &self.scene.entities,
-                registry: self.registry,
-            },
-        )?;
+        state.serialize_field(SCENE_RESOURCES, &SceneMapSerializer {
+            entries: &self.scene.resources,
+            registry: self.registry,
+        })?;
+        state.serialize_field(SCENE_ENTITIES, &EntitiesSerializer {
+            entities: &self.scene.entities,
+            registry: self.registry,
+        })?;
         state.end()
     }
 }
@@ -112,13 +106,10 @@ impl<'a> Serialize for EntitiesSerializer<'a> {
     {
         let mut state = serializer.serialize_map(Some(self.entities.len()))?;
         for entity in self.entities {
-            state.serialize_entry(
-                &entity.entity,
-                &EntitySerializer {
-                    entity,
-                    registry: self.registry,
-                },
-            )?;
+            state.serialize_entry(&entity.entity, &EntitySerializer {
+                entity,
+                registry: self.registry,
+            })?;
         }
         state.end()
     }
@@ -138,13 +129,10 @@ impl<'a> Serialize for EntitySerializer<'a> {
         S: Serializer,
     {
         let mut state = serializer.serialize_struct(ENTITY_STRUCT, 1)?;
-        state.serialize_field(
-            ENTITY_FIELD_COMPONENTS,
-            &SceneMapSerializer {
-                entries: &self.entity.components,
-                registry: self.registry,
-            },
-        )?;
+        state.serialize_field(ENTITY_FIELD_COMPONENTS, &SceneMapSerializer {
+            entries: &self.entity.components,
+            registry: self.registry,
+        })?;
         state.end()
     }
 }

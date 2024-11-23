@@ -116,18 +116,15 @@ fn setup_scene(
 
     // Test ui
     commands
-        .spawn((
-            Button,
-            Node {
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                position_type: PositionType::Absolute,
-                left: Val::Px(50.0),
-                right: Val::Px(50.0),
-                bottom: Val::Px(50.0),
-                ..default()
-            },
-        ))
+        .spawn((Button, Node {
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
+            position_type: PositionType::Absolute,
+            left: Val::Px(50.0),
+            right: Val::Px(50.0),
+            bottom: Val::Px(50.0),
+            ..default()
+        }))
         .with_child((
             Text::new("Test Button"),
             TextFont {

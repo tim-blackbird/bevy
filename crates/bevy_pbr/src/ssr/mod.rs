@@ -329,18 +329,14 @@ impl ViewNode for ScreenSpaceReflectionsNode {
 
         // Set bind groups.
         render_pass.set_render_pipeline(render_pipeline);
-        render_pass.set_bind_group(
-            0,
-            &view_bind_group.value,
-            &[
-                view_uniform_offset.offset,
-                view_lights_offset.offset,
-                view_fog_offset.offset,
-                **view_light_probes_offset,
-                **view_ssr_offset,
-                **view_environment_map_offset,
-            ],
-        );
+        render_pass.set_bind_group(0, &view_bind_group.value, &[
+            view_uniform_offset.offset,
+            view_lights_offset.offset,
+            view_fog_offset.offset,
+            **view_light_probes_offset,
+            **view_ssr_offset,
+            **view_environment_map_offset,
+        ]);
 
         // Perform the SSR render pass.
         render_pass.set_bind_group(1, &ssr_bind_group, &[]);

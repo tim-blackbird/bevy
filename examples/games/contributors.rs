@@ -155,13 +155,10 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 ..default()
             },
         ))
-        .with_child((
-            TextSpan::default(),
-            TextFont {
-                font_size: 30.,
-                ..text_style
-            },
-        ));
+        .with_child((TextSpan::default(), TextFont {
+            font_size: 30.,
+            ..text_style
+        }));
 }
 
 /// Finds the next contributor to display and selects the entity

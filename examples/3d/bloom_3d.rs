@@ -84,15 +84,12 @@ fn setup_scene(
     }
 
     // example instructions
-    commands.spawn((
-        Text::default(),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((Text::default(), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -122,13 +119,10 @@ fn update_bloom_settings(
                 "(R/F) High-pass frequency: {}\n",
                 bloom.high_pass_frequency
             ));
-            text.push_str(&format!(
-                "(T/G) Mode: {}\n",
-                match bloom.composite_mode {
-                    BloomCompositeMode::EnergyConserving => "Energy-conserving",
-                    BloomCompositeMode::Additive => "Additive",
-                }
-            ));
+            text.push_str(&format!("(T/G) Mode: {}\n", match bloom.composite_mode {
+                BloomCompositeMode::EnergyConserving => "Energy-conserving",
+                BloomCompositeMode::Additive => "Additive",
+            }));
             text.push_str(&format!("(Y/H) Threshold: {}\n", bloom.prefilter.threshold));
             text.push_str(&format!(
                 "(U/J) Threshold softness: {}\n",

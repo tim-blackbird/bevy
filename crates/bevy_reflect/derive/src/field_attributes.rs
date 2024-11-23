@@ -136,10 +136,10 @@ impl FieldAttributes {
     /// - `#[reflect(ignore)]`
     fn parse_ignore(&mut self, input: ParseStream) -> syn::Result<()> {
         if self.ignore != ReflectIgnoreBehavior::None {
-            return Err(input.error(format!(
-                "only one of {:?} is allowed",
-                [IGNORE_ALL_ATTR, IGNORE_SERIALIZATION_ATTR]
-            )));
+            return Err(input.error(format!("only one of {:?} is allowed", [
+                IGNORE_ALL_ATTR,
+                IGNORE_SERIALIZATION_ATTR
+            ])));
         }
 
         input.parse::<kw::ignore>()?;
@@ -153,10 +153,10 @@ impl FieldAttributes {
     /// - `#[reflect(skip_serializing)]`
     fn parse_skip_serializing(&mut self, input: ParseStream) -> syn::Result<()> {
         if self.ignore != ReflectIgnoreBehavior::None {
-            return Err(input.error(format!(
-                "only one of {:?} is allowed",
-                [IGNORE_ALL_ATTR, IGNORE_SERIALIZATION_ATTR]
-            )));
+            return Err(input.error(format!("only one of {:?} is allowed", [
+                IGNORE_ALL_ATTR,
+                IGNORE_SERIALIZATION_ATTR
+            ])));
         }
 
         input.parse::<kw::skip_serializing>()?;

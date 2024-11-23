@@ -388,16 +388,13 @@ fn prepare_screenshot_state(
     );
     let pipeline_id = pipelines.specialize(pipeline_cache, pipeline, format);
 
-    (
-        texture_view,
-        ScreenshotPreparedState {
-            texture,
-            buffer,
-            bind_group,
-            pipeline_id,
-            size,
-        },
-    )
+    (texture_view, ScreenshotPreparedState {
+        texture,
+        buffer,
+        bind_group,
+        pipeline_id,
+        size,
+    })
 }
 
 pub struct ScreenshotPlugin;

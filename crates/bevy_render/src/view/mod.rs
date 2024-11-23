@@ -969,34 +969,25 @@ pub fn prepare_view_targets(
                         _ => &[],
                     },
                 };
-                let a = texture_cache.get(
-                    &render_device,
-                    TextureDescriptor {
-                        label: Some("main_texture_a"),
-                        ..descriptor
-                    },
-                );
-                let b = texture_cache.get(
-                    &render_device,
-                    TextureDescriptor {
-                        label: Some("main_texture_b"),
-                        ..descriptor
-                    },
-                );
+                let a = texture_cache.get(&render_device, TextureDescriptor {
+                    label: Some("main_texture_a"),
+                    ..descriptor
+                });
+                let b = texture_cache.get(&render_device, TextureDescriptor {
+                    label: Some("main_texture_b"),
+                    ..descriptor
+                });
                 let sampled = if msaa.samples() > 1 {
-                    let sampled = texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("main_texture_sampled"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: msaa.samples(),
-                            dimension: TextureDimension::D2,
-                            format: main_texture_format,
-                            usage: TextureUsages::RENDER_ATTACHMENT,
-                            view_formats: descriptor.view_formats,
-                        },
-                    );
+                    let sampled = texture_cache.get(&render_device, TextureDescriptor {
+                        label: Some("main_texture_sampled"),
+                        size,
+                        mip_level_count: 1,
+                        sample_count: msaa.samples(),
+                        dimension: TextureDimension::D2,
+                        format: main_texture_format,
+                        usage: TextureUsages::RENDER_ATTACHMENT,
+                        view_formats: descriptor.view_formats,
+                    });
                     Some(sampled)
                 } else {
                     None

@@ -104,18 +104,14 @@ impl ViewNode for MeshletMainOpaquePass3dNode {
             render_pass.set_camera_viewport(viewport);
         }
 
-        render_pass.set_bind_group(
-            0,
-            &mesh_view_bind_group.value,
-            &[
-                view_uniform_offset.offset,
-                view_lights_offset.offset,
-                view_fog_offset.offset,
-                **view_light_probes_offset,
-                **view_ssr_offset,
-                **view_environment_map_offset,
-            ],
-        );
+        render_pass.set_bind_group(0, &mesh_view_bind_group.value, &[
+            view_uniform_offset.offset,
+            view_lights_offset.offset,
+            view_fog_offset.offset,
+            **view_light_probes_offset,
+            **view_ssr_offset,
+            **view_environment_map_offset,
+        ]);
         render_pass.set_bind_group(1, meshlet_material_shade_bind_group, &[]);
 
         // 1 fullscreen triangle draw per material

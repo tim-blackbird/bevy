@@ -145,25 +145,22 @@ impl SpecializedRenderPipeline for BoxShadowPipeline {
     type Key = BoxShadowPipelineKey;
 
     fn specialize(&self, key: Self::Key) -> RenderPipelineDescriptor {
-        let vertex_layout = VertexBufferLayout::from_vertex_formats(
-            VertexStepMode::Vertex,
-            vec![
-                // position
-                VertexFormat::Float32x3,
-                // uv
-                VertexFormat::Float32x2,
-                // color
-                VertexFormat::Float32x4,
-                // target rect size
-                VertexFormat::Float32x2,
-                // corner radius values (top left, top right, bottom right, bottom left)
-                VertexFormat::Float32x4,
-                // blur radius
-                VertexFormat::Float32,
-                // outer size
-                VertexFormat::Float32x2,
-            ],
-        );
+        let vertex_layout = VertexBufferLayout::from_vertex_formats(VertexStepMode::Vertex, vec![
+            // position
+            VertexFormat::Float32x3,
+            // uv
+            VertexFormat::Float32x2,
+            // color
+            VertexFormat::Float32x4,
+            // target rect size
+            VertexFormat::Float32x2,
+            // corner radius values (top left, top right, bottom right, bottom left)
+            VertexFormat::Float32x4,
+            // blur radius
+            VertexFormat::Float32,
+            // outer size
+            VertexFormat::Float32x2,
+        ]);
         let shader_defs = vec![ShaderDefVal::UInt(
             "SHADOW_SAMPLES".to_string(),
             key.samples,
@@ -489,13 +486,10 @@ pub fn prepare_shadows(
                         ui_meta.indices.push(indices_index + i as u32);
                     }
 
-                    batches.push((
-                        item.entity(),
-                        UiShadowsBatch {
-                            range: vertices_index..vertices_index + 6,
-                            camera: box_shadow.camera_entity,
-                        },
-                    ));
+                    batches.push((item.entity(), UiShadowsBatch {
+                        range: vertices_index..vertices_index + 6,
+                        camera: box_shadow.camera_entity,
+                    }));
 
                     vertices_index += 6;
                     indices_index += 4;

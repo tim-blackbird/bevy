@@ -345,15 +345,12 @@ pub fn extract_colored_mesh2d(
         };
 
         values.push((entity, ColoredMesh2d));
-        render_mesh_instances.insert(
-            entity.into(),
-            RenderMesh2dInstance {
-                mesh_asset_id: handle.0.id(),
-                transforms,
-                material_bind_group_id: Material2dBindGroupId::default(),
-                automatic_batching: false,
-            },
-        );
+        render_mesh_instances.insert(entity.into(), RenderMesh2dInstance {
+            mesh_asset_id: handle.0.id(),
+            transforms,
+            material_bind_group_id: Material2dBindGroupId::default(),
+            automatic_batching: false,
+        });
     }
     *previous_len = values.len();
     commands.insert_or_spawn_batch(values);

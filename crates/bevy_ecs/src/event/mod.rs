@@ -261,10 +261,11 @@ mod tests {
         assert_eq!(old_events.len(), 2);
 
         old_events.extend(events.update_drain());
-        assert_eq!(
-            old_events,
-            &[TestEvent { i: 0 }, TestEvent { i: 1 }, TestEvent { i: 2 }]
-        );
+        assert_eq!(old_events, &[
+            TestEvent { i: 0 },
+            TestEvent { i: 1 },
+            TestEvent { i: 2 }
+        ]);
     }
 
     #[test]
@@ -328,20 +329,18 @@ mod tests {
         let sent_event = write_cursor.read_mut(&mut events).next().unwrap();
         assert_eq!(sent_event, &mut TestEvent { i: 0 });
         *sent_event = TestEvent { i: 1 }; // Mutate whole event
-        assert_eq!(
-            read_cursor.read(&events).next().unwrap(),
-            &TestEvent { i: 1 }
-        );
+        assert_eq!(read_cursor.read(&events).next().unwrap(), &TestEvent {
+            i: 1
+        });
         assert!(read_cursor.read(&events).next().is_none());
 
         events.send(TestEvent { i: 2 });
         let sent_event = write_cursor.read_mut(&mut events).next().unwrap();
         assert_eq!(sent_event, &mut TestEvent { i: 2 });
         sent_event.i = 3; // Mutate sub value
-        assert_eq!(
-            read_cursor.read(&events).next().unwrap(),
-            &TestEvent { i: 3 }
-        );
+        assert_eq!(read_cursor.read(&events).next().unwrap(), &TestEvent {
+            i: 3
+        });
         assert!(read_cursor.read(&events).next().is_none());
 
         events.clear();

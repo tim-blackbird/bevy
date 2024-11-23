@@ -81,15 +81,12 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, app_status: Res
 
 /// Spawns the help text.
 fn spawn_text(commands: &mut Commands, app_status: &AppStatus) {
-    commands.spawn((
-        app_status.create_help_text(),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((app_status.create_help_text(), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 /// For each material, creates a version with the anisotropy removed.

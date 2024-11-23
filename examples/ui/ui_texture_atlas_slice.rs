@@ -82,13 +82,10 @@ fn setup(
                 parent
                     .spawn((
                         Button,
-                        ImageNode::from_atlas_image(
-                            texture_handle.clone(),
-                            TextureAtlas {
-                                index: idx,
-                                layout: atlas_layout_handle.clone(),
-                            },
-                        )
+                        ImageNode::from_atlas_image(texture_handle.clone(), TextureAtlas {
+                            index: idx,
+                            layout: atlas_layout_handle.clone(),
+                        })
                         .with_mode(NodeImageMode::Sliced(slicer.clone())),
                         Node {
                             width: Val::Px(w),
