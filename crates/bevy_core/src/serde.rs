@@ -4,11 +4,11 @@ use core::{
 };
 
 use serde::{
-    de::{Error, Visitor},
     Deserialize, Deserializer, Serialize, Serializer,
+    de::{Error, Visitor},
 };
 
-use super::{name::Name, FrameCount};
+use super::{FrameCount, name::Name};
 
 impl Serialize for Name {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -74,7 +74,7 @@ impl<'de> Visitor<'de> for FrameVisitor {
 mod tests {
     use super::*;
 
-    use serde_test::{assert_tokens, Token};
+    use serde_test::{Token, assert_tokens};
 
     #[test]
     fn test_serde_name() {

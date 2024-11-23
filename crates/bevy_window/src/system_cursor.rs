@@ -68,7 +68,7 @@
 // --------- END OF W3C SHORT NOTICE
 // --------------------------------------------------------------
 
-use bevy_reflect::{prelude::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, prelude::ReflectDefault};
 
 #[cfg(feature = "serialize")]
 use bevy_reflect::{ReflectDeserialize, ReflectSerialize};

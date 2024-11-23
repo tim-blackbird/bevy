@@ -1203,7 +1203,7 @@ mod tests {
     use crate::{
         self as bevy_ecs,
         change_detection::{
-            Mut, NonSendMut, Ref, ResMut, TicksMut, CHECK_TICK_THRESHOLD, MAX_CHANGE_AGE,
+            CHECK_TICK_THRESHOLD, MAX_CHANGE_AGE, Mut, NonSendMut, Ref, ResMut, TicksMut,
         },
         component::{Component, ComponentTicks, Tick},
         system::{IntoSystem, Single, System},

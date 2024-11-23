@@ -4,11 +4,12 @@ use crate::{
     fullscreen_vertex_shader::fullscreen_shader_vertex_state,
 };
 use bevy_app::prelude::*;
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 use bevy_ecs::{prelude::*, query::QueryItem};
 use bevy_image::BevyDefault as _;
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render::{
+    Render, RenderApp, RenderSet,
     extract_component::{ExtractComponent, ExtractComponentPlugin, UniformComponentPlugin},
     prelude::Camera,
     render_graph::RenderGraphApp,
@@ -18,7 +19,6 @@ use bevy_render::{
     },
     renderer::RenderDevice,
     view::{ExtractedView, ViewTarget},
-    Render, RenderApp, RenderSet,
 };
 
 mod node;
@@ -88,13 +88,10 @@ impl ExtractComponent for ContrastAdaptiveSharpening {
         if !item.enabled || item.sharpening_strength == 0.0 {
             return None;
         }
-        Some((
-            DenoiseCas(item.denoise),
-            CasUniform {
-                // above 1.0 causes extreme artifacts and fireflies
-                sharpness: item.sharpening_strength.clamp(0.0, 1.0),
-            },
-        ))
+        Some((DenoiseCas(item.denoise), CasUniform {
+            // above 1.0 causes extreme artifacts and fireflies
+            sharpness: item.sharpening_strength.clamp(0.0, 1.0),
+        }))
     }
 }
 
@@ -246,18 +243,15 @@ fn prepare_cas_pipelines(
     views: Query<(Entity, &ExtractedView, &DenoiseCas), With<CasUniform>>,
 ) {
     for (entity, view, cas) in &views {
-        let pipeline_id = pipelines.specialize(
-            &pipeline_cache,
-            &sharpening_pipeline,
-            CasPipelineKey {
+        let pipeline_id =
+            pipelines.specialize(&pipeline_cache, &sharpening_pipeline, CasPipelineKey {
                 denoise: cas.0,
                 texture_format: if view.hdr {
                     ViewTarget::TEXTURE_FORMAT_HDR
                 } else {
                     TextureFormat::bevy_default()
                 },
-            },
-        );
+            });
 
         commands.entity(entity).insert(ViewCasPipeline(pipeline_id));
     }

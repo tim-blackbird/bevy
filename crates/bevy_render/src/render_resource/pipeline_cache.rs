@@ -1,8 +1,8 @@
 use crate::renderer::WgpuWrapper;
 use crate::{
+    Extract,
     render_resource::*,
     renderer::{RenderAdapter, RenderDevice},
-    Extract,
 };
 use alloc::{borrow::Cow, sync::Arc};
 use bevy_asset::{AssetEvent, AssetId, Assets};
@@ -12,10 +12,9 @@ use bevy_ecs::{
 };
 use bevy_tasks::Task;
 use bevy_utils::{
-    default,
+    HashMap, HashSet, default,
     hashbrown::hash_map::EntryRef,
     tracing::{debug, error},
-    HashMap, HashSet,
 };
 use core::{future::Future, hash::Hash, mem, ops::Deref};
 use derive_more::derive::{Display, Error, From};

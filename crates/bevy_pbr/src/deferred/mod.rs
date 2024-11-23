@@ -1,19 +1,19 @@
 use crate::{
-    graph::NodePbr, irradiance_volume::IrradianceVolume, prelude::EnvironmentMapLight,
     MeshPipeline, MeshViewBindGroup, RenderViewLightProbes, ScreenSpaceAmbientOcclusion,
-    ScreenSpaceReflectionsUniform, ViewEnvironmentMapUniformOffset, ViewLightProbesUniformOffset,
-    ViewScreenSpaceReflectionsUniformOffset, TONEMAPPING_LUT_SAMPLER_BINDING_INDEX,
-    TONEMAPPING_LUT_TEXTURE_BINDING_INDEX,
+    ScreenSpaceReflectionsUniform, TONEMAPPING_LUT_SAMPLER_BINDING_INDEX,
+    TONEMAPPING_LUT_TEXTURE_BINDING_INDEX, ViewEnvironmentMapUniformOffset,
+    ViewLightProbesUniformOffset, ViewScreenSpaceReflectionsUniformOffset, graph::NodePbr,
+    irradiance_volume::IrradianceVolume, prelude::EnvironmentMapLight,
 };
 use crate::{
     MeshPipelineKey, ShadowFilteringMethod, ViewFogUniformOffset, ViewLightsUniformOffset,
 };
 use bevy_app::prelude::*;
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 use bevy_core_pipeline::{
     core_3d::graph::{Core3d, Node3d},
     deferred::{
-        copy_lighting_id::DeferredLightingIdDepthTexture, DEFERRED_LIGHTING_PASS_ID_DEPTH_FORMAT,
+        DEFERRED_LIGHTING_PASS_ID_DEPTH_FORMAT, copy_lighting_id::DeferredLightingIdDepthTexture,
     },
     prepass::{DeferredPrepass, DepthPrepass, MotionVectorPrepass, NormalPrepass},
     tonemapping::{DebandDither, Tonemapping},
@@ -21,6 +21,7 @@ use bevy_core_pipeline::{
 use bevy_ecs::{prelude::*, query::QueryItem};
 use bevy_image::BevyDefault as _;
 use bevy_render::{
+    Render, RenderApp, RenderSet,
     extract_component::{
         ComponentUniforms, ExtractComponent, ExtractComponentPlugin, UniformComponentPlugin,
     },
@@ -28,7 +29,6 @@ use bevy_render::{
     render_resource::{binding_types::uniform_buffer, *},
     renderer::{RenderContext, RenderDevice},
     view::{ExtractedView, ViewTarget, ViewUniformOffset},
-    Render, RenderApp, RenderSet,
 };
 
 pub struct DeferredPbrLightingPlugin;
@@ -213,18 +213,14 @@ impl ViewNode for DeferredOpaquePass3dPbrLightingNode {
         });
 
         render_pass.set_render_pipeline(pipeline);
-        render_pass.set_bind_group(
-            0,
-            &mesh_view_bind_group.value,
-            &[
-                view_uniform_offset.offset,
-                view_lights_offset.offset,
-                view_fog_offset.offset,
-                **view_light_probes_offset,
-                **view_ssr_offset,
-                **view_environment_map_offset,
-            ],
-        );
+        render_pass.set_bind_group(0, &mesh_view_bind_group.value, &[
+            view_uniform_offset.offset,
+            view_lights_offset.offset,
+            view_fog_offset.offset,
+            **view_light_probes_offset,
+            **view_ssr_offset,
+            **view_environment_map_offset,
+        ]);
         render_pass.set_bind_group(1, &bind_group_1, &[]);
         render_pass.draw(0..3, 0..1);
 

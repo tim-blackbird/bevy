@@ -5,8 +5,8 @@ mod embedded_watcher;
 pub use embedded_watcher::*;
 
 use crate::io::{
-    memory::{Dir, MemoryAssetReader, Value},
     AssetSource, AssetSourceBuilders,
+    memory::{Dir, MemoryAssetReader, Value},
 };
 use bevy_ecs::system::Resource;
 use std::path::{Path, PathBuf};
@@ -130,9 +130,7 @@ impl EmbeddedAssetRegistry {
 /// [`embedded_asset`]: crate::embedded_asset
 #[macro_export]
 macro_rules! embedded_path {
-    ($path_str: expr) => {{
-        embedded_path!("src", $path_str)
-    }};
+    ($path_str: expr) => {{ embedded_path!("src", $path_str) }};
 
     ($source_path: expr, $path_str: expr) => {{
         let crate_name = module_path!().split(':').next().unwrap();
@@ -242,9 +240,7 @@ pub fn _embedded_asset_path(
 /// [`embedded_path`]: crate::embedded_path
 #[macro_export]
 macro_rules! embedded_asset {
-    ($app: ident, $path: expr) => {{
-        $crate::embedded_asset!($app, "src", $path)
-    }};
+    ($app: ident, $path: expr) => {{ $crate::embedded_asset!($app, "src", $path) }};
 
     ($app: ident, $source_path: expr, $path: expr) => {{
         let mut embedded = $app
@@ -324,7 +320,7 @@ macro_rules! load_internal_binary_asset {
 
 #[cfg(test)]
 mod tests {
-    use super::{EmbeddedAssetRegistry, _embedded_asset_path};
+    use super::{_embedded_asset_path, EmbeddedAssetRegistry};
     use std::path::Path;
 
     // Relative paths show up if this macro is being invoked by a local crate.

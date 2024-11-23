@@ -3,7 +3,7 @@
 
 use bevy_ecs::world::World;
 
-use crate::{meta::Settings, Asset, AssetPath, AssetServer, Assets, Handle};
+use crate::{Asset, AssetPath, AssetServer, Assets, Handle, meta::Settings};
 
 pub trait DirectAssetAccessExt {
     /// Insert an asset similarly to [`Assets::add`].

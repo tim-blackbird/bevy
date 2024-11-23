@@ -2,7 +2,7 @@
 
 use bevy::{
     color::palettes::css::*,
-    math::{bounding::*, ops, Isometry2d},
+    math::{Isometry2d, bounding::*, ops},
     prelude::*,
 };
 
@@ -252,15 +252,12 @@ fn setup(mut commands: Commands) {
         Intersects::default(),
     ));
 
-    commands.spawn((
-        Text::default(),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((Text::default(), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 fn draw_filled_circle(gizmos: &mut Gizmos, position: Vec2, color: Srgba) {

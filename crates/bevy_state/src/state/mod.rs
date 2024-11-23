@@ -525,22 +525,21 @@ mod tests {
 
         world.run_schedule(StateTransition);
         assert_eq!(world.resource::<State<SimpleState>>().0, SimpleState::A);
-        assert!(world
-            .resource::<Events<StateTransitionEvent<SimpleState>>>()
-            .is_empty());
+        assert!(
+            world
+                .resource::<Events<StateTransitionEvent<SimpleState>>>()
+                .is_empty()
+        );
 
         world.insert_resource(TransitionCounter::default());
         world.insert_resource(NextState::Pending(SimpleState::A));
         world.run_schedule(StateTransition);
         assert_eq!(world.resource::<State<SimpleState>>().0, SimpleState::A);
-        assert_eq!(
-            *world.resource::<TransitionCounter>(),
-            TransitionCounter {
-                exit: 0,
-                transition: 1, // Same state transitions are allowed
-                enter: 0
-            }
-        );
+        assert_eq!(*world.resource::<TransitionCounter>(), TransitionCounter {
+            exit: 0,
+            transition: 1, // Same state transitions are allowed
+            enter: 0
+        });
         assert_eq!(
             world
                 .resource::<Events<StateTransitionEvent<SimpleState>>>()

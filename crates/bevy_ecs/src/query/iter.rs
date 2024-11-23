@@ -1424,13 +1424,8 @@ impl<'w, 's, D: ReadOnlyQueryData, F: QueryFilter, I: Iterator<Item: Borrow<Enti
     }
 }
 
-impl<
-        'w,
-        's,
-        D: ReadOnlyQueryData,
-        F: QueryFilter,
-        I: DoubleEndedIterator<Item: Borrow<Entity>>,
-    > DoubleEndedIterator for QueryManyIter<'w, 's, D, F, I>
+impl<'w, 's, D: ReadOnlyQueryData, F: QueryFilter, I: DoubleEndedIterator<Item: Borrow<Entity>>>
+    DoubleEndedIterator for QueryManyIter<'w, 's, D, F, I>
 {
     #[inline(always)]
     fn next_back(&mut self) -> Option<Self::Item> {

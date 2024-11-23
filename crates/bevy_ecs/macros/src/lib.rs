@@ -11,14 +11,14 @@ mod states;
 mod world_query;
 
 use crate::{query_data::derive_query_data_impl, query_filter::derive_query_filter_impl};
-use bevy_macro_utils::{derive_label, ensure_no_collision, get_struct_fields, BevyManifest};
+use bevy_macro_utils::{BevyManifest, derive_label, ensure_no_collision, get_struct_fields};
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use syn::{
-    parse_macro_input, parse_quote, punctuated::Punctuated, spanned::Spanned, token::Comma,
-    ConstParam, DeriveInput, GenericParam, Ident, Index, TypeParam,
+    ConstParam, DeriveInput, GenericParam, Ident, Index, TypeParam, parse_macro_input, parse_quote,
+    punctuated::Punctuated, spanned::Spanned, token::Comma,
 };
 
 enum BundleFieldKind {

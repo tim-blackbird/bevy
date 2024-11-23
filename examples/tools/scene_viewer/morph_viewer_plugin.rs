@@ -266,15 +266,12 @@ fn detect_morphs(
     spans.extend(detected.iter().enumerate().map(target_to_text));
     commands.insert_resource(WeightsControl { weights: detected });
     commands
-        .spawn((
-            Text::default(),
-            Node {
-                position_type: PositionType::Absolute,
-                top: Val::Px(10.0),
-                left: Val::Px(10.0),
-                ..default()
-            },
-        ))
+        .spawn((Text::default(), Node {
+            position_type: PositionType::Absolute,
+            top: Val::Px(10.0),
+            left: Val::Px(10.0),
+            ..default()
+        }))
         .with_children(|p| {
             p.spawn((TextSpan::new("Morph Target Controls\n"), style.clone()));
             p.spawn((TextSpan::new("---------------\n"), style));

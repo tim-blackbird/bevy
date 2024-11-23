@@ -8,7 +8,7 @@ use derive_more::derive::From;
 #[cfg(feature = "bevy-support")]
 use {
     bevy_ecs::{component::Component, reflect::ReflectComponent},
-    bevy_reflect::{std_traits::ReflectDefault, Reflect},
+    bevy_reflect::{Reflect, std_traits::ReflectDefault},
 };
 
 /// [`GlobalTransform`] is an affine transformation from entity-local coordinates to worldspace coordinates.

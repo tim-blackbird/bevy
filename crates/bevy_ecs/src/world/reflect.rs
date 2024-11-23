@@ -215,7 +215,9 @@ pub enum GetComponentReflectError {
     NoCorrespondingComponentId(TypeId),
 
     /// The given [`Entity`] does not have a [`Component`] corresponding to the given [`TypeId`].
-    #[display("The given `Entity` {entity:?} does not have a `{component_name:?}` component ({component_id:?}, which corresponds to {type_id:?})")]
+    #[display(
+        "The given `Entity` {entity:?} does not have a `{component_name:?}` component ({component_id:?}, which corresponds to {type_id:?})"
+    )]
     EntityDoesNotHaveComponent {
         /// The given [`Entity`].
         entity: Entity,
@@ -243,7 +245,9 @@ pub enum GetComponentReflectError {
     /// [`TypeRegistry`]: bevy_reflect::TypeRegistry
     /// [`ReflectFromPtr`]: bevy_reflect::ReflectFromPtr
     /// [`App::register_type`]: ../../../bevy_app/struct.App.html#method.register_type
-    #[display("The `World`'s `TypeRegistry` did not contain `TypeData` for `ReflectFromPtr` for the given {_0:?} (did you call `App::register_type()`?)")]
+    #[display(
+        "The `World`'s `TypeRegistry` did not contain `TypeData` for `ReflectFromPtr` for the given {_0:?} (did you call `App::register_type()`?)"
+    )]
     #[error(ignore)]
     MissingReflectFromPtrTypeData(TypeId),
 }

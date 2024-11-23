@@ -6,7 +6,7 @@ use bevy_ecs::{
     system::{Commands, EntityCommands},
     world::{Command, EntityWorldMut, World},
 };
-use smallvec::{smallvec, SmallVec};
+use smallvec::{SmallVec, smallvec};
 
 // Do not use `world.send_event_batch` as it prints error message when the Events are not available in the world,
 // even though it's a valid use case to execute commands on a world without events. Loading a GLTF file for example
@@ -74,14 +74,11 @@ fn update_old_parent(world: &mut World, child: Entity, parent: Entity) {
         }
         remove_from_children(world, previous_parent, child);
 
-        push_events(
-            world,
-            [HierarchyEvent::ChildMoved {
-                child,
-                previous_parent,
-                new_parent: parent,
-            }],
-        );
+        push_events(world, [HierarchyEvent::ChildMoved {
+            child,
+            previous_parent,
+            new_parent: parent,
+        }]);
     } else {
         push_events(world, [HierarchyEvent::ChildAdded { child, parent }]);
     }
@@ -546,26 +543,20 @@ impl ChildBuild for WorldChildBuilder<'_> {
     fn spawn(&mut self, bundle: impl Bundle) -> EntityWorldMut {
         let entity = self.world.spawn((bundle, Parent(self.parent))).id();
         add_child_unchecked(self.world, self.parent, entity);
-        push_events(
-            self.world,
-            [HierarchyEvent::ChildAdded {
-                child: entity,
-                parent: self.parent,
-            }],
-        );
+        push_events(self.world, [HierarchyEvent::ChildAdded {
+            child: entity,
+            parent: self.parent,
+        }]);
         self.world.entity_mut(entity)
     }
 
     fn spawn_empty(&mut self) -> EntityWorldMut {
         let entity = self.world.spawn(Parent(self.parent)).id();
         add_child_unchecked(self.world, self.parent, entity);
-        push_events(
-            self.world,
-            [HierarchyEvent::ChildAdded {
-                child: entity,
-                parent: self.parent,
-            }],
-        );
+        push_events(self.world, [HierarchyEvent::ChildAdded {
+            child: entity,
+            parent: self.parent,
+        }]);
         self.world.entity_mut(entity)
     }
 
@@ -705,10 +696,10 @@ impl BuildChildren for EntityWorldMut<'_> {
 mod tests {
     use super::{BuildChildren, ChildBuild};
     use crate::{
-        components::{Children, Parent},
         HierarchyEvent::{self, ChildAdded, ChildMoved, ChildRemoved},
+        components::{Children, Parent},
     };
-    use smallvec::{smallvec, SmallVec};
+    use smallvec::{SmallVec, smallvec};
 
     use bevy_ecs::{
         component::Component,
@@ -762,25 +753,19 @@ mod tests {
 
         assert_parent(world, b, Some(a));
         assert_children(world, a, Some(&[b]));
-        assert_events(
-            world,
-            &[ChildAdded {
-                child: b,
-                parent: a,
-            }],
-        );
+        assert_events(world, &[ChildAdded {
+            child: b,
+            parent: a,
+        }]);
 
         world.entity_mut(a).add_child(c);
 
         assert_children(world, a, Some(&[b, c]));
         assert_parent(world, c, Some(a));
-        assert_events(
-            world,
-            &[ChildAdded {
-                child: c,
-                parent: a,
-            }],
-        );
+        assert_events(world, &[ChildAdded {
+            child: c,
+            parent: a,
+        }]);
         // Children component should be removed when it's empty.
         world.entity_mut(d).add_child(b).add_child(c);
         assert_children(world, a, None);
@@ -797,27 +782,21 @@ mod tests {
 
         assert_parent(world, a, Some(b));
         assert_children(world, b, Some(&[a]));
-        assert_events(
-            world,
-            &[ChildAdded {
-                child: a,
-                parent: b,
-            }],
-        );
+        assert_events(world, &[ChildAdded {
+            child: a,
+            parent: b,
+        }]);
 
         world.entity_mut(a).set_parent(c);
 
         assert_parent(world, a, Some(c));
         assert_children(world, b, None);
         assert_children(world, c, Some(&[a]));
-        assert_events(
-            world,
-            &[ChildMoved {
-                child: a,
-                previous_parent: b,
-                new_parent: c,
-            }],
-        );
+        assert_events(world, &[ChildMoved {
+            child: a,
+            previous_parent: b,
+            new_parent: c,
+        }]);
     }
 
     // regression test for https://github.com/bevyengine/bevy/pull/8346
@@ -851,24 +830,18 @@ mod tests {
         assert_parent(world, c, Some(a));
         assert_children(world, a, Some(&[c]));
         omit_events(world, 2); // Omit ChildAdded events.
-        assert_events(
-            world,
-            &[ChildRemoved {
-                child: b,
-                parent: a,
-            }],
-        );
+        assert_events(world, &[ChildRemoved {
+            child: b,
+            parent: a,
+        }]);
 
         world.entity_mut(c).remove_parent();
         assert_parent(world, c, None);
         assert_children(world, a, None);
-        assert_events(
-            world,
-            &[ChildRemoved {
-                child: c,
-                parent: a,
-            }],
-        );
+        assert_events(world, &[ChildRemoved {
+            child: c,
+            parent: a,
+        }]);
     }
 
     #[allow(dead_code)]
@@ -1178,10 +1151,9 @@ mod tests {
 
         // add child into parent1
         world.entity_mut(parent1).add_children(&[child]);
-        assert_eq!(
-            world.get::<Children>(parent1).unwrap().0.as_slice(),
-            &[child]
-        );
+        assert_eq!(world.get::<Children>(parent1).unwrap().0.as_slice(), &[
+            child
+        ]);
 
         // move only child from parent1 with `add_children`
         world.entity_mut(parent2).add_children(&[child]);
@@ -1216,10 +1188,9 @@ mod tests {
             commands.entity(parent1).add_children(&[child]);
             queue.apply(&mut world);
         }
-        assert_eq!(
-            world.get::<Children>(parent1).unwrap().0.as_slice(),
-            &[child]
-        );
+        assert_eq!(world.get::<Children>(parent1).unwrap().0.as_slice(), &[
+            child
+        ]);
 
         // move only child from parent1 with `add_children`
         {

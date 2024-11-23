@@ -122,15 +122,12 @@ fn spawn_scene(commands: &mut Commands, asset_server: &AssetServer) {
 
 /// Spawns the help text at the bottom of the screen.
 fn spawn_text(commands: &mut Commands, app_settings: &AppSettings) {
-    commands.spawn((
-        create_help_text(app_settings),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((create_help_text(app_settings), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 impl Default for AppSettings {

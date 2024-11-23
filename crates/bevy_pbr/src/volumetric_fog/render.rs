@@ -13,21 +13,19 @@ use bevy_ecs::{
     component::Component,
     entity::Entity,
     query::{Has, QueryItem, With},
-    system::{lifetimeless::Read, Commands, Local, Query, Res, ResMut, Resource},
+    system::{Commands, Local, Query, Res, ResMut, Resource, lifetimeless::Read},
     world::{FromWorld, World},
 };
 use bevy_image::{BevyDefault, Image};
-use bevy_math::{vec4, Mat3A, Mat4, Vec3, Vec3A, Vec4, Vec4Swizzles as _};
+use bevy_math::{Mat3A, Mat4, Vec3, Vec3A, Vec4, Vec4Swizzles as _, vec4};
 use bevy_render::{
+    Extract,
     mesh::{
-        allocator::MeshAllocator, Mesh, MeshVertexBufferLayoutRef, RenderMesh, RenderMeshBufferInfo,
+        Mesh, MeshVertexBufferLayoutRef, RenderMesh, RenderMeshBufferInfo, allocator::MeshAllocator,
     },
     render_asset::RenderAssets,
     render_graph::{NodeRunError, RenderGraphContext, ViewNode},
     render_resource::{
-        binding_types::{
-            sampler, texture_3d, texture_depth_2d, texture_depth_2d_multisampled, uniform_buffer,
-        },
         BindGroupLayout, BindGroupLayoutEntries, BindingResource, BlendComponent, BlendFactor,
         BlendOperation, BlendState, CachedRenderPipelineId, ColorTargetState, ColorWrites,
         DynamicBindGroupEntries, DynamicUniformBuffer, Face, FragmentState, LoadOp,
@@ -35,12 +33,14 @@ use bevy_render::{
         RenderPassDescriptor, RenderPipelineDescriptor, SamplerBindingType, Shader, ShaderStages,
         ShaderType, SpecializedRenderPipeline, SpecializedRenderPipelines, StoreOp, TextureFormat,
         TextureSampleType, TextureUsages, VertexState,
+        binding_types::{
+            sampler, texture_3d, texture_depth_2d, texture_depth_2d_multisampled, uniform_buffer,
+        },
     },
     renderer::{RenderContext, RenderDevice, RenderQueue},
     sync_world::RenderEntity,
     texture::GpuImage,
     view::{ExtractedView, Msaa, ViewDepthTexture, ViewTarget, ViewUniformOffset},
-    Extract,
 };
 use bevy_transform::components::GlobalTransform;
 use bevy_utils::prelude::default;
@@ -457,23 +457,17 @@ impl ViewNode for VolumetricFogNode {
 
             render_pass.set_vertex_buffer(0, *vertex_buffer_slice.buffer.slice(..));
             render_pass.set_pipeline(pipeline);
-            render_pass.set_bind_group(
-                0,
-                &view_bind_group.value,
-                &[
-                    view_uniform_offset.offset,
-                    view_lights_offset.offset,
-                    view_fog_offset.offset,
-                    **view_light_probes_offset,
-                    **view_ssr_offset,
-                    **view_environment_map_offset,
-                ],
-            );
-            render_pass.set_bind_group(
-                1,
-                &volumetric_view_bind_group,
-                &[view_fog_volume.uniform_buffer_offset],
-            );
+            render_pass.set_bind_group(0, &view_bind_group.value, &[
+                view_uniform_offset.offset,
+                view_lights_offset.offset,
+                view_fog_offset.offset,
+                **view_light_probes_offset,
+                **view_ssr_offset,
+                **view_environment_map_offset,
+            ]);
+            render_pass.set_bind_group(1, &volumetric_view_bind_group, &[
+                view_fog_volume.uniform_buffer_offset
+            ]);
 
             // Draw elements or arrays, as appropriate.
             match &render_mesh.buffer_info {

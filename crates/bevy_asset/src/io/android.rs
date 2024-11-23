@@ -1,4 +1,4 @@
-use crate::io::{get_meta_path, AssetReader, AssetReaderError, PathStream, Reader, VecReader};
+use crate::io::{AssetReader, AssetReaderError, PathStream, Reader, VecReader, get_meta_path};
 use bevy_utils::tracing::error;
 use futures_lite::stream;
 use std::{ffi::CString, path::Path};

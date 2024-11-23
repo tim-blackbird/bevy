@@ -17,9 +17,7 @@ pub enum ArgError {
         received: Cow<'static, str>,
     },
     /// The argument has the wrong ownership.
-    #[display(
-        "expected {expected} value but received {received} value (@ argument index {index})"
-    )]
+    #[display("expected {expected} value but received {received} value (@ argument index {index})")]
     InvalidOwnership {
         index: usize,
         expected: Ownership,

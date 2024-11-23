@@ -6,7 +6,7 @@ use bevy_ecs::{
     system::{ReadOnlySystemParam, Resource, SystemParam, SystemParamItem, SystemState},
     world::World,
 };
-use bevy_utils::{all_tuples, TypeIdMap};
+use bevy_utils::{TypeIdMap, all_tuples};
 use core::{any::TypeId, fmt::Debug, hash::Hash};
 use derive_more::derive::{Display, Error};
 use std::sync::{PoisonError, RwLock, RwLockReadGuard, RwLockWriteGuard};
@@ -324,7 +324,7 @@ where
                 QueryEntityError::NoSuchEntity(_) => return Err(DrawError::ViewEntityNotFound),
                 QueryEntityError::QueryDoesNotMatch(_, _)
                 | QueryEntityError::AliasedMutability(_) => {
-                    return Err(DrawError::InvalidViewQuery)
+                    return Err(DrawError::InvalidViewQuery);
                 }
             },
         };

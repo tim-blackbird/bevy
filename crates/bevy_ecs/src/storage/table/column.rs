@@ -516,13 +516,10 @@ impl Column {
             // SAFETY: The row is length checked before fetching the pointer. This is being
             // accessed through a read-only reference to the column.
             .then(|| unsafe {
-                (
-                    self.data.get_unchecked(row.as_usize()),
-                    TickCells {
-                        added: self.added_ticks.get_unchecked(row.as_usize()),
-                        changed: self.changed_ticks.get_unchecked(row.as_usize()),
-                    },
-                )
+                (self.data.get_unchecked(row.as_usize()), TickCells {
+                    added: self.added_ticks.get_unchecked(row.as_usize()),
+                    changed: self.changed_ticks.get_unchecked(row.as_usize()),
+                })
             })
     }
 

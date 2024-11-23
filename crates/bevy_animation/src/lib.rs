@@ -39,17 +39,17 @@ use bevy_ecs::{
 };
 use bevy_math::FloatOrd;
 use bevy_reflect::{
-    prelude::ReflectDefault, utility::NonGenericTypeInfoCell, ApplyError, DynamicTupleStruct,
-    FromReflect, FromType, GetTypeRegistration, PartialReflect, Reflect, ReflectFromPtr,
-    ReflectKind, ReflectMut, ReflectOwned, ReflectRef, TupleStruct, TupleStructFieldIter,
-    TupleStructInfo, TypeInfo, TypePath, TypeRegistration, Typed, UnnamedField,
+    ApplyError, DynamicTupleStruct, FromReflect, FromType, GetTypeRegistration, PartialReflect,
+    Reflect, ReflectFromPtr, ReflectKind, ReflectMut, ReflectOwned, ReflectRef, TupleStruct,
+    TupleStructFieldIter, TupleStructInfo, TypeInfo, TypePath, TypeRegistration, Typed,
+    UnnamedField, prelude::ReflectDefault, utility::NonGenericTypeInfoCell,
 };
 use bevy_time::Time;
-use bevy_transform::{prelude::Transform, TransformSystem};
+use bevy_transform::{TransformSystem, prelude::Transform};
 use bevy_utils::{
+    NoOpHash, TypeIdMap,
     hashbrown::HashMap,
     tracing::{trace, warn},
-    NoOpHash, TypeIdMap,
 };
 use petgraph::graph::NodeIndex;
 use serde::{Deserialize, Serialize};
@@ -62,15 +62,15 @@ use uuid::Uuid;
 pub mod prelude {
     #[doc(hidden)]
     pub use crate::{
-        animatable::*, animation_curves::*, graph::*, transition::*, AnimationClip,
-        AnimationPlayer, AnimationPlugin, VariableCurve,
+        AnimationClip, AnimationPlayer, AnimationPlugin, VariableCurve, animatable::*,
+        animation_curves::*, graph::*, transition::*,
     };
 }
 
 use crate::{
     animation_curves::AnimationCurve,
     graph::{AnimationGraph, AnimationGraphAssetLoader, AnimationNodeIndex},
-    transition::{advance_transitions, expire_completed_transitions, AnimationTransitions},
+    transition::{AnimationTransitions, advance_transitions, expire_completed_transitions},
 };
 use alloc::sync::Arc;
 
@@ -587,15 +587,12 @@ impl AnimationClip {
         self.duration = self.duration.max(time);
         let triggers = self.events.entry(target).or_default();
         match triggers.binary_search_by_key(&FloatOrd(time), |e| FloatOrd(e.time)) {
-            Ok(index) | Err(index) => triggers.insert(
-                index,
-                TimedAnimationEvent {
-                    time,
-                    event: AnimationEvent {
-                        trigger: AnimationEventFn(Arc::new(trigger_fn)),
-                    },
+            Ok(index) | Err(index) => triggers.insert(index, TimedAnimationEvent {
+                time,
+                event: AnimationEvent {
+                    trigger: AnimationEventFn(Arc::new(trigger_fn)),
                 },
-            ),
+            }),
         }
     }
 }

@@ -1,5 +1,5 @@
 use bevy_app::{App, Plugin};
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 use bevy_ecs::{
     prelude::{Component, Entity},
     query::{QueryItem, With},
@@ -9,6 +9,7 @@ use bevy_ecs::{
 use bevy_image::{BevyDefault, Image};
 use bevy_math::{Mat4, Quat};
 use bevy_render::{
+    Render, RenderApp, RenderSet,
     camera::Exposure,
     extract_component::{
         ComponentUniforms, DynamicUniformIndex, ExtractComponent, ExtractComponentPlugin,
@@ -22,10 +23,9 @@ use bevy_render::{
     renderer::RenderDevice,
     texture::GpuImage,
     view::{ExtractedView, Msaa, ViewTarget, ViewUniform, ViewUniforms},
-    Render, RenderApp, RenderSet,
 };
 use bevy_transform::components::Transform;
-use prepass::{SkyboxPrepassPipeline, SKYBOX_PREPASS_SHADER_HANDLE};
+use prepass::{SKYBOX_PREPASS_SHADER_HANDLE, SkyboxPrepassPipeline};
 
 use crate::{core_3d::CORE_3D_DEPTH_FORMAT, prepass::PreviousViewUniforms};
 
@@ -120,21 +120,18 @@ impl ExtractComponent for Skybox {
             .map(Exposure::exposure)
             .unwrap_or_else(|| Exposure::default().exposure());
 
-        Some((
-            skybox.clone(),
-            SkyboxUniforms {
-                brightness: skybox.brightness * exposure,
-                transform: Transform::from_rotation(skybox.rotation)
-                    .compute_matrix()
-                    .inverse(),
-                #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
-                _wasm_padding_8b: 0,
-                #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
-                _wasm_padding_12b: 0,
-                #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
-                _wasm_padding_16b: 0,
-            },
-        ))
+        Some((skybox.clone(), SkyboxUniforms {
+            brightness: skybox.brightness * exposure,
+            transform: Transform::from_rotation(skybox.rotation)
+                .compute_matrix()
+                .inverse(),
+            #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
+            _wasm_padding_8b: 0,
+            #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
+            _wasm_padding_12b: 0,
+            #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
+            _wasm_padding_16b: 0,
+        }))
     }
 }
 
@@ -250,15 +247,11 @@ fn prepare_skybox_pipelines(
     views: Query<(Entity, &ExtractedView, &Msaa), With<Skybox>>,
 ) {
     for (entity, view, msaa) in &views {
-        let pipeline_id = pipelines.specialize(
-            &pipeline_cache,
-            &pipeline,
-            SkyboxPipelineKey {
-                hdr: view.hdr,
-                samples: msaa.samples(),
-                depth_format: CORE_3D_DEPTH_FORMAT,
-            },
-        );
+        let pipeline_id = pipelines.specialize(&pipeline_cache, &pipeline, SkyboxPipelineKey {
+            hdr: view.hdr,
+            samples: msaa.samples(),
+            depth_format: CORE_3D_DEPTH_FORMAT,
+        });
 
         commands
             .entity(entity)

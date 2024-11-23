@@ -60,13 +60,13 @@ pub mod prelude {
 
     #[doc(hidden)]
     pub use crate::{
+        AppGizmoBuilder,
         config::{
             DefaultGizmoConfigGroup, GizmoConfig, GizmoConfigGroup, GizmoConfigStore,
             GizmoLineJoint, GizmoLineStyle,
         },
         gizmos::Gizmos,
         primitives::{dim2::GizmoPrimitive2d, dim3::GizmoPrimitive3d},
-        AppGizmoBuilder,
     };
 
     #[cfg(all(feature = "bevy_pbr", feature = "bevy_render"))]
@@ -96,22 +96,22 @@ use {
         entity::Entity,
         query::ROQueryItem,
         system::{
-            lifetimeless::{Read, SRes},
             Commands, SystemParamItem,
+            lifetimeless::{Read, SRes},
         },
     },
     bevy_render::{
+        Extract, ExtractSchedule, Render, RenderApp, RenderSet,
         extract_component::{ComponentUniforms, DynamicUniformIndex, UniformComponentPlugin},
         render_asset::{PrepareAssetError, RenderAsset, RenderAssetPlugin, RenderAssets},
         render_phase::{PhaseItem, RenderCommand, RenderCommandResult, TrackedRenderPass},
         render_resource::{
-            binding_types::uniform_buffer, BindGroup, BindGroupEntries, BindGroupLayout,
-            BindGroupLayoutEntries, Buffer, BufferInitDescriptor, BufferUsages, Shader,
-            ShaderStages, ShaderType, VertexFormat,
+            BindGroup, BindGroupEntries, BindGroupLayout, BindGroupLayoutEntries, Buffer,
+            BufferInitDescriptor, BufferUsages, Shader, ShaderStages, ShaderType, VertexFormat,
+            binding_types::uniform_buffer,
         },
         renderer::RenderDevice,
         sync_world::{MainEntity, TemporaryRenderEntity},
-        Extract, ExtractSchedule, Render, RenderApp, RenderSet,
     },
     bytemuck::cast_slice,
 };
@@ -184,16 +184,22 @@ impl Plugin for GizmoPlugin {
             if app.is_plugin_added::<bevy_sprite::SpritePlugin>() {
                 app.add_plugins(pipeline_2d::LineGizmo2dPlugin);
             } else {
-                bevy_utils::tracing::warn!("bevy_sprite feature is enabled but bevy_sprite::SpritePlugin was not detected. Are you sure you loaded GizmoPlugin after SpritePlugin?");
+                bevy_utils::tracing::warn!(
+                    "bevy_sprite feature is enabled but bevy_sprite::SpritePlugin was not detected. Are you sure you loaded GizmoPlugin after SpritePlugin?"
+                );
             }
             #[cfg(feature = "bevy_pbr")]
             if app.is_plugin_added::<bevy_pbr::PbrPlugin>() {
                 app.add_plugins(pipeline_3d::LineGizmo3dPlugin);
             } else {
-                bevy_utils::tracing::warn!("bevy_pbr feature is enabled but bevy_pbr::PbrPlugin was not detected. Are you sure you loaded GizmoPlugin after PbrPlugin?");
+                bevy_utils::tracing::warn!(
+                    "bevy_pbr feature is enabled but bevy_pbr::PbrPlugin was not detected. Are you sure you loaded GizmoPlugin after PbrPlugin?"
+                );
             }
         } else {
-            bevy_utils::tracing::warn!("bevy_render feature is enabled but RenderApp was not detected. Are you sure you loaded GizmoPlugin after RenderPlugin?");
+            bevy_utils::tracing::warn!(
+                "bevy_render feature is enabled but RenderApp was not detected. Are you sure you loaded GizmoPlugin after RenderPlugin?"
+            );
         }
     }
 
@@ -595,11 +601,9 @@ impl<const I: usize, P: PhaseItem> RenderCommand<P> for SetLineGizmoBindGroup<I>
         let Some(uniform_index) = uniform_index else {
             return RenderCommandResult::Skip;
         };
-        pass.set_bind_group(
-            I,
-            &bind_group.into_inner().bindgroup,
-            &[uniform_index.index()],
-        );
+        pass.set_bind_group(I, &bind_group.into_inner().bindgroup, &[
+            uniform_index.index()
+        ]);
         RenderCommandResult::Success
     }
 }

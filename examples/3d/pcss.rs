@@ -4,9 +4,9 @@ use std::f32::consts::PI;
 
 use bevy::{
     core_pipeline::{
+        Skybox,
         experimental::taa::{TemporalAntiAliasPlugin, TemporalAntiAliasing},
         prepass::{DepthPrepass, MotionVectorPrepass},
-        Skybox,
     },
     math::vec3,
     pbr::{CubemapVisibleEntities, ShadowFilteringMethod, VisibleMeshEntities},
@@ -211,34 +211,22 @@ fn spawn_buttons(commands: &mut Commands) {
     commands
         .spawn(widgets::main_ui_node())
         .with_children(|parent| {
-            widgets::spawn_option_buttons(
-                parent,
-                "Light Type",
-                &[
-                    (AppSetting::LightType(LightType::Directional), "Directional"),
-                    (AppSetting::LightType(LightType::Point), "Point"),
-                    (AppSetting::LightType(LightType::Spot), "Spot"),
-                ],
-            );
-            widgets::spawn_option_buttons(
-                parent,
-                "Shadow Filter",
-                &[
-                    (AppSetting::ShadowFilter(ShadowFilter::Temporal), "Temporal"),
-                    (
-                        AppSetting::ShadowFilter(ShadowFilter::NonTemporal),
-                        "Non-Temporal",
-                    ),
-                ],
-            );
-            widgets::spawn_option_buttons(
-                parent,
-                "Soft Shadows",
-                &[
-                    (AppSetting::SoftShadows(true), "On"),
-                    (AppSetting::SoftShadows(false), "Off"),
-                ],
-            );
+            widgets::spawn_option_buttons(parent, "Light Type", &[
+                (AppSetting::LightType(LightType::Directional), "Directional"),
+                (AppSetting::LightType(LightType::Point), "Point"),
+                (AppSetting::LightType(LightType::Spot), "Spot"),
+            ]);
+            widgets::spawn_option_buttons(parent, "Shadow Filter", &[
+                (AppSetting::ShadowFilter(ShadowFilter::Temporal), "Temporal"),
+                (
+                    AppSetting::ShadowFilter(ShadowFilter::NonTemporal),
+                    "Non-Temporal",
+                ),
+            ]);
+            widgets::spawn_option_buttons(parent, "Soft Shadows", &[
+                (AppSetting::SoftShadows(true), "On"),
+                (AppSetting::SoftShadows(false), "Off"),
+            ]);
         });
 }
 

@@ -11,15 +11,15 @@ use bevy_ecs::{
 };
 use bevy_image::Image;
 use bevy_math::{UVec2, Vec2};
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_sprite::TextureAtlasLayout;
 use bevy_utils::HashMap;
 
 use cosmic_text::{Attrs, Buffer, Family, Metrics, Shaping, Wrap};
 
 use crate::{
-    error::TextError, ComputedTextBlock, Font, FontAtlasSets, FontSmoothing, JustifyText,
-    LineBreak, PositionedGlyph, TextBounds, TextEntity, TextFont, TextLayout, YAxisOrientation,
+    ComputedTextBlock, Font, FontAtlasSets, FontSmoothing, JustifyText, LineBreak, PositionedGlyph,
+    TextBounds, TextEntity, TextFont, TextLayout, YAxisOrientation, error::TextError,
 };
 
 /// A wrapper resource around a [`cosmic_text::FontSystem`]
@@ -171,15 +171,12 @@ impl TextPipeline {
         buffer.set_metrics(font_system, metrics);
         buffer.set_size(font_system, bounds.width, bounds.height);
 
-        buffer.set_wrap(
-            font_system,
-            match linebreak {
-                LineBreak::WordBoundary => Wrap::Word,
-                LineBreak::AnyCharacter => Wrap::Glyph,
-                LineBreak::WordOrCharacter => Wrap::WordOrGlyph,
-                LineBreak::NoWrap => Wrap::None,
-            },
-        );
+        buffer.set_wrap(font_system, match linebreak {
+            LineBreak::WordBoundary => Wrap::Word,
+            LineBreak::AnyCharacter => Wrap::Glyph,
+            LineBreak::WordOrCharacter => Wrap::WordOrGlyph,
+            LineBreak::NoWrap => Wrap::None,
+        });
 
         buffer.set_rich_text(font_system, spans_iter, Attrs::new(), Shaping::Advanced);
 

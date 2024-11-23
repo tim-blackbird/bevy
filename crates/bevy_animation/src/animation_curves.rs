@@ -84,21 +84,21 @@ use core::{
 
 use bevy_ecs::{component::Component, world::Mut};
 use bevy_math::{
+    Quat, Vec3,
     curve::{
+        Curve, Interval,
         cores::{UnevenCore, UnevenCoreError},
         iterable::IterableCurve,
-        Curve, Interval,
     },
-    Quat, Vec3,
 };
 use bevy_reflect::{FromReflect, Reflect, Reflectable, TypePath};
 use bevy_render::mesh::morph::MorphWeights;
 use bevy_transform::prelude::Transform;
 
 use crate::{
+    AnimationEntityMut, AnimationEvaluationError,
     graph::AnimationNodeIndex,
     prelude::{Animatable, BlendInput},
-    AnimationEntityMut, AnimationEvaluationError,
 };
 
 /// A value on a component that Bevy can animate.

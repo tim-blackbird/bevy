@@ -1,11 +1,11 @@
 use crate::{
+    DrawLineGizmo, DrawLineJointGizmo, GizmoRenderSystem, GpuLineGizmo, LINE_JOINT_SHADER_HANDLE,
+    LINE_SHADER_HANDLE, LineGizmoUniformBindgroupLayout, SetLineGizmoBindGroup,
     config::{GizmoLineJoint, GizmoLineStyle, GizmoMeshConfig},
-    line_gizmo_vertex_buffer_layouts, line_joint_gizmo_vertex_buffer_layouts, DrawLineGizmo,
-    DrawLineJointGizmo, GizmoRenderSystem, GpuLineGizmo, LineGizmoUniformBindgroupLayout,
-    SetLineGizmoBindGroup, LINE_JOINT_SHADER_HANDLE, LINE_SHADER_HANDLE,
+    line_gizmo_vertex_buffer_layouts, line_joint_gizmo_vertex_buffer_layouts,
 };
 use bevy_app::{App, Plugin};
-use bevy_core_pipeline::core_2d::{Transparent2d, CORE_2D_DEPTH_FORMAT};
+use bevy_core_pipeline::core_2d::{CORE_2D_DEPTH_FORMAT, Transparent2d};
 
 use bevy_ecs::{
     prelude::Entity,
@@ -17,14 +17,14 @@ use bevy_image::BevyDefault as _;
 use bevy_math::FloatOrd;
 use bevy_render::sync_world::MainEntity;
 use bevy_render::{
-    render_asset::{prepare_assets, RenderAssets},
+    Render, RenderApp, RenderSet,
+    render_asset::{RenderAssets, prepare_assets},
     render_phase::{
         AddRenderCommand, DrawFunctions, PhaseItemExtraIndex, SetItemPipeline,
         ViewSortedRenderPhases,
     },
     render_resource::*,
     view::{ExtractedView, Msaa, RenderLayers, ViewTarget},
-    Render, RenderApp, RenderSet,
 };
 use bevy_sprite::{Mesh2dPipeline, Mesh2dPipelineKey, SetMesh2dViewBindGroup};
 use bevy_utils::tracing::error;
@@ -211,7 +211,9 @@ impl SpecializedRenderPipeline for LineJointGizmoPipeline {
         ];
 
         if key.joints == GizmoLineJoint::None {
-            error!("There is no entry point for line joints with GizmoLineJoints::None. Please consider aborting the drawing process before reaching this stage.");
+            error!(
+                "There is no entry point for line joints with GizmoLineJoints::None. Please consider aborting the drawing process before reaching this stage."
+            );
         };
 
         let entry_point = match key.joints {
@@ -311,15 +313,11 @@ fn queue_line_gizmos_2d(
                 continue;
             };
 
-            let pipeline = pipelines.specialize(
-                &pipeline_cache,
-                &pipeline,
-                LineGizmoPipelineKey {
-                    mesh_key,
-                    strip: line_gizmo.strip,
-                    line_style: config.line_style,
-                },
-            );
+            let pipeline = pipelines.specialize(&pipeline_cache, &pipeline, LineGizmoPipelineKey {
+                mesh_key,
+                strip: line_gizmo.strip,
+                line_style: config.line_style,
+            });
 
             transparent_phase.add(Transparent2d {
                 entity: (entity, *main_entity),
@@ -371,14 +369,11 @@ fn queue_line_joint_gizmos_2d(
                 continue;
             }
 
-            let pipeline = pipelines.specialize(
-                &pipeline_cache,
-                &pipeline,
-                LineJointGizmoPipelineKey {
+            let pipeline =
+                pipelines.specialize(&pipeline_cache, &pipeline, LineJointGizmoPipelineKey {
                     mesh_key,
                     joints: line_gizmo.joints,
-                },
-            );
+                });
             transparent_phase.add(Transparent2d {
                 entity: (entity, *main_entity),
                 draw_function,

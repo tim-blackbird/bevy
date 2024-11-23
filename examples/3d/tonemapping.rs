@@ -81,15 +81,12 @@ fn setup(
     ));
 
     // ui
-    commands.spawn((
-        Text::default(),
-        Node {
-            position_type: PositionType::Absolute,
-            top: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((Text::default(), Node {
+        position_type: PositionType::Absolute,
+        top: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 fn setup_basic_scene(mut commands: Commands, asset_server: Res<AssetServer>) {

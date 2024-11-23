@@ -1,17 +1,17 @@
 use crate::{
+    Asset, AssetLoadError, AssetServer, AssetServerMode, Assets, Handle, UntypedAssetId,
+    UntypedHandle,
     io::{AssetReaderError, MissingAssetSourceError, MissingProcessedAssetReaderError, Reader},
     loader_builders::{Deferred, NestedLoader, StaticTyped},
     meta::{AssetHash, AssetMeta, AssetMetaDyn, ProcessedInfoMinimal, Settings},
     path::AssetPath,
-    Asset, AssetLoadError, AssetServer, AssetServerMode, Assets, Handle, UntypedAssetId,
-    UntypedHandle,
 };
 use atomicow::CowArc;
 use bevy_ecs::world::World;
 use bevy_utils::{BoxedFuture, ConditionalSendFuture, HashMap, HashSet};
 use core::any::{Any, TypeId};
 use derive_more::derive::{Display, Error, From};
-use downcast_rs::{impl_downcast, Downcast};
+use downcast_rs::{Downcast, impl_downcast};
 use ron::error::SpannedError;
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
@@ -432,13 +432,10 @@ impl<'a> LoadContext<'a> {
         let handle = self
             .asset_server
             .get_or_create_path_handle(labeled_path, None);
-        self.labeled_assets.insert(
-            label,
-            LabeledAsset {
-                asset: loaded_asset,
-                handle: handle.clone().untyped(),
-            },
-        );
+        self.labeled_assets.insert(label, LabeledAsset {
+            asset: loaded_asset,
+            handle: handle.clone().untyped(),
+        });
         handle
     }
 
@@ -585,6 +582,8 @@ pub enum ReadAssetBytesError {
         path: PathBuf,
         source: std::io::Error,
     },
-    #[display("The LoadContext for this read_asset_bytes call requires hash metadata, but it was not provided. This is likely an internal implementation error.")]
+    #[display(
+        "The LoadContext for this read_asset_bytes call requires hash metadata, but it was not provided. This is likely an internal implementation error."
+    )]
     MissingAssetHash,
 }

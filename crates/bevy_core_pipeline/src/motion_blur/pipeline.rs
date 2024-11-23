@@ -9,15 +9,15 @@ use bevy_image::BevyDefault as _;
 use bevy_render::{
     globals::GlobalsUniform,
     render_resource::{
-        binding_types::{
-            sampler, texture_2d, texture_2d_multisampled, texture_depth_2d,
-            texture_depth_2d_multisampled, uniform_buffer_sized,
-        },
         BindGroupLayout, BindGroupLayoutEntries, CachedRenderPipelineId, ColorTargetState,
         ColorWrites, FragmentState, MultisampleState, PipelineCache, PrimitiveState,
         RenderPipelineDescriptor, Sampler, SamplerBindingType, SamplerDescriptor, ShaderDefVal,
         ShaderStages, ShaderType, SpecializedRenderPipeline, SpecializedRenderPipelines,
         TextureFormat, TextureSampleType,
+        binding_types::{
+            sampler, texture_2d, texture_2d_multisampled, texture_depth_2d,
+            texture_depth_2d_multisampled, uniform_buffer_sized,
+        },
     },
     renderer::RenderDevice,
     view::{ExtractedView, Msaa, ViewTarget},
@@ -25,7 +25,7 @@ use bevy_render::{
 
 use crate::fullscreen_vertex_shader::fullscreen_shader_vertex_state;
 
-use super::{MotionBlur, MOTION_BLUR_SHADER_HANDLE};
+use super::{MOTION_BLUR_SHADER_HANDLE, MotionBlur};
 
 #[derive(Resource)]
 pub struct MotionBlurPipeline {
@@ -157,14 +157,10 @@ pub(crate) fn prepare_motion_blur_pipelines(
     views: Query<(Entity, &ExtractedView, &Msaa), With<MotionBlur>>,
 ) {
     for (entity, view, msaa) in &views {
-        let pipeline_id = pipelines.specialize(
-            &pipeline_cache,
-            &pipeline,
-            MotionBlurPipelineKey {
-                hdr: view.hdr,
-                samples: msaa.samples(),
-            },
-        );
+        let pipeline_id = pipelines.specialize(&pipeline_cache, &pipeline, MotionBlurPipelineKey {
+            hdr: view.hdr,
+            samples: msaa.samples(),
+        });
 
         commands
             .entity(entity)

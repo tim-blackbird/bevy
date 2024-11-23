@@ -2,13 +2,13 @@ use futures_io::{AsyncRead, AsyncWrite};
 use futures_lite::Stream;
 
 use crate::io::{
-    get_meta_path, AssetReader, AssetReaderError, AssetWriter, AssetWriterError, AsyncSeekForward,
-    PathStream, Reader, Writer,
+    AssetReader, AssetReaderError, AssetWriter, AssetWriterError, AsyncSeekForward, PathStream,
+    Reader, Writer, get_meta_path,
 };
 
 use core::{pin::Pin, task::Poll};
 use std::{
-    fs::{read_dir, File},
+    fs::{File, read_dir},
     io::{Read, Seek, Write},
     path::{Path, PathBuf},
 };

@@ -16,6 +16,7 @@ use smallvec::smallvec;
 use wgpu::{BindingResource, BufferUsages, DownlevelFlags, Features};
 
 use crate::{
+    Render, RenderApp, RenderSet,
     render_phase::{
         BinnedPhaseItem, BinnedRenderPhaseBatch, CachedRenderPipelinePhaseItem,
         PhaseItemExtraIndex, SortedPhaseItem, SortedRenderPhase, UnbatchableBinnedEntityIndices,
@@ -24,7 +25,6 @@ use crate::{
     render_resource::{BufferVec, GpuArrayBufferable, RawBufferVec, UninitBufferVec},
     renderer::{RenderAdapter, RenderDevice, RenderQueue},
     view::{ExtractedView, GpuCulling, ViewTarget},
-    Render, RenderApp, RenderSet,
 };
 
 use super::{BatchMeta, GetBatchData, GetFullBatchData};

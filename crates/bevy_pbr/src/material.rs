@@ -1,8 +1,8 @@
 use self::{irradiance_volume::IrradianceVolume, prelude::EnvironmentMapLight};
 #[cfg(feature = "meshlet")]
 use crate::meshlet::{
-    prepare_material_meshlet_meshes_main_opaque_pass, queue_material_meshlet_meshes,
-    InstanceManager,
+    InstanceManager, prepare_material_meshlet_meshes_main_opaque_pass,
+    queue_material_meshlet_meshes,
 };
 use crate::*;
 use bevy_asset::{Asset, AssetId, AssetServer};
@@ -20,13 +20,14 @@ use bevy_core_pipeline::{
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::{
     prelude::*,
-    system::{lifetimeless::SRes, SystemParamItem},
+    system::{SystemParamItem, lifetimeless::SRes},
 };
-use bevy_reflect::std_traits::ReflectDefault;
 use bevy_reflect::Reflect;
+use bevy_reflect::std_traits::ReflectDefault;
 use bevy_render::sync_world::MainEntityHashMap;
 use bevy_render::view::RenderVisibleEntities;
 use bevy_render::{
+    Extract,
     camera::TemporalJitter,
     extract_resource::ExtractResource,
     mesh::{Mesh3d, MeshVertexBufferLayoutRef, RenderMesh},
@@ -35,7 +36,6 @@ use bevy_render::{
     render_resource::*,
     renderer::RenderDevice,
     view::{ExtractedView, Msaa, RenderVisibilityRanges, ViewVisibility},
-    Extract,
 };
 use bevy_utils::tracing::error;
 use core::{

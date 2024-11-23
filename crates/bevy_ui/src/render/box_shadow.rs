@@ -19,22 +19,22 @@ use bevy_ecs::{
     },
 };
 use bevy_image::BevyDefault as _;
-use bevy_math::{vec2, FloatOrd, Mat4, Rect, Vec2, Vec3Swizzles, Vec4Swizzles};
-use bevy_render::sync_world::MainEntity;
+use bevy_math::{FloatOrd, Mat4, Rect, Vec2, Vec3Swizzles, Vec4Swizzles, vec2};
 use bevy_render::RenderApp;
+use bevy_render::sync_world::MainEntity;
 use bevy_render::{
+    Extract, ExtractSchedule, Render, RenderSet,
     camera::Camera,
     render_phase::*,
     render_resource::{binding_types::uniform_buffer, *},
     renderer::{RenderDevice, RenderQueue},
     sync_world::{RenderEntity, TemporaryRenderEntity},
     view::*,
-    Extract, ExtractSchedule, Render, RenderSet,
 };
 use bevy_transform::prelude::GlobalTransform;
 use bytemuck::{Pod, Zeroable};
 
-use super::{stack_z_offsets, QUAD_INDICES, QUAD_VERTEX_POSITIONS};
+use super::{QUAD_INDICES, QUAD_VERTEX_POSITIONS, stack_z_offsets};
 
 pub const BOX_SHADOW_SHADER_HANDLE: Handle<Shader> = Handle::weak_from_u128(17717747047134343426);
 
@@ -145,25 +145,22 @@ impl SpecializedRenderPipeline for BoxShadowPipeline {
     type Key = BoxShadowPipelineKey;
 
     fn specialize(&self, key: Self::Key) -> RenderPipelineDescriptor {
-        let vertex_layout = VertexBufferLayout::from_vertex_formats(
-            VertexStepMode::Vertex,
-            vec![
-                // position
-                VertexFormat::Float32x3,
-                // uv
-                VertexFormat::Float32x2,
-                // color
-                VertexFormat::Float32x4,
-                // target rect size
-                VertexFormat::Float32x2,
-                // corner radius values (top left, top right, bottom right, bottom left)
-                VertexFormat::Float32x4,
-                // blur radius
-                VertexFormat::Float32,
-                // outer size
-                VertexFormat::Float32x2,
-            ],
-        );
+        let vertex_layout = VertexBufferLayout::from_vertex_formats(VertexStepMode::Vertex, vec![
+            // position
+            VertexFormat::Float32x3,
+            // uv
+            VertexFormat::Float32x2,
+            // color
+            VertexFormat::Float32x4,
+            // target rect size
+            VertexFormat::Float32x2,
+            // corner radius values (top left, top right, bottom right, bottom left)
+            VertexFormat::Float32x4,
+            // blur radius
+            VertexFormat::Float32,
+            // outer size
+            VertexFormat::Float32x2,
+        ]);
         let shader_defs = vec![ShaderDefVal::UInt(
             "SHADOW_SAMPLES".to_string(),
             key.samples,
@@ -489,13 +486,10 @@ pub fn prepare_shadows(
                         ui_meta.indices.push(indices_index + i as u32);
                     }
 
-                    batches.push((
-                        item.entity(),
-                        UiShadowsBatch {
-                            range: vertices_index..vertices_index + 6,
-                            camera: box_shadow.camera_entity,
-                        },
-                    ));
+                    batches.push((item.entity(), UiShadowsBatch {
+                        range: vertices_index..vertices_index + 6,
+                        camera: box_shadow.camera_entity,
+                    }));
 
                     vertices_index += 6;
                     indices_index += 4;

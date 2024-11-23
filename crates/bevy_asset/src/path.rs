@@ -7,7 +7,7 @@ use core::{
     ops::Deref,
 };
 use derive_more::derive::{Display, Error};
-use serde::{de::Visitor, Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de::Visitor};
 use std::path::{Path, PathBuf};
 
 /// Represents a path to an asset in a "virtual filesystem".
@@ -85,10 +85,14 @@ pub enum ParseAssetPathError {
     #[display("Asset label must not contain a `://` substring")]
     InvalidLabelSyntax,
     /// Error that occurs when a path string has an [`AssetPath::source`] delimiter `://` with no characters preceding it. E.g. `://file.test`.
-    #[display("Asset source must be at least one character. Either specify the source before the '://' or remove the `://`")]
+    #[display(
+        "Asset source must be at least one character. Either specify the source before the '://' or remove the `://`"
+    )]
     MissingSource,
     /// Error that occurs when a path string has an [`AssetPath::label`] delimiter `#` with no characters succeeding it. E.g. `file.test#`
-    #[display("Asset label must be at least one character. Either specify the label after the '#' or remove the '#'")]
+    #[display(
+        "Asset label must be at least one character. Either specify the label after the '#' or remove the '#'"
+    )]
     MissingLabel,
 }
 

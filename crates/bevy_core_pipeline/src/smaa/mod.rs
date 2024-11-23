@@ -38,7 +38,7 @@ use crate::{
 use bevy_app::{App, Plugin};
 #[cfg(feature = "smaa_luts")]
 use bevy_asset::load_internal_binary_asset;
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::{
     component::Component,
@@ -46,13 +46,14 @@ use bevy_ecs::{
     query::{QueryItem, With},
     reflect::ReflectComponent,
     schedule::IntoSystemConfigs as _,
-    system::{lifetimeless::Read, Commands, Query, Res, ResMut, Resource},
+    system::{Commands, Query, Res, ResMut, Resource, lifetimeless::Read},
     world::{FromWorld, World},
 };
 use bevy_image::{BevyDefault, Image};
-use bevy_math::{vec4, Vec4};
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_math::{Vec4, vec4};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render::{
+    Render, RenderApp, RenderSet,
     camera::ExtractedCamera,
     extract_component::{ExtractComponent, ExtractComponentPlugin},
     render_asset::RenderAssets,
@@ -60,7 +61,6 @@ use bevy_render::{
         NodeRunError, RenderGraphApp as _, RenderGraphContext, ViewNode, ViewNodeRunner,
     },
     render_resource::{
-        binding_types::{sampler, texture_2d, uniform_buffer},
         AddressMode, BindGroup, BindGroupEntries, BindGroupLayout, BindGroupLayoutEntries,
         CachedRenderPipelineId, ColorTargetState, ColorWrites, CompareFunction, DepthStencilState,
         DynamicUniformBuffer, Extent3d, FilterMode, FragmentState, LoadOp, MultisampleState,
@@ -71,11 +71,11 @@ use bevy_render::{
         StencilFaceState, StencilOperation, StencilState, StoreOp, TextureDescriptor,
         TextureDimension, TextureFormat, TextureSampleType, TextureUsages, TextureView,
         VertexState,
+        binding_types::{sampler, texture_2d, uniform_buffer},
     },
     renderer::{RenderContext, RenderDevice, RenderQueue},
     texture::{CachedTexture, GpuImage, TextureCache},
     view::{ExtractedView, ViewTarget},
-    Render, RenderApp, RenderSet,
 };
 use bevy_utils::prelude::default;
 
@@ -706,50 +706,41 @@ fn prepare_smaa_textures(
         };
 
         // Create the two-channel RG texture for phase 1 (edge detection).
-        let edge_detection_color_texture = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("SMAA edge detection color texture"),
-                size: texture_size,
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::Rg8Unorm,
-                usage: TextureUsages::TEXTURE_BINDING | TextureUsages::RENDER_ATTACHMENT,
-                view_formats: &[],
-            },
-        );
+        let edge_detection_color_texture = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("SMAA edge detection color texture"),
+            size: texture_size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::Rg8Unorm,
+            usage: TextureUsages::TEXTURE_BINDING | TextureUsages::RENDER_ATTACHMENT,
+            view_formats: &[],
+        });
 
         // Create the stencil texture for phase 1 (edge detection).
-        let edge_detection_stencil_texture = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("SMAA edge detection stencil texture"),
-                size: texture_size,
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::Stencil8,
-                usage: TextureUsages::RENDER_ATTACHMENT,
-                view_formats: &[],
-            },
-        );
+        let edge_detection_stencil_texture = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("SMAA edge detection stencil texture"),
+            size: texture_size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::Stencil8,
+            usage: TextureUsages::RENDER_ATTACHMENT,
+            view_formats: &[],
+        });
 
         // Create the four-channel RGBA texture for phase 2 (blending weight
         // calculation).
-        let blend_texture = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("SMAA blend texture"),
-                size: texture_size,
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::Rgba8Unorm,
-                usage: TextureUsages::TEXTURE_BINDING | TextureUsages::RENDER_ATTACHMENT,
-                view_formats: &[],
-            },
-        );
+        let blend_texture = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("SMAA blend texture"),
+            size: texture_size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::Rgba8Unorm,
+            usage: TextureUsages::TEXTURE_BINDING | TextureUsages::RENDER_ATTACHMENT,
+            view_formats: &[],
+        });
 
         commands.entity(entity).insert(SmaaTextures {
             edge_detection_color_texture,
@@ -1062,11 +1053,8 @@ fn perform_neighborhood_blending(
         .command_encoder()
         .begin_render_pass(&pass_descriptor);
     neighborhood_blending_render_pass.set_pipeline(neighborhood_blending_pipeline);
-    neighborhood_blending_render_pass.set_bind_group(
-        0,
-        &postprocess_bind_group,
-        &[**view_smaa_uniform_offset],
-    );
+    neighborhood_blending_render_pass
+        .set_bind_group(0, &postprocess_bind_group, &[**view_smaa_uniform_offset]);
     neighborhood_blending_render_pass.set_bind_group(
         1,
         &view_smaa_bind_groups.neighborhood_blending_bind_group,

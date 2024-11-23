@@ -160,8 +160,8 @@ mod tests {
     use alloc::borrow::Cow;
 
     use crate::{
-        func::args::{ArgError, ArgList, Ownership},
         TypePath,
+        func::args::{ArgError, ArgList, Ownership},
     };
 
     use super::*;
@@ -173,13 +173,10 @@ mod tests {
         let func = foo.into_function();
         let args = ArgList::new();
         let result = func.call(args);
-        assert_eq!(
-            result.unwrap_err(),
-            FunctionError::ArgCountMismatch {
-                expected: 1,
-                received: 0
-            }
-        );
+        assert_eq!(result.unwrap_err(), FunctionError::ArgCountMismatch {
+            expected: 1,
+            received: 0
+        });
     }
 
     #[test]
@@ -189,13 +186,10 @@ mod tests {
         let func = foo.into_function();
         let args = ArgList::new().push_owned(123_i32);
         let result = func.call(args);
-        assert_eq!(
-            result.unwrap_err(),
-            FunctionError::ArgCountMismatch {
-                expected: 0,
-                received: 1
-            }
-        );
+        assert_eq!(result.unwrap_err(), FunctionError::ArgCountMismatch {
+            expected: 0,
+            received: 1
+        });
     }
 
     #[test]

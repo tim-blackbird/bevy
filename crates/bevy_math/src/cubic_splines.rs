@@ -2,7 +2,7 @@
 
 use core::{fmt::Debug, iter::once};
 
-use crate::{ops::FloatPow, Vec2, VectorSpace};
+use crate::{Vec2, VectorSpace, ops::FloatPow};
 
 use derive_more::derive::{Display, Error};
 use itertools::Itertools;
@@ -11,7 +11,7 @@ use itertools::Itertools;
 use crate::curve::{Curve, Interval};
 
 #[cfg(feature = "bevy_reflect")]
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 
 /// A spline composed of a single cubic Bezier curve.
 ///
@@ -70,12 +70,9 @@ impl<P: VectorSpace> CubicGenerator<P> for CubicBezier<P> {
         // A derivation for this matrix can be found in "General Matrix Representations for B-splines" by Kaihuai Qin.
         // <https://xiaoxingchen.github.io/2020/03/02/bspline_in_so3/general_matrix_representation_for_bsplines.pdf>
         // See section 4.2 and equation 11.
-        let char_matrix = [
-            [1., 0., 0., 0.],
-            [-3., 3., 0., 0.],
-            [3., -6., 3., 0.],
-            [-1., 3., -3., 1.],
-        ];
+        let char_matrix = [[1., 0., 0., 0.], [-3., 3., 0., 0.], [3., -6., 3., 0.], [
+            -1., 3., -3., 1.,
+        ]];
 
         let segments = self
             .control_points
@@ -164,12 +161,9 @@ impl<P: VectorSpace> CubicHermite<P> {
     /// `(p_{i+1}, v_{i+1})` are consecutive control points with tangents.
     #[inline]
     fn char_matrix(&self) -> [[f32; 4]; 4] {
-        [
-            [1., 0., 0., 0.],
-            [0., 1., 0., 0.],
-            [-3., -2., 3., -1.],
-            [2., 1., -2., 1.],
-        ]
+        [[1., 0., 0., 0.], [0., 1., 0., 0.], [-3., -2., 3., -1.], [
+            2., 1., -2., 1.,
+        ]]
     }
 }
 impl<P: VectorSpace> CubicGenerator<P> for CubicHermite<P> {
@@ -870,7 +864,9 @@ impl<P: VectorSpace> CyclicCubicGenerator<P> for LinearSpline<P> {
 
 /// An error indicating that a spline construction didn't have enough control points to generate a curve.
 #[derive(Clone, Debug, Error, Display)]
-#[display("Not enough data to build curve: needed at least {expected} control points but was only given {given}")]
+#[display(
+    "Not enough data to build curve: needed at least {expected} control points but was only given {given}"
+)]
 pub struct InsufficientDataError {
     expected: usize,
     given: usize,
@@ -1579,7 +1575,7 @@ impl<P: VectorSpace> From<CubicCurve<P>> for RationalCurve<P> {
 
 #[cfg(test)]
 mod tests {
-    use glam::{vec2, Vec2};
+    use glam::{Vec2, vec2};
 
     use crate::{
         cubic_splines::{
@@ -1670,18 +1666,26 @@ mod tests {
         assert!(curve.position(3.).abs_diff_eq(p3, FLOAT_EQ));
 
         // Tangents at segment endpoints
-        assert!(curve
-            .velocity(0.)
-            .abs_diff_eq((p1 - p0) * tension * 2., FLOAT_EQ));
-        assert!(curve
-            .velocity(1.)
-            .abs_diff_eq((p2 - p0) * tension, FLOAT_EQ));
-        assert!(curve
-            .velocity(2.)
-            .abs_diff_eq((p3 - p1) * tension, FLOAT_EQ));
-        assert!(curve
-            .velocity(3.)
-            .abs_diff_eq((p3 - p2) * tension * 2., FLOAT_EQ));
+        assert!(
+            curve
+                .velocity(0.)
+                .abs_diff_eq((p1 - p0) * tension * 2., FLOAT_EQ)
+        );
+        assert!(
+            curve
+                .velocity(1.)
+                .abs_diff_eq((p2 - p0) * tension, FLOAT_EQ)
+        );
+        assert!(
+            curve
+                .velocity(2.)
+                .abs_diff_eq((p3 - p1) * tension, FLOAT_EQ)
+        );
+        assert!(
+            curve
+                .velocity(3.)
+                .abs_diff_eq((p3 - p2) * tension * 2., FLOAT_EQ)
+        );
     }
 
     /// Test that [`RationalCurve`] properly generalizes [`CubicCurve`]. A Cubic upgraded to a rational

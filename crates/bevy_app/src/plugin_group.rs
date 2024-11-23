@@ -1,7 +1,7 @@
 use crate::{App, AppError, Plugin};
 use bevy_utils::{
-    tracing::{debug, warn},
     TypeIdMap,
+    tracing::{debug, warn},
 };
 use core::any::TypeId;
 
@@ -418,8 +418,7 @@ impl PluginGroupBuilder {
                     {
                         panic!(
                             "Error adding plugin {} in group {}: plugin was already added in application",
-                            plugin_name,
-                            self.group_name
+                            plugin_name, self.group_name
                         );
                     }
                 }
@@ -473,14 +472,11 @@ mod tests {
             .add(PluginB)
             .add(PluginC);
 
-        assert_eq!(
-            group.order,
-            vec![
-                core::any::TypeId::of::<PluginA>(),
-                core::any::TypeId::of::<PluginB>(),
-                core::any::TypeId::of::<PluginC>(),
-            ]
-        );
+        assert_eq!(group.order, vec![
+            core::any::TypeId::of::<PluginA>(),
+            core::any::TypeId::of::<PluginB>(),
+            core::any::TypeId::of::<PluginC>(),
+        ]);
     }
 
     #[test]
@@ -490,14 +486,11 @@ mod tests {
             .add(PluginB)
             .add_after::<PluginA>(PluginC);
 
-        assert_eq!(
-            group.order,
-            vec![
-                core::any::TypeId::of::<PluginA>(),
-                core::any::TypeId::of::<PluginC>(),
-                core::any::TypeId::of::<PluginB>(),
-            ]
-        );
+        assert_eq!(group.order, vec![
+            core::any::TypeId::of::<PluginA>(),
+            core::any::TypeId::of::<PluginC>(),
+            core::any::TypeId::of::<PluginB>(),
+        ]);
     }
 
     #[test]
@@ -507,14 +500,11 @@ mod tests {
             .add(PluginB)
             .add_before::<PluginB>(PluginC);
 
-        assert_eq!(
-            group.order,
-            vec![
-                core::any::TypeId::of::<PluginA>(),
-                core::any::TypeId::of::<PluginC>(),
-                core::any::TypeId::of::<PluginB>(),
-            ]
-        );
+        assert_eq!(group.order, vec![
+            core::any::TypeId::of::<PluginA>(),
+            core::any::TypeId::of::<PluginC>(),
+            core::any::TypeId::of::<PluginB>(),
+        ]);
     }
 
     #[test]
@@ -525,14 +515,11 @@ mod tests {
             .add(PluginC)
             .add(PluginB);
 
-        assert_eq!(
-            group.order,
-            vec![
-                core::any::TypeId::of::<PluginA>(),
-                core::any::TypeId::of::<PluginC>(),
-                core::any::TypeId::of::<PluginB>(),
-            ]
-        );
+        assert_eq!(group.order, vec![
+            core::any::TypeId::of::<PluginA>(),
+            core::any::TypeId::of::<PluginC>(),
+            core::any::TypeId::of::<PluginB>(),
+        ]);
     }
 
     #[test]
@@ -543,14 +530,11 @@ mod tests {
             .add(PluginC)
             .add_after::<PluginA>(PluginC);
 
-        assert_eq!(
-            group.order,
-            vec![
-                core::any::TypeId::of::<PluginA>(),
-                core::any::TypeId::of::<PluginC>(),
-                core::any::TypeId::of::<PluginB>(),
-            ]
-        );
+        assert_eq!(group.order, vec![
+            core::any::TypeId::of::<PluginA>(),
+            core::any::TypeId::of::<PluginC>(),
+            core::any::TypeId::of::<PluginB>(),
+        ]);
     }
 
     #[test]
@@ -561,14 +545,11 @@ mod tests {
             .add(PluginC)
             .add_before::<PluginB>(PluginC);
 
-        assert_eq!(
-            group.order,
-            vec![
-                core::any::TypeId::of::<PluginA>(),
-                core::any::TypeId::of::<PluginC>(),
-                core::any::TypeId::of::<PluginB>(),
-            ]
-        );
+        assert_eq!(group.order, vec![
+            core::any::TypeId::of::<PluginA>(),
+            core::any::TypeId::of::<PluginC>(),
+            core::any::TypeId::of::<PluginB>(),
+        ]);
     }
 
     #[test]
@@ -581,14 +562,11 @@ mod tests {
             .add_group(group_a)
             .add(PluginC);
 
-        assert_eq!(
-            group_b.order,
-            vec![
-                core::any::TypeId::of::<PluginA>(),
-                core::any::TypeId::of::<PluginB>(),
-                core::any::TypeId::of::<PluginC>(),
-            ]
-        );
+        assert_eq!(group_b.order, vec![
+            core::any::TypeId::of::<PluginA>(),
+            core::any::TypeId::of::<PluginB>(),
+            core::any::TypeId::of::<PluginC>(),
+        ]);
     }
 
     #[test]
@@ -605,13 +583,10 @@ mod tests {
             .add_group(group_a)
             .add_group(group_b);
 
-        assert_eq!(
-            group.order,
-            vec![
-                core::any::TypeId::of::<PluginA>(),
-                core::any::TypeId::of::<PluginB>(),
-                core::any::TypeId::of::<PluginC>(),
-            ]
-        );
+        assert_eq!(group.order, vec![
+            core::any::TypeId::of::<PluginA>(),
+            core::any::TypeId::of::<PluginB>(),
+            core::any::TypeId::of::<PluginC>(),
+        ]);
     }
 }

@@ -345,17 +345,14 @@ pub fn get_transcoded_formats(
             // space as BC7 (128-bits per 4x4 texel block) so prefer ASTC over BC for
             // transcoding speed and quality.
             if supported_compressed_formats.contains(CompressedImageFormats::ASTC_LDR) {
-                (
-                    TranscoderBlockFormat::ASTC_4x4,
-                    TextureFormat::Astc {
-                        block: AstcBlock::B4x4,
-                        channel: if is_srgb {
-                            AstcChannel::UnormSrgb
-                        } else {
-                            AstcChannel::Unorm
-                        },
+                (TranscoderBlockFormat::ASTC_4x4, TextureFormat::Astc {
+                    block: AstcBlock::B4x4,
+                    channel: if is_srgb {
+                        AstcChannel::UnormSrgb
+                    } else {
+                        AstcChannel::Unorm
                     },
-                )
+                })
             } else if supported_compressed_formats.contains(CompressedImageFormats::BC) {
                 (
                     TranscoderBlockFormat::BC7,
@@ -1081,7 +1078,7 @@ pub fn ktx2_dfd_to_texture_format(
                         return Err(TextureError::UnsupportedTextureFormat(format!(
                             "Invalid ETC2 sample channel type: {}",
                             sample.channel_type
-                        )))
+                        )));
                     }
                 }
             }
@@ -1143,7 +1140,7 @@ pub fn ktx2_dfd_to_texture_format(
                     return Err(TextureError::UnsupportedTextureFormat(format!(
                         "Invalid ASTC dimension: {} x {}",
                         d.0, d.1
-                    )))
+                    )));
                 }
             },
             channel: if is_srgb {
@@ -1178,7 +1175,7 @@ pub fn ktx2_dfd_to_texture_format(
                     channel_type => {
                         return Err(TextureError::UnsupportedTextureFormat(format!(
                             "Invalid KTX2 UASTC channel type: {channel_type}",
-                        )))
+                        )));
                     }
                 }),
             ));
@@ -1489,7 +1486,7 @@ pub fn ktx2_format_to_texture_format(
         _ => {
             return Err(TextureError::UnsupportedTextureFormat(format!(
                 "{ktx2_format:?}"
-            )))
+            )));
         }
     })
 }

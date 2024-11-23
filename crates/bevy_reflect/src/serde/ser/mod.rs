@@ -21,9 +21,8 @@ mod tuples;
 #[cfg(test)]
 mod tests {
     use crate::{
-        self as bevy_reflect,
+        self as bevy_reflect, PartialReflect, Reflect, ReflectSerialize, Struct, TypeRegistry,
         serde::{ReflectSerializer, ReflectSerializerProcessor},
-        PartialReflect, Reflect, ReflectSerialize, Struct, TypeRegistry,
     };
     use bevy_utils::{HashMap, HashSet};
     use core::any::TypeId;

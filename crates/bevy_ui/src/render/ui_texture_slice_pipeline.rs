@@ -15,6 +15,7 @@ use bevy_image::{BevyDefault, Image};
 use bevy_math::{FloatOrd, Mat4, Rect, Vec2, Vec4Swizzles};
 use bevy_render::sync_world::MainEntity;
 use bevy_render::{
+    Extract, ExtractSchedule, Render, RenderSet,
     render_asset::RenderAssets,
     render_phase::*,
     render_resource::{binding_types::uniform_buffer, *},
@@ -22,7 +23,6 @@ use bevy_render::{
     sync_world::{RenderEntity, TemporaryRenderEntity},
     texture::{GpuImage, TRANSPARENT_IMAGE_HANDLE},
     view::*,
-    Extract, ExtractSchedule, Render, RenderSet,
 };
 use bevy_sprite::{
     SliceScaleMode, SpriteAssetEvents, SpriteImageMode, TextureAtlasLayout, TextureSlicer,
@@ -160,25 +160,22 @@ impl SpecializedRenderPipeline for UiTextureSlicePipeline {
     type Key = UiTextureSlicePipelineKey;
 
     fn specialize(&self, key: Self::Key) -> RenderPipelineDescriptor {
-        let vertex_layout = VertexBufferLayout::from_vertex_formats(
-            VertexStepMode::Vertex,
-            vec![
-                // position
-                VertexFormat::Float32x3,
-                // uv
-                VertexFormat::Float32x2,
-                // color
-                VertexFormat::Float32x4,
-                // normalized texture slicing lines (left, top, right, bottom)
-                VertexFormat::Float32x4,
-                // normalized target slicing lines (left, top, right, bottom)
-                VertexFormat::Float32x4,
-                // repeat values (horizontal side, vertical side, horizontal center, vertical center)
-                VertexFormat::Float32x4,
-                // normalized texture atlas rect (left, top, right, bottom)
-                VertexFormat::Float32x4,
-            ],
-        );
+        let vertex_layout = VertexBufferLayout::from_vertex_formats(VertexStepMode::Vertex, vec![
+            // position
+            VertexFormat::Float32x3,
+            // uv
+            VertexFormat::Float32x2,
+            // color
+            VertexFormat::Float32x4,
+            // normalized texture slicing lines (left, top, right, bottom)
+            VertexFormat::Float32x4,
+            // normalized target slicing lines (left, top, right, bottom)
+            VertexFormat::Float32x4,
+            // repeat values (horizontal side, vertical side, horizontal center, vertical center)
+            VertexFormat::Float32x4,
+            // normalized texture atlas rect (left, top, right, bottom)
+            VertexFormat::Float32x4,
+        ]);
         let shader_defs = Vec::new();
 
         RenderPipelineDescriptor {
@@ -587,15 +584,12 @@ pub fn prepare_ui_slices(
                     let color = texture_slices.color.to_f32_array();
 
                     let (image_size, mut atlas) = if let Some(atlas) = texture_slices.atlas_rect {
-                        (
-                            atlas.size(),
-                            [
-                                atlas.min.x / batch_image_size.x,
-                                atlas.min.y / batch_image_size.y,
-                                atlas.max.x / batch_image_size.x,
-                                atlas.max.y / batch_image_size.y,
-                            ],
-                        )
+                        (atlas.size(), [
+                            atlas.min.x / batch_image_size.x,
+                            atlas.min.y / batch_image_size.y,
+                            atlas.max.x / batch_image_size.x,
+                            atlas.max.y / batch_image_size.y,
+                        ])
                     } else {
                         (batch_image_size, [0., 0., 1., 1.])
                     };
@@ -781,16 +775,12 @@ fn compute_texture_slices(
             let repeat_center_y =
                 compute_tiled_subaxis(image_side_height, target_side_width, center_scale_mode);
 
-            [
-                slices,
-                border,
-                [
-                    repeat_side_x,
-                    repeat_side_y,
-                    repeat_center_x,
-                    repeat_center_y,
-                ],
-            ]
+            [slices, border, [
+                repeat_side_x,
+                repeat_side_y,
+                repeat_center_x,
+                repeat_center_y,
+            ]]
         }
         SpriteImageMode::Tiled {
             tile_x,

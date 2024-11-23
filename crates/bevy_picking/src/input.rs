@@ -15,14 +15,14 @@ use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 use bevy_hierarchy::DespawnRecursiveExt;
 use bevy_input::{
+    ButtonState,
     prelude::*,
     touch::{TouchInput, TouchPhase},
-    ButtonState,
 };
 use bevy_math::Vec2;
 use bevy_reflect::prelude::*;
 use bevy_render::camera::RenderTarget;
-use bevy_utils::{tracing::debug, HashMap, HashSet};
+use bevy_utils::{HashMap, HashSet, tracing::debug};
 use bevy_window::{PrimaryWindow, WindowEvent, WindowRef};
 
 use crate::pointer::{

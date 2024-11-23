@@ -29,15 +29,15 @@ mod texture_slice;
 pub mod prelude {
     #[doc(hidden)]
     pub use crate::{
+        ColorMaterial, ColorMesh2dBundle, MeshMaterial2d, TextureAtlasBuilder,
         bundle::SpriteBundle,
         sprite::{Sprite, SpriteImageMode},
         texture_atlas::{TextureAtlas, TextureAtlasLayout, TextureAtlasSources},
         texture_slice::{BorderRect, SliceScaleMode, TextureSlice, TextureSlicer},
-        ColorMaterial, ColorMesh2dBundle, MeshMaterial2d, TextureAtlasBuilder,
     };
 }
 
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 pub use bundle::*;
 pub use dynamic_texture_atlas_builder::*;
 pub use mesh2d::*;
@@ -48,18 +48,18 @@ pub use texture_atlas_builder::*;
 pub use texture_slice::*;
 
 use bevy_app::prelude::*;
-use bevy_asset::{load_internal_asset, AssetApp, Assets, Handle};
+use bevy_asset::{AssetApp, Assets, Handle, load_internal_asset};
 use bevy_core_pipeline::core_2d::Transparent2d;
 use bevy_ecs::{prelude::*, query::QueryItem};
 use bevy_image::Image;
 use bevy_render::{
+    ExtractSchedule, Render, RenderApp, RenderSet,
     extract_component::{ExtractComponent, ExtractComponentPlugin},
     mesh::{Mesh, Mesh2d, MeshAabb},
     primitives::Aabb,
     render_phase::AddRenderCommand,
     render_resource::{Shader, SpecializedRenderPipelines},
-    view::{check_visibility, NoFrustumCulling, VisibilitySystems},
-    ExtractSchedule, Render, RenderApp, RenderSet,
+    view::{NoFrustumCulling, VisibilitySystems, check_visibility},
 };
 
 /// Adds support for 2D sprite rendering.
@@ -276,21 +276,23 @@ mod test {
         let entity = app.world_mut().spawn(Sprite::from_image(image_handle)).id();
 
         // Verify that the entity does not have an AABB
-        assert!(!app
-            .world()
-            .get_entity(entity)
-            .expect("Could not find entity")
-            .contains::<Aabb>());
+        assert!(
+            !app.world()
+                .get_entity(entity)
+                .expect("Could not find entity")
+                .contains::<Aabb>()
+        );
 
         // Run system
         app.update();
 
         // Verify the AABB exists
-        assert!(app
-            .world()
-            .get_entity(entity)
-            .expect("Could not find entity")
-            .contains::<Aabb>());
+        assert!(
+            app.world()
+                .get_entity(entity)
+                .expect("Could not find entity")
+                .contains::<Aabb>()
+        );
     }
 
     #[test]

@@ -16,15 +16,15 @@ use bevy_ecs::{
 };
 use bevy_image::Image;
 use bevy_math::Vec2;
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render::camera::Camera;
 use bevy_sprite::TextureAtlasLayout;
 use bevy_text::{
-    scale_value, ComputedTextBlock, CosmicFontSystem, Font, FontAtlasSets, LineBreak, SwashCache,
-    TextBounds, TextColor, TextError, TextFont, TextLayout, TextLayoutInfo, TextMeasureInfo,
-    TextPipeline, TextReader, TextRoot, TextSpanAccess, TextWriter, YAxisOrientation,
+    ComputedTextBlock, CosmicFontSystem, Font, FontAtlasSets, LineBreak, SwashCache, TextBounds,
+    TextColor, TextError, TextFont, TextLayout, TextLayoutInfo, TextMeasureInfo, TextPipeline,
+    TextReader, TextRoot, TextSpanAccess, TextWriter, YAxisOrientation, scale_value,
 };
-use bevy_utils::{tracing::error, Entry};
+use bevy_utils::{Entry, tracing::error};
 use taffy::style::AvailableSpace;
 
 /// UI text system flags.

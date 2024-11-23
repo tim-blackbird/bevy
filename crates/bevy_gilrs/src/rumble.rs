@@ -6,14 +6,14 @@ use bevy_ecs::system::NonSendMut;
 use bevy_input::gamepad::{GamepadRumbleIntensity, GamepadRumbleRequest};
 use bevy_time::{Real, Time};
 use bevy_utils::{
+    Duration, HashMap,
     synccell::SyncCell,
     tracing::{debug, warn},
-    Duration, HashMap,
 };
 use derive_more::derive::{Display, Error, From};
 use gilrs::{
-    ff::{self, BaseEffect, BaseEffectType, Repeat, Replay},
     GamepadId,
+    ff::{self, BaseEffect, BaseEffectType, Repeat, Replay},
 };
 
 /// A rumble effect that is currently in effect.
@@ -153,7 +153,7 @@ pub(crate) fn play_gilrs_rumble(
                     debug!("Tried to rumble {gamepad:?}, but it doesn't support force feedback");
                 } else {
                     warn!(
-                    "Tried to handle rumble request for {gamepad:?} but an error occurred: {err}"
+                        "Tried to handle rumble request for {gamepad:?} but an error occurred: {err}"
                     );
                 }
             }

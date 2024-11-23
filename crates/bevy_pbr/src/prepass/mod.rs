@@ -7,19 +7,20 @@ use bevy_render::{
 };
 pub use prepass_bindings::*;
 
-use bevy_asset::{load_internal_asset, AssetServer};
+use bevy_asset::{AssetServer, load_internal_asset};
 use bevy_core_pipeline::{
     core_3d::CORE_3D_DEPTH_FORMAT, deferred::*, prelude::Camera3d, prepass::*,
 };
 use bevy_ecs::{
     prelude::*,
     system::{
-        lifetimeless::{Read, SRes},
         SystemParamItem,
+        lifetimeless::{Read, SRes},
     },
 };
 use bevy_math::Affine3A;
 use bevy_render::{
+    Extract,
     globals::{GlobalsBuffer, GlobalsUniform},
     prelude::{Camera, Mesh},
     render_asset::RenderAssets,
@@ -27,15 +28,14 @@ use bevy_render::{
     render_resource::*,
     renderer::{RenderDevice, RenderQueue},
     view::{ExtractedView, Msaa, ViewUniform, ViewUniformOffset, ViewUniforms},
-    Extract,
 };
 use bevy_transform::prelude::GlobalTransform;
 use bevy_utils::tracing::error;
 
 #[cfg(feature = "meshlet")]
 use crate::meshlet::{
-    prepare_material_meshlet_meshes_prepass, queue_material_meshlet_meshes, InstanceManager,
-    MeshletMesh3d,
+    InstanceManager, MeshletMesh3d, prepare_material_meshlet_meshes_prepass,
+    queue_material_meshlet_meshes,
 };
 use crate::*;
 

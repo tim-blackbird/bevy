@@ -1,13 +1,13 @@
 //! Components to customize winit cursor
 
+#[cfg(feature = "custom_cursor")]
+use crate::{
+    WinitCustomCursor,
+    state::{CustomCursorCache, CustomCursorCacheKey},
+};
 use crate::{
     converters::convert_system_cursor_icon,
     state::{CursorSource, PendingCursor},
-};
-#[cfg(feature = "custom_cursor")]
-use crate::{
-    state::{CustomCursorCache, CustomCursorCacheKey},
-    WinitCustomCursor,
 };
 use bevy_app::{App, Last, Plugin};
 #[cfg(feature = "custom_cursor")]
@@ -26,10 +26,10 @@ use bevy_ecs::{
 };
 #[cfg(feature = "custom_cursor")]
 use bevy_image::Image;
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
+use bevy_utils::HashSet;
 #[cfg(feature = "custom_cursor")]
 use bevy_utils::tracing::warn;
-use bevy_utils::HashSet;
 use bevy_window::{SystemCursorIcon, Window};
 #[cfg(feature = "custom_cursor")]
 use wgpu_types::TextureFormat;
@@ -131,7 +131,9 @@ fn update_cursors(
                         continue;
                     };
                     let Some(rgba) = image_to_rgba_pixels(image) else {
-                        warn!("Cursor image {handle:?} not accepted because it's not rgba8 or rgba32float format");
+                        warn!(
+                            "Cursor image {handle:?} not accepted because it's not rgba8 or rgba32float format"
+                        );
                         continue;
                     };
 

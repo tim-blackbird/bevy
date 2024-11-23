@@ -4,9 +4,8 @@ use core::fmt::{Debug, Write};
 #[cfg(feature = "trace")]
 use bevy_utils::tracing::info_span;
 use bevy_utils::{
-    default,
+    HashMap, HashSet, default,
     tracing::{error, info, warn},
-    HashMap, HashSet,
 };
 use derive_more::derive::{Display, Error};
 use disqualified::ShortName;
@@ -1873,9 +1872,9 @@ impl ScheduleGraph {
         let n_ambiguities = ambiguities.len();
 
         let mut message = format!(
-                "{n_ambiguities} pairs of systems with conflicting data access have indeterminate execution order. \
+            "{n_ambiguities} pairs of systems with conflicting data access have indeterminate execution order. \
                 Consider adding `before`, `after`, or `ambiguous_with` relationships between these:\n",
-            );
+        );
 
         for (name_a, name_b, conflicts) in self.conflicts_to_string(ambiguities, components) {
             writeln!(message, " -- {name_a} and {name_b}").unwrap();
@@ -1961,13 +1960,19 @@ pub enum ScheduleBuildError {
     #[display("System dependencies contain cycle(s).\n{_0}")]
     DependencyCycle(String),
     /// Tried to order a system (set) relative to a system set it belongs to.
-    #[display("`{_0}` and `{_1}` have both `in_set` and `before`-`after` relationships (these might be transitive). This combination is unsolvable as a system cannot run before or after a set it belongs to.")]
+    #[display(
+        "`{_0}` and `{_1}` have both `in_set` and `before`-`after` relationships (these might be transitive). This combination is unsolvable as a system cannot run before or after a set it belongs to."
+    )]
     CrossDependency(String, String),
     /// Tried to order system sets that share systems.
-    #[display("`{_0}` and `{_1}` have a `before`-`after` relationship (which may be transitive) but share systems.")]
+    #[display(
+        "`{_0}` and `{_1}` have a `before`-`after` relationship (which may be transitive) but share systems."
+    )]
     SetsHaveOrderButIntersect(String, String),
     /// Tried to order a system (set) relative to all instances of some system function.
-    #[display("Tried to order against `{_0}` in a schedule that has more than one `{_0}` instance. `{_0}` is a `SystemTypeSet` and cannot be used for ordering if ambiguous. Use a different set without this restriction.")]
+    #[display(
+        "Tried to order against `{_0}` in a schedule that has more than one `{_0}` instance. `{_0}` is a `SystemTypeSet` and cannot be used for ordering if ambiguous. Use a different set without this restriction."
+    )]
     SystemTypeSetAmbiguity(String),
     /// Systems with conflicting access have indeterminate run order.
     ///
@@ -2058,8 +2063,8 @@ mod tests {
         self as bevy_ecs,
         prelude::{Res, Resource},
         schedule::{
-            tests::ResMut, IntoSystemConfigs, IntoSystemSetConfigs, Schedule,
-            ScheduleBuildSettings, SystemSet,
+            IntoSystemConfigs, IntoSystemSetConfigs, Schedule, ScheduleBuildSettings, SystemSet,
+            tests::ResMut,
         },
         system::Commands,
         world::World,

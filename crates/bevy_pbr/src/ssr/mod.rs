@@ -3,11 +3,11 @@
 #![expect(deprecated)]
 
 use bevy_app::{App, Plugin};
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 use bevy_core_pipeline::{
     core_3d::{
-        graph::{Core3d, Node3d},
         DEPTH_TEXTURE_SAMPLING_SUPPORTED,
+        graph::{Core3d, Node3d},
     },
     fullscreen_vertex_shader,
     prepass::{DeferredPrepass, DepthPrepass, MotionVectorPrepass, NormalPrepass},
@@ -20,33 +20,33 @@ use bevy_ecs::{
     query::{Has, QueryItem, With},
     reflect::ReflectComponent,
     schedule::IntoSystemConfigs as _,
-    system::{lifetimeless::Read, Commands, Query, Res, ResMut, Resource},
+    system::{Commands, Query, Res, ResMut, Resource, lifetimeless::Read},
     world::{FromWorld, World},
 };
 use bevy_image::BevyDefault as _;
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render::{
+    Render, RenderApp, RenderSet,
     extract_component::{ExtractComponent, ExtractComponentPlugin},
     render_graph::{NodeRunError, RenderGraphApp, RenderGraphContext, ViewNode, ViewNodeRunner},
     render_resource::{
-        binding_types, AddressMode, BindGroupEntries, BindGroupLayout, BindGroupLayoutEntries,
+        AddressMode, BindGroupEntries, BindGroupLayout, BindGroupLayoutEntries,
         CachedRenderPipelineId, ColorTargetState, ColorWrites, DynamicUniformBuffer, FilterMode,
         FragmentState, Operations, PipelineCache, RenderPassColorAttachment, RenderPassDescriptor,
         RenderPipelineDescriptor, Sampler, SamplerBindingType, SamplerDescriptor, Shader,
         ShaderStages, ShaderType, SpecializedRenderPipeline, SpecializedRenderPipelines,
-        TextureFormat, TextureSampleType,
+        TextureFormat, TextureSampleType, binding_types,
     },
     renderer::{RenderContext, RenderDevice, RenderQueue},
     view::{ExtractedView, Msaa, ViewTarget, ViewUniformOffset},
-    Render, RenderApp, RenderSet,
 };
 use bevy_utils::{info_once, prelude::default};
 
 use crate::{
-    binding_arrays_are_usable, graph::NodePbr, prelude::EnvironmentMapLight,
     MeshPipelineViewLayoutKey, MeshPipelineViewLayouts, MeshViewBindGroup, RenderViewLightProbes,
     ViewEnvironmentMapUniformOffset, ViewFogUniformOffset, ViewLightProbesUniformOffset,
-    ViewLightsUniformOffset,
+    ViewLightsUniformOffset, binding_arrays_are_usable, graph::NodePbr,
+    prelude::EnvironmentMapLight,
 };
 
 const SSR_SHADER_HANDLE: Handle<Shader> = Handle::weak_from_u128(10438925299917978850);
@@ -329,18 +329,14 @@ impl ViewNode for ScreenSpaceReflectionsNode {
 
         // Set bind groups.
         render_pass.set_render_pipeline(render_pipeline);
-        render_pass.set_bind_group(
-            0,
-            &view_bind_group.value,
-            &[
-                view_uniform_offset.offset,
-                view_lights_offset.offset,
-                view_fog_offset.offset,
-                **view_light_probes_offset,
-                **view_ssr_offset,
-                **view_environment_map_offset,
-            ],
-        );
+        render_pass.set_bind_group(0, &view_bind_group.value, &[
+            view_uniform_offset.offset,
+            view_lights_offset.offset,
+            view_fog_offset.offset,
+            **view_light_probes_offset,
+            **view_ssr_offset,
+            **view_environment_map_offset,
+        ]);
 
         // Perform the SSR render pass.
         render_pass.set_bind_group(1, &ssr_bind_group, &[]);

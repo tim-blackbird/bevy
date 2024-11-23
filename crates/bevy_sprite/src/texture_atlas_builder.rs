@@ -6,13 +6,13 @@ use bevy_render::{
     render_resource::{Extent3d, TextureDimension, TextureFormat},
 };
 use bevy_utils::{
-    tracing::{debug, error, warn},
     HashMap,
+    tracing::{debug, error, warn},
 };
 use derive_more::derive::{Display, Error};
 use rectangle_pack::{
-    contains_smallest_box, pack_rects, volume_heuristic, GroupedRectsToPlace, PackedLocation,
-    RectToInsert, TargetBin,
+    GroupedRectsToPlace, PackedLocation, RectToInsert, TargetBin, contains_smallest_box,
+    pack_rects, volume_heuristic,
 };
 
 use crate::{TextureAtlasLayout, TextureAtlasSources};

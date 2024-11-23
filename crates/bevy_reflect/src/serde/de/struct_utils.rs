@@ -1,13 +1,13 @@
 use crate::{
+    DynamicStruct, NamedField, StructInfo, StructVariantInfo, TypeRegistration, TypeRegistry,
     serde::{
+        SerializationData, TypedReflectDeserializer,
         de::{
             error_utils::make_custom_error,
             helpers::{ExpectedValues, Ident},
             registration_utils::try_get_registration,
         },
-        SerializationData, TypedReflectDeserializer,
     },
-    DynamicStruct, NamedField, StructInfo, StructVariantInfo, TypeRegistration, TypeRegistry,
 };
 use core::slice::Iter;
 use serde::de::{Error, MapAccess, SeqAccess};

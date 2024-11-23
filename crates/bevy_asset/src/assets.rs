@@ -614,7 +614,9 @@ impl<'a, A: Asset> Iterator for AssetsMutIterator<'a, A> {
 }
 
 #[derive(Error, Display, Debug)]
-#[display("AssetIndex {index:?} has an invalid generation. The current generation is: '{current_generation}'.")]
+#[display(
+    "AssetIndex {index:?} has an invalid generation. The current generation is: '{current_generation}'."
+)]
 pub struct InvalidGenerationError {
     index: AssetIndex,
     current_generation: u32,

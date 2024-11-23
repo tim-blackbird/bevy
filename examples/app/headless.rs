@@ -14,7 +14,9 @@ use bevy::{app::ScheduleRunnerPlugin, log::LogPlugin, prelude::*, utils::Duratio
 
 fn main() {
     if cfg!(feature = "bevy_window") {
-        println!("This example is running with the bevy_window feature enabled and will not run headless.");
+        println!(
+            "This example is running with the bevy_window feature enabled and will not run headless."
+        );
         println!("Disable the default features and rerun the example to run headless.");
         println!("To do so, run:");
         println!();

@@ -31,7 +31,7 @@
 //! [`bevy-baked-gi`]: https://github.com/pcwalton/bevy-baked-gi
 
 use bevy_app::{App, Plugin};
-use bevy_asset::{load_internal_asset, AssetId, Handle};
+use bevy_asset::{AssetId, Handle, load_internal_asset};
 use bevy_ecs::{
     component::Component,
     entity::Entity,
@@ -40,16 +40,16 @@ use bevy_ecs::{
     system::{Query, Res, ResMut, Resource},
 };
 use bevy_image::Image;
-use bevy_math::{uvec2, vec4, Rect, UVec2};
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_math::{Rect, UVec2, uvec2, vec4};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render::sync_world::MainEntityHashMap;
 use bevy_render::{
+    Extract, ExtractSchedule, RenderApp,
     mesh::{Mesh, RenderMesh},
     render_asset::RenderAssets,
     render_resource::Shader,
     texture::GpuImage,
     view::ViewVisibility,
-    Extract, ExtractSchedule, RenderApp,
 };
 use bevy_utils::HashSet;
 

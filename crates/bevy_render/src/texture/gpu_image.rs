@@ -3,7 +3,7 @@ use crate::{
     render_resource::{DefaultImageSampler, Sampler, Texture, TextureView},
     renderer::{RenderDevice, RenderQueue},
 };
-use bevy_ecs::system::{lifetimeless::SRes, SystemParamItem};
+use bevy_ecs::system::{SystemParamItem, lifetimeless::SRes};
 use bevy_image::{Image, ImageSampler};
 use bevy_math::UVec2;
 use wgpu::{TextureFormat, TextureViewDescriptor};

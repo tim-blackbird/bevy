@@ -4,7 +4,7 @@ use bevy_color::Color;
 use bevy_ecs::prelude::*;
 use bevy_image::Image;
 use bevy_math::{Rect, UVec2, Vec2};
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render::texture::TRANSPARENT_IMAGE_HANDLE;
 use bevy_sprite::{TextureAtlas, TextureAtlasLayout, TextureSlicer};
 use bevy_window::{PrimaryWindow, Window};

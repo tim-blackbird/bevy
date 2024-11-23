@@ -2,11 +2,10 @@ use bevy_reflect_derive::impl_type_path;
 
 use crate::generics::impl_generic_info_methods;
 use crate::{
-    self as bevy_reflect,
-    attributes::{impl_custom_attribute_methods, CustomAttributes},
+    self as bevy_reflect, ApplyError, DynamicTuple, Generics, PartialReflect, Reflect, ReflectKind,
+    ReflectMut, ReflectOwned, ReflectRef, Tuple, Type, TypeInfo, TypePath, UnnamedField,
+    attributes::{CustomAttributes, impl_custom_attribute_methods},
     type_info::impl_type_methods,
-    ApplyError, DynamicTuple, Generics, PartialReflect, Reflect, ReflectKind, ReflectMut,
-    ReflectOwned, ReflectRef, Tuple, Type, TypeInfo, TypePath, UnnamedField,
 };
 use alloc::sync::Arc;
 use core::{

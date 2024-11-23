@@ -204,7 +204,7 @@ where
 #[cfg(test)]
 mod tests {
     use crate::{
-        schedule::{tests::ResMut, Schedule},
+        schedule::{Schedule, tests::ResMut},
         system::Resource,
     };
 

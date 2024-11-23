@@ -92,15 +92,12 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, app_settings: R
     )));
 
     // Spawn the help text.
-    commands.spawn((
-        create_text(&app_settings),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((create_text(&app_settings), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 /// Adjusts the focal distance and f-number per user inputs.

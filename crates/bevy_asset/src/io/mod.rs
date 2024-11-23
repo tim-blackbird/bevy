@@ -31,7 +31,7 @@ use core::{
 };
 use derive_more::derive::{Display, Error, From};
 use futures_io::{AsyncRead, AsyncWrite};
-use futures_lite::{ready, Stream};
+use futures_lite::{Stream, ready};
 use std::path::{Path, PathBuf};
 
 /// Errors that occur while loading assets.

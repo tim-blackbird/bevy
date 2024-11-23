@@ -54,8 +54,8 @@ pub use font_loader::*;
 pub use glyph::*;
 pub use pipeline::*;
 pub use text::*;
-pub use text2d::*;
 pub use text_access::*;
+pub use text2d::*;
 
 /// The text prelude.
 ///
@@ -71,13 +71,13 @@ pub mod prelude {
     };
 }
 
-use bevy_app::{prelude::*, Animation};
+use bevy_app::{Animation, prelude::*};
 use bevy_asset::AssetApp;
 #[cfg(feature = "default_font")]
-use bevy_asset::{load_internal_binary_asset, Handle};
+use bevy_asset::{Handle, load_internal_binary_asset};
 use bevy_ecs::prelude::*;
 use bevy_render::{
-    camera::CameraUpdateSystem, view::VisibilitySystems, ExtractSchedule, RenderApp,
+    ExtractSchedule, RenderApp, camera::CameraUpdateSystem, view::VisibilitySystems,
 };
 use bevy_sprite::SpriteSystem;
 

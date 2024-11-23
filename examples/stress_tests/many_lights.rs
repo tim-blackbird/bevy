@@ -9,11 +9,11 @@ use bevy::{
     math::{DVec2, DVec3},
     pbr::{ExtractedPointLight, GlobalClusterableObjectMeta},
     prelude::*,
-    render::{camera::ScalingMode, Render, RenderApp, RenderSet},
+    render::{Render, RenderApp, RenderSet, camera::ScalingMode},
     window::{PresentMode, WindowResolution},
     winit::{UpdateMode, WinitSettings},
 };
-use rand::{thread_rng, Rng};
+use rand::{Rng, thread_rng};
 
 fn main() {
     App::new()
@@ -104,15 +104,11 @@ fn setup(
 
     // add one cube, the only one with strong handles
     // also serves as a reference point during rotation
-    commands.spawn((
-        Mesh3d(mesh),
-        MeshMaterial3d(material),
-        Transform {
-            translation: Vec3::new(0.0, RADIUS, 0.0),
-            scale: Vec3::splat(5.0),
-            ..default()
-        },
-    ));
+    commands.spawn((Mesh3d(mesh), MeshMaterial3d(material), Transform {
+        translation: Vec3::new(0.0, RADIUS, 0.0),
+        scale: Vec3::splat(5.0),
+        ..default()
+    }));
 }
 
 // NOTE: This epsilon value is apparently optimal for optimizing for the average

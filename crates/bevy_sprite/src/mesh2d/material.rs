@@ -13,16 +13,17 @@ use bevy_core_pipeline::{
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::{
     prelude::*,
-    system::{lifetimeless::SRes, SystemParamItem},
+    system::{SystemParamItem, lifetimeless::SRes},
 };
 use bevy_math::FloatOrd;
-use bevy_reflect::{prelude::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, prelude::ReflectDefault};
 use bevy_render::sync_world::MainEntityHashMap;
 use bevy_render::view::RenderVisibleEntities;
 use bevy_render::{
+    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
     mesh::{MeshVertexBufferLayoutRef, RenderMesh},
     render_asset::{
-        prepare_assets, PrepareAssetError, RenderAsset, RenderAssetPlugin, RenderAssets,
+        PrepareAssetError, RenderAsset, RenderAssetPlugin, RenderAssets, prepare_assets,
     },
     render_phase::{
         AddRenderCommand, BinnedRenderPhaseType, DrawFunctions, PhaseItem, PhaseItemExtraIndex,
@@ -36,7 +37,6 @@ use bevy_render::{
     },
     renderer::RenderDevice,
     view::{ExtractedView, InheritedVisibility, Msaa, ViewVisibility, Visibility},
-    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
 };
 use bevy_transform::components::{GlobalTransform, Transform};
 use bevy_utils::tracing::error;

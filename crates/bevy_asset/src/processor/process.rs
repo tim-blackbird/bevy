@@ -1,4 +1,6 @@
 use crate::{
+    AssetLoadError, AssetLoader, AssetPath, DeserializeMetaError, ErasedLoadedAsset,
+    MissingAssetLoaderForExtensionError, MissingAssetLoaderForTypeNameError,
     io::{
         AssetReaderError, AssetWriterError, MissingAssetWriterError,
         MissingProcessedAssetReaderError, MissingProcessedAssetWriterError, SliceReader, Writer,
@@ -7,8 +9,6 @@ use crate::{
     processor::AssetProcessor,
     saver::{AssetSaver, SavedAsset},
     transformer::{AssetTransformer, IdentityAssetTransformer, TransformedAsset},
-    AssetLoadError, AssetLoader, AssetPath, DeserializeMetaError, ErasedLoadedAsset,
-    MissingAssetLoaderForExtensionError, MissingAssetLoaderForTypeNameError,
 };
 use bevy_utils::{BoxedFuture, ConditionalSendFuture};
 use core::marker::PhantomData;
@@ -91,10 +91,10 @@ pub struct LoadTransformAndSaveSettings<LoaderSettings, TransformerSettings, Sav
 }
 
 impl<
-        L: AssetLoader,
-        T: AssetTransformer<AssetInput = L::Asset>,
-        S: AssetSaver<Asset = T::AssetOutput>,
-    > LoadTransformAndSave<L, T, S>
+    L: AssetLoader,
+    T: AssetTransformer<AssetInput = L::Asset>,
+    S: AssetSaver<Asset = T::AssetOutput>,
+> LoadTransformAndSave<L, T, S>
 {
     pub fn new(transformer: T, saver: S) -> Self {
         LoadTransformAndSave {
@@ -157,7 +157,9 @@ pub enum ProcessError {
     },
     DeserializeMetaError(DeserializeMetaError),
     AssetLoadError(AssetLoadError),
-    #[display("The wrong meta type was passed into a processor. This is probably an internal implementation error.")]
+    #[display(
+        "The wrong meta type was passed into a processor. This is probably an internal implementation error."
+    )]
     WrongMetaType,
     #[display("Encountered an error while saving the asset: {_0}")]
     #[from(ignore)]

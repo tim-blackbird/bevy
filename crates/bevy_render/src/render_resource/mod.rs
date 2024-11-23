@@ -32,18 +32,15 @@ pub use uniform_buffer::*;
 
 // TODO: decide where re-exports should go
 pub use wgpu::{
-    util::{
-        BufferInitDescriptor, DispatchIndirectArgs, DrawIndexedIndirectArgs, DrawIndirectArgs,
-        TextureDataOrder,
-    },
     AdapterInfo as WgpuAdapterInfo, AddressMode, AstcBlock, AstcChannel, BindGroupDescriptor,
     BindGroupEntry, BindGroupLayoutDescriptor, BindGroupLayoutEntry, BindingResource, BindingType,
     BlendComponent, BlendFactor, BlendOperation, BlendState, BufferAddress, BufferAsyncError,
-    BufferBinding, BufferBindingType, BufferDescriptor, BufferSize, BufferUsages, ColorTargetState,
-    ColorWrites, CommandEncoder, CommandEncoderDescriptor, CompareFunction, ComputePass,
-    ComputePassDescriptor, ComputePipelineDescriptor as RawComputePipelineDescriptor,
-    DepthBiasState, DepthStencilState, DownlevelFlags, Extent3d, Face, Features as WgpuFeatures,
-    FilterMode, FragmentState as RawFragmentState, FrontFace, ImageCopyBuffer, ImageCopyBufferBase,
+    BufferBinding, BufferBindingType, BufferDescriptor, BufferSize, BufferUsages,
+    COPY_BUFFER_ALIGNMENT, ColorTargetState, ColorWrites, CommandEncoder, CommandEncoderDescriptor,
+    CompareFunction, ComputePass, ComputePassDescriptor,
+    ComputePipelineDescriptor as RawComputePipelineDescriptor, DepthBiasState, DepthStencilState,
+    DownlevelFlags, Extent3d, Face, Features as WgpuFeatures, FilterMode,
+    FragmentState as RawFragmentState, FrontFace, ImageCopyBuffer, ImageCopyBufferBase,
     ImageCopyTexture, ImageCopyTextureBase, ImageDataLayout, ImageSubresourceRange, IndexFormat,
     Limits as WgpuLimits, LoadOp, Maintain, MapMode, MultisampleState, Operations, Origin3d,
     PipelineCompilationOptions, PipelineLayout, PipelineLayoutDescriptor, PolygonMode,
@@ -55,7 +52,11 @@ pub use wgpu::{
     TextureDescriptor, TextureDimension, TextureFormat, TextureSampleType, TextureUsages,
     TextureViewDescriptor, TextureViewDimension, VertexAttribute,
     VertexBufferLayout as RawVertexBufferLayout, VertexFormat, VertexState as RawVertexState,
-    VertexStepMode, COPY_BUFFER_ALIGNMENT,
+    VertexStepMode,
+    util::{
+        BufferInitDescriptor, DispatchIndirectArgs, DrawIndexedIndirectArgs, DrawIndirectArgs,
+        TextureDataOrder,
+    },
 };
 
 pub use crate::mesh::VertexBufferLayout;

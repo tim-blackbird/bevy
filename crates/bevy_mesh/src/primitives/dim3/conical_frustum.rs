@@ -1,6 +1,6 @@
 use crate::{Indices, Mesh, MeshBuilder, Meshable};
 use bevy_asset::RenderAssetUsages;
-use bevy_math::{ops, primitives::ConicalFrustum, Vec3};
+use bevy_math::{Vec3, ops, primitives::ConicalFrustum};
 use wgpu::PrimitiveTopology;
 
 /// A builder used for creating a [`Mesh`] with a [`ConicalFrustum`] shape.

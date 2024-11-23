@@ -5,7 +5,7 @@ use crate::{
 pub use bevy_derive::AppLabel;
 use bevy_ecs::{
     component::RequiredComponentsError,
-    event::{event_update_system, EventCursor},
+    event::{EventCursor, event_update_system},
     intern::Interned,
     prelude::*,
     schedule::{ScheduleBuildSettings, ScheduleLabel},
@@ -13,7 +13,7 @@ use bevy_ecs::{
 };
 #[cfg(feature = "trace")]
 use bevy_utils::tracing::info_span;
-use bevy_utils::{tracing::debug, HashMap};
+use bevy_utils::{HashMap, tracing::debug};
 use core::{fmt::Debug, num::NonZero, panic::AssertUnwindSafe};
 use derive_more::derive::{Display, Error};
 use std::{

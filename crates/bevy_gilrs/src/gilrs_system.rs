@@ -1,6 +1,6 @@
 use crate::{
-    converter::{convert_axis, convert_button},
     Gilrs, GilrsGamepads,
+    converter::{convert_axis, convert_button},
 };
 use bevy_ecs::event::EventWriter;
 use bevy_ecs::prelude::Commands;
@@ -11,7 +11,7 @@ use bevy_input::gamepad::{
     GamepadConnection, GamepadConnectionEvent, RawGamepadAxisChangedEvent,
     RawGamepadButtonChangedEvent, RawGamepadEvent,
 };
-use gilrs::{ev::filter::axis_dpad_to_button, EventType, Filter};
+use gilrs::{EventType, Filter, ev::filter::axis_dpad_to_button};
 
 pub fn gilrs_event_startup_system(
     mut commands: Commands,
@@ -60,14 +60,11 @@ pub fn gilrs_event_system(
                     entity
                 });
 
-                let event = GamepadConnectionEvent::new(
-                    entity,
-                    GamepadConnection::Connected {
-                        name: pad.name().to_string(),
-                        vendor_id: pad.vendor_id(),
-                        product_id: pad.product_id(),
-                    },
-                );
+                let event = GamepadConnectionEvent::new(entity, GamepadConnection::Connected {
+                    name: pad.name().to_string(),
+                    vendor_id: pad.vendor_id(),
+                    product_id: pad.product_id(),
+                });
 
                 events.send(event.clone().into());
                 connection_events.send(event);

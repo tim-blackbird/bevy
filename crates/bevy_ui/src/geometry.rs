@@ -1,5 +1,5 @@
 use bevy_math::Vec2;
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use core::ops::{Div, DivAssign, Mul, MulAssign, Neg};
 use derive_more::derive::{Display, Error};
 
@@ -696,15 +696,12 @@ mod tests {
 
     #[test]
     fn uirect_default_equals_const_default() {
-        assert_eq!(
-            UiRect::default(),
-            UiRect {
-                left: Val::ZERO,
-                right: Val::ZERO,
-                top: Val::ZERO,
-                bottom: Val::ZERO
-            }
-        );
+        assert_eq!(UiRect::default(), UiRect {
+            left: Val::ZERO,
+            right: Val::ZERO,
+            top: Val::ZERO,
+            bottom: Val::ZERO
+        });
         assert_eq!(UiRect::default(), UiRect::DEFAULT);
     }
 

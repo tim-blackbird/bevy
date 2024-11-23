@@ -421,23 +421,20 @@ pub fn prepare_meshlet_per_frame_resources(
             };
 
         // TODO: Remove this once wgpu allows render passes with no attachments
-        let dummy_render_target = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("meshlet_dummy_render_target"),
-                size: Extent3d {
-                    width: view.viewport.z,
-                    height: view.viewport.w,
-                    depth_or_array_layers: 1,
-                },
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::R8Uint,
-                usage: TextureUsages::RENDER_ATTACHMENT,
-                view_formats: &[],
+        let dummy_render_target = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("meshlet_dummy_render_target"),
+            size: Extent3d {
+                width: view.viewport.z,
+                height: view.viewport.w,
+                depth_or_array_layers: 1,
             },
-        );
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::R8Uint,
+            usage: TextureUsages::RENDER_ATTACHMENT,
+            view_formats: &[],
+        });
 
         let type_size = if not_shadow_view {
             size_of::<u64>()
@@ -496,19 +493,16 @@ pub fn prepare_meshlet_per_frame_resources(
             depth_or_array_layers: 1,
         };
         let depth_pyramid_mip_count = depth_pyramid_size.max_mips(TextureDimension::D2);
-        let depth_pyramid = texture_cache.get(
-            &render_device,
-            TextureDescriptor {
-                label: Some("meshlet_depth_pyramid"),
-                size: depth_pyramid_size,
-                mip_level_count: depth_pyramid_mip_count,
-                sample_count: 1,
-                dimension: TextureDimension::D2,
-                format: TextureFormat::R32Float,
-                usage: TextureUsages::STORAGE_BINDING | TextureUsages::TEXTURE_BINDING,
-                view_formats: &[],
-            },
-        );
+        let depth_pyramid = texture_cache.get(&render_device, TextureDescriptor {
+            label: Some("meshlet_depth_pyramid"),
+            size: depth_pyramid_size,
+            mip_level_count: depth_pyramid_mip_count,
+            sample_count: 1,
+            dimension: TextureDimension::D2,
+            format: TextureFormat::R32Float,
+            usage: TextureUsages::STORAGE_BINDING | TextureUsages::TEXTURE_BINDING,
+            view_formats: &[],
+        });
         let depth_pyramid_mips = array::from_fn(|i| {
             if (i as u32) < depth_pyramid_mip_count {
                 depth_pyramid.texture.create_view(&TextureViewDescriptor {

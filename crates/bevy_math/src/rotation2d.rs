@@ -8,7 +8,7 @@ use crate::{
 };
 
 #[cfg(feature = "bevy_reflect")]
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 #[cfg(all(feature = "serialize", feature = "bevy_reflect"))]
 use bevy_reflect::{ReflectDeserialize, ReflectSerialize};
 
@@ -658,31 +658,37 @@ mod tests {
     #[test]
     fn try_normalize() {
         // Valid
-        assert!(Rot2 {
-            sin: 10.0,
-            cos: 5.0,
-        }
-        .try_normalize()
-        .is_some());
+        assert!(
+            Rot2 {
+                sin: 10.0,
+                cos: 5.0,
+            }
+            .try_normalize()
+            .is_some()
+        );
 
         // NaN
-        assert!(Rot2 {
-            sin: f32::NAN,
-            cos: 5.0,
-        }
-        .try_normalize()
-        .is_none());
+        assert!(
+            Rot2 {
+                sin: f32::NAN,
+                cos: 5.0,
+            }
+            .try_normalize()
+            .is_none()
+        );
 
         // Zero
         assert!(Rot2 { sin: 0.0, cos: 0.0 }.try_normalize().is_none());
 
         // Non-finite
-        assert!(Rot2 {
-            sin: f32::INFINITY,
-            cos: 5.0,
-        }
-        .try_normalize()
-        .is_none());
+        assert!(
+            Rot2 {
+                sin: f32::INFINITY,
+                cos: 5.0,
+            }
+            .try_normalize()
+            .is_none()
+        );
     }
 
     #[test]

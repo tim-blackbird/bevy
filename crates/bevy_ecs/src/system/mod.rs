@@ -323,8 +323,8 @@ mod tests {
         query::{Added, Changed, Or, With, Without},
         removal_detection::RemovedComponents,
         schedule::{
-            apply_deferred, common_conditions::resource_exists, Condition, IntoSystemConfigs,
-            Schedule,
+            Condition, IntoSystemConfigs, Schedule, apply_deferred,
+            common_conditions::resource_exists,
         },
         system::{
             Commands, In, IntoSystem, Local, NonSend, NonSendMut, ParamSet, Query, Res, ResMut,
@@ -1465,9 +1465,11 @@ mod tests {
         system.initialize(&mut world);
         system.update_archetype_component_access(world.as_unsafe_world_cell());
         let archetype_component_access = system.archetype_component_access();
-        assert!(expected_ids
-            .iter()
-            .all(|id| archetype_component_access.has_component_read(*id)));
+        assert!(
+            expected_ids
+                .iter()
+                .all(|id| archetype_component_access.has_component_read(*id))
+        );
 
         // add some entities with archetypes that should match and save their ids
         expected_ids.insert(
@@ -1492,9 +1494,11 @@ mod tests {
         // update system and verify its accesses are correct
         system.update_archetype_component_access(world.as_unsafe_world_cell());
         let archetype_component_access = system.archetype_component_access();
-        assert!(expected_ids
-            .iter()
-            .all(|id| archetype_component_access.has_component_read(*id)));
+        assert!(
+            expected_ids
+                .iter()
+                .all(|id| archetype_component_access.has_component_read(*id))
+        );
 
         // one more round
         expected_ids.insert(
@@ -1507,9 +1511,11 @@ mod tests {
         world.spawn((A, B, D));
         system.update_archetype_component_access(world.as_unsafe_world_cell());
         let archetype_component_access = system.archetype_component_access();
-        assert!(expected_ids
-            .iter()
-            .all(|id| archetype_component_access.has_component_read(*id)));
+        assert!(
+            expected_ids
+                .iter()
+                .all(|id| archetype_component_access.has_component_read(*id))
+        );
     }
 
     #[test]

@@ -1,6 +1,6 @@
 use crate::{
-    func::args::{ArgError, FromArg, Ownership},
     PartialReflect, Reflect, TypePath,
+    func::args::{ArgError, FromArg, Ownership},
 };
 use core::ops::Deref;
 

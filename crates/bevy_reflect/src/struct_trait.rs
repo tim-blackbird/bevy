@@ -1,10 +1,9 @@
 use crate::generics::impl_generic_info_methods;
 use crate::{
-    self as bevy_reflect,
-    attributes::{impl_custom_attribute_methods, CustomAttributes},
+    self as bevy_reflect, ApplyError, Generics, NamedField, PartialReflect, Reflect, ReflectKind,
+    ReflectMut, ReflectOwned, ReflectRef, Type, TypeInfo, TypePath,
+    attributes::{CustomAttributes, impl_custom_attribute_methods},
     type_info::impl_type_methods,
-    ApplyError, Generics, NamedField, PartialReflect, Reflect, ReflectKind, ReflectMut,
-    ReflectOwned, ReflectRef, Type, TypeInfo, TypePath,
 };
 use alloc::{borrow::Cow, sync::Arc};
 use bevy_reflect_derive::impl_type_path;

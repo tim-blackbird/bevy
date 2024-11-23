@@ -1,10 +1,10 @@
 use bevy_utils::all_tuples;
 
 use crate::{
-    func::{
-        args::FromArg, macros::count_tokens, ArgList, FunctionError, FunctionResult, IntoReturn,
-    },
     Reflect, TypePath,
+    func::{
+        ArgList, FunctionError, FunctionResult, IntoReturn, args::FromArg, macros::count_tokens,
+    },
 };
 
 /// A reflection-based version of the [`FnMut`] trait.

@@ -11,12 +11,8 @@ pub trait ObserverSystem<E: 'static, B: Bundle, Out = ()>:
 {
 }
 
-impl<
-        E: 'static,
-        B: Bundle,
-        Out,
-        T: System<In = Trigger<'static, E, B>, Out = Out> + Send + 'static,
-    > ObserverSystem<E, B, Out> for T
+impl<E: 'static, B: Bundle, Out, T: System<In = Trigger<'static, E, B>, Out = Out> + Send + 'static>
+    ObserverSystem<E, B, Out> for T
 {
 }
 
@@ -34,13 +30,8 @@ pub trait IntoObserverSystem<E: 'static, B: Bundle, M, Out = ()>: Send + 'static
     fn into_system(this: Self) -> Self::System;
 }
 
-impl<
-        S: IntoSystem<Trigger<'static, E, B>, Out, M> + Send + 'static,
-        M,
-        Out,
-        E: 'static,
-        B: Bundle,
-    > IntoObserverSystem<E, B, M, Out> for S
+impl<S: IntoSystem<Trigger<'static, E, B>, Out, M> + Send + 'static, M, Out, E: 'static, B: Bundle>
+    IntoObserverSystem<E, B, M, Out> for S
 where
     S::System: ObserverSystem<E, B, Out>,
 {

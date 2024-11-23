@@ -4,7 +4,7 @@ use std::ops::Range;
 
 use bevy::{
     color::palettes::css::{BLACK, WHITE},
-    core_pipeline::{fxaa::Fxaa, Skybox},
+    core_pipeline::{Skybox, fxaa::Fxaa},
     image::{
         ImageAddressMode, ImageFilterMode, ImageLoaderSettings, ImageSampler,
         ImageSamplerDescriptor,
@@ -249,15 +249,12 @@ fn spawn_camera(commands: &mut Commands, asset_server: &AssetServer) {
 
 // Spawns the help text.
 fn spawn_text(commands: &mut Commands, app_settings: &AppSettings) {
-    commands.spawn((
-        create_text(app_settings),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((create_text(app_settings), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 // Creates or recreates the help text.

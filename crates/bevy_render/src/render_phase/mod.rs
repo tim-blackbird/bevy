@@ -30,28 +30,27 @@ mod rangefinder;
 
 use bevy_app::{App, Plugin};
 use bevy_derive::{Deref, DerefMut};
-use bevy_utils::{default, hashbrown::hash_map::Entry, HashMap};
+use bevy_utils::{HashMap, default, hashbrown::hash_map::Entry};
 pub use draw::*;
 pub use draw_state::*;
-use encase::{internal::WriteInto, ShaderSize};
+use encase::{ShaderSize, internal::WriteInto};
 use nonmax::NonMaxU32;
 pub use rangefinder::*;
 
 use crate::sync_world::MainEntity;
 use crate::{
+    Render, RenderApp, RenderSet,
     batching::{
-        self,
+        self, GetFullBatchData,
         gpu_preprocessing::{self, BatchedInstanceBuffers},
         no_gpu_preprocessing::{self, BatchedInstanceBuffer},
-        GetFullBatchData,
     },
     render_resource::{CachedRenderPipelineId, GpuArrayBufferIndex, PipelineCache},
-    Render, RenderApp, RenderSet,
 };
 use bevy_ecs::{
     entity::EntityHashMap,
     prelude::*,
-    system::{lifetimeless::SRes, SystemParamItem},
+    system::{SystemParamItem, lifetimeless::SRes},
 };
 use core::{
     fmt::{self, Debug, Formatter},

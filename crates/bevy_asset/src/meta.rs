@@ -1,9 +1,9 @@
 use crate::{
-    self as bevy_asset, loader::AssetLoader, processor::Process, Asset, AssetPath,
-    DeserializeMetaError, VisitAssetDependencies,
+    self as bevy_asset, Asset, AssetPath, DeserializeMetaError, VisitAssetDependencies,
+    loader::AssetLoader, processor::Process,
 };
 use bevy_utils::tracing::error;
-use downcast_rs::{impl_downcast, Downcast};
+use downcast_rs::{Downcast, impl_downcast};
 use ron::ser::PrettyConfig;
 use serde::{Deserialize, Serialize};
 

@@ -141,7 +141,7 @@ mod __rust_begin_short_backtrace {
 
     use crate::{
         system::{ReadOnlySystem, System},
-        world::{unsafe_world_cell::UnsafeWorldCell, World},
+        world::{World, unsafe_world_cell::UnsafeWorldCell},
     };
 
     /// # Safety

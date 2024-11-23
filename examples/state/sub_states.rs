@@ -200,19 +200,16 @@ mod ui {
 
     pub fn setup_paused_screen(mut commands: Commands) {
         commands
-            .spawn((
-                StateScoped(IsPaused::Paused),
-                Node {
-                    // center button
-                    width: Val::Percent(100.),
-                    height: Val::Percent(100.),
-                    justify_content: JustifyContent::Center,
-                    align_items: AlignItems::Center,
-                    flex_direction: FlexDirection::Column,
-                    row_gap: Val::Px(10.),
-                    ..default()
-                },
-            ))
+            .spawn((StateScoped(IsPaused::Paused), Node {
+                // center button
+                width: Val::Percent(100.),
+                height: Val::Percent(100.),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                flex_direction: FlexDirection::Column,
+                row_gap: Val::Px(10.),
+                ..default()
+            }))
             .with_children(|parent| {
                 parent
                     .spawn((

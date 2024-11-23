@@ -99,14 +99,11 @@ fn setup(
     // padded textures are to the right, unpadded to the left
 
     // draw unpadded texture atlas
-    commands.spawn((
-        Sprite::from_image(linear_texture.clone()),
-        Transform {
-            translation: Vec3::new(-250.0, -130.0, 0.0),
-            scale: Vec3::splat(0.8),
-            ..default()
-        },
-    ));
+    commands.spawn((Sprite::from_image(linear_texture.clone()), Transform {
+        translation: Vec3::new(-250.0, -130.0, 0.0),
+        scale: Vec3::splat(0.8),
+        ..default()
+    }));
 
     // draw padded texture atlas
     commands.spawn((

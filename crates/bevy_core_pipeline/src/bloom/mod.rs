@@ -13,10 +13,11 @@ use crate::{
     core_3d::graph::{Core3d, Node3d},
 };
 use bevy_app::{App, Plugin};
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 use bevy_ecs::{prelude::*, query::QueryItem};
-use bevy_math::{ops, UVec2};
+use bevy_math::{UVec2, ops};
 use bevy_render::{
+    Render, RenderApp, RenderSet,
     camera::ExtractedCamera,
     diagnostic::RecordDiagnostics,
     extract_component::{
@@ -27,14 +28,13 @@ use bevy_render::{
     renderer::{RenderContext, RenderDevice},
     texture::{CachedTexture, TextureCache},
     view::ViewTarget,
-    Render, RenderApp, RenderSet,
 };
 use downsampling_pipeline::{
-    prepare_downsampling_pipeline, BloomDownsamplingPipeline, BloomDownsamplingPipelineIds,
-    BloomUniforms,
+    BloomDownsamplingPipeline, BloomDownsamplingPipelineIds, BloomUniforms,
+    prepare_downsampling_pipeline,
 };
 use upsampling_pipeline::{
-    prepare_upsampling_pipeline, BloomUpsamplingPipeline, UpsamplingPipelineIds,
+    BloomUpsamplingPipeline, UpsamplingPipelineIds, prepare_upsampling_pipeline,
 };
 
 const BLOOM_SHADER_HANDLE: Handle<Shader> = Handle::weak_from_u128(929599476923908);
@@ -184,11 +184,8 @@ impl ViewNode for BloomNode {
                     occlusion_query_set: None,
                 });
             downsampling_first_pass.set_render_pipeline(downsampling_first_pipeline);
-            downsampling_first_pass.set_bind_group(
-                0,
-                &downsampling_first_bind_group,
-                &[uniform_index.index()],
-            );
+            downsampling_first_pass
+                .set_bind_group(0, &downsampling_first_bind_group, &[uniform_index.index()]);
             downsampling_first_pass.draw(0..3, 0..1);
         }
 
@@ -367,18 +364,15 @@ fn prepare_bloom_textures(
             #[cfg(all(feature = "webgl", target_arch = "wasm32", not(feature = "webgpu")))]
             let texture: Vec<CachedTexture> = (0..mip_count)
                 .map(|mip| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            size: Extent3d {
-                                width: (texture_descriptor.size.width >> mip).max(1),
-                                height: (texture_descriptor.size.height >> mip).max(1),
-                                depth_or_array_layers: 1,
-                            },
-                            mip_level_count: 1,
-                            ..texture_descriptor.clone()
+                    texture_cache.get(&render_device, TextureDescriptor {
+                        size: Extent3d {
+                            width: (texture_descriptor.size.width >> mip).max(1),
+                            height: (texture_descriptor.size.height >> mip).max(1),
+                            depth_or_array_layers: 1,
                         },
-                    )
+                        mip_level_count: 1,
+                        ..texture_descriptor.clone()
+                    })
                 })
                 .collect();
 

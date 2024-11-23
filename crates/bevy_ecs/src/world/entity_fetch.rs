@@ -3,8 +3,8 @@ use core::mem::MaybeUninit;
 use crate::{
     entity::{Entity, EntityHash, EntityHashMap, EntityHashSet},
     world::{
-        error::EntityFetchError, unsafe_world_cell::UnsafeWorldCell, EntityMut, EntityRef,
-        EntityWorldMut,
+        EntityMut, EntityRef, EntityWorldMut, error::EntityFetchError,
+        unsafe_world_cell::UnsafeWorldCell,
     },
 };
 
@@ -75,7 +75,7 @@ pub unsafe trait WorldEntityFetch {
     /// - Returns [`EntityFetchError::AliasedMutability`] if the entity was
     ///   requested mutably more than once.
     unsafe fn fetch_mut(self, cell: UnsafeWorldCell<'_>)
-        -> Result<Self::Mut<'_>, EntityFetchError>;
+    -> Result<Self::Mut<'_>, EntityFetchError>;
 
     /// Returns mutable reference(s) to the entities with the given [`Entity`]
     /// IDs, as determined by `self`, but without structural mutability.

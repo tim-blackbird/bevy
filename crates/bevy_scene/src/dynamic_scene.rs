@@ -1,4 +1,4 @@
-use crate::{ron, DynamicSceneBuilder, Scene, SceneSpawnError};
+use crate::{DynamicSceneBuilder, Scene, SceneSpawnError, ron};
 use bevy_asset::Asset;
 use bevy_ecs::reflect::ReflectResource;
 use bevy_ecs::{

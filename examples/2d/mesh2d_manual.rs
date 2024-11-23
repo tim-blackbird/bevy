@@ -7,10 +7,11 @@
 
 use bevy::{
     color::palettes::basic::YELLOW,
-    core_pipeline::core_2d::{Transparent2d, CORE_2D_DEPTH_FORMAT},
-    math::{ops, FloatOrd},
+    core_pipeline::core_2d::{CORE_2D_DEPTH_FORMAT, Transparent2d},
+    math::{FloatOrd, ops},
     prelude::*,
     render::{
+        Extract, Render, RenderApp, RenderSet,
         mesh::{Indices, MeshVertexAttribute, RenderMesh},
         render_asset::{RenderAssetUsages, RenderAssets},
         render_phase::{
@@ -26,12 +27,11 @@ use bevy::{
         },
         sync_world::MainEntityHashMap,
         view::{ExtractedView, RenderVisibleEntities, ViewTarget},
-        Extract, Render, RenderApp, RenderSet,
     },
     sprite::{
-        extract_mesh2d, DrawMesh2d, Material2dBindGroupId, Mesh2dPipeline, Mesh2dPipelineKey,
-        Mesh2dTransforms, MeshFlags, RenderMesh2dInstance, SetMesh2dBindGroup,
-        SetMesh2dViewBindGroup,
+        DrawMesh2d, Material2dBindGroupId, Mesh2dPipeline, Mesh2dPipelineKey, Mesh2dTransforms,
+        MeshFlags, RenderMesh2dInstance, SetMesh2dBindGroup, SetMesh2dViewBindGroup,
+        extract_mesh2d,
     },
 };
 use std::f32::consts::PI;
@@ -345,15 +345,12 @@ pub fn extract_colored_mesh2d(
         };
 
         values.push((entity, ColoredMesh2d));
-        render_mesh_instances.insert(
-            entity.into(),
-            RenderMesh2dInstance {
-                mesh_asset_id: handle.0.id(),
-                transforms,
-                material_bind_group_id: Material2dBindGroupId::default(),
-                automatic_batching: false,
-            },
-        );
+        render_mesh_instances.insert(entity.into(), RenderMesh2dInstance {
+            mesh_asset_id: handle.0.id(),
+            transforms,
+            material_bind_group_id: Material2dBindGroupId::default(),
+            automatic_batching: false,
+        });
     }
     *previous_len = values.len();
     commands.insert_or_spawn_batch(values);

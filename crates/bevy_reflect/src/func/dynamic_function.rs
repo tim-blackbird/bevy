@@ -1,13 +1,13 @@
 use crate::{
     self as bevy_reflect,
     __macro_exports::RegisterForReflection,
-    func::{
-        args::ArgList, info::FunctionInfo, DynamicFunctionMut, Function, FunctionError,
-        FunctionResult, IntoFunction, IntoFunctionMut,
-    },
-    serde::Serializable,
     ApplyError, MaybeTyped, PartialReflect, Reflect, ReflectKind, ReflectMut, ReflectOwned,
     ReflectRef, TypeInfo, TypePath,
+    func::{
+        DynamicFunctionMut, Function, FunctionError, FunctionResult, IntoFunction, IntoFunctionMut,
+        args::ArgList, info::FunctionInfo,
+    },
+    serde::Serializable,
 };
 use alloc::{borrow::Cow, sync::Arc};
 use bevy_reflect_derive::impl_type_path;
@@ -329,13 +329,10 @@ mod tests {
 
         let args = ArgList::default().push_owned(25_i32);
         let error = func.call(args).unwrap_err();
-        assert!(matches!(
-            error,
-            FunctionError::ArgCountMismatch {
-                expected: 2,
-                received: 1
-            }
-        ));
+        assert!(matches!(error, FunctionError::ArgCountMismatch {
+            expected: 2,
+            received: 1
+        }));
     }
 
     #[test]

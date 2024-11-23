@@ -1,28 +1,29 @@
 use core::ops::Range;
 
 use crate::{
-    texture_atlas::TextureAtlasLayout, ComputedTextureSlices, Sprite, WithSprite,
-    SPRITE_SHADER_HANDLE,
+    ComputedTextureSlices, SPRITE_SHADER_HANDLE, Sprite, WithSprite,
+    texture_atlas::TextureAtlasLayout,
 };
 use bevy_asset::{AssetEvent, AssetId, Assets};
 use bevy_color::{ColorToComponents, LinearRgba};
 use bevy_core_pipeline::{
-    core_2d::{Transparent2d, CORE_2D_DEPTH_FORMAT},
+    core_2d::{CORE_2D_DEPTH_FORMAT, Transparent2d},
     tonemapping::{
-        get_lut_bind_group_layout_entries, get_lut_bindings, DebandDither, Tonemapping,
-        TonemappingLuts,
+        DebandDither, Tonemapping, TonemappingLuts, get_lut_bind_group_layout_entries,
+        get_lut_bindings,
     },
 };
 use bevy_ecs::{
     prelude::*,
     query::ROQueryItem,
-    system::{lifetimeless::*, SystemParamItem, SystemState},
+    system::{SystemParamItem, SystemState, lifetimeless::*},
 };
 use bevy_image::{BevyDefault, Image, ImageSampler, TextureFormatPixelInfo};
 use bevy_math::{Affine3A, FloatOrd, Quat, Rect, Vec2, Vec4};
 use bevy_render::sync_world::MainEntity;
 use bevy_render::view::RenderVisibleEntities;
 use bevy_render::{
+    Extract,
     render_asset::RenderAssets,
     render_phase::{
         DrawFunctions, PhaseItem, PhaseItemExtraIndex, RenderCommand, RenderCommandResult,
@@ -39,7 +40,6 @@ use bevy_render::{
         ExtractedView, Msaa, ViewTarget, ViewUniform, ViewUniformOffset, ViewUniforms,
         ViewVisibility,
     },
-    Extract,
 };
 use bevy_transform::components::GlobalTransform;
 use bevy_utils::HashMap;
@@ -420,9 +420,9 @@ pub fn extract_sprites(
             };
 
             // PERF: we don't check in this function that the `Image` asset is ready, since it should be in most cases and hashing the handle is expensive
-            extracted_sprites.sprites.insert(
-                (entity, original_entity.into()),
-                ExtractedSprite {
+            extracted_sprites
+                .sprites
+                .insert((entity, original_entity.into()), ExtractedSprite {
                     color: sprite.color.into(),
                     transform: *transform,
                     rect,
@@ -433,8 +433,7 @@ pub fn extract_sprites(
                     image_handle_id: sprite.image.id(),
                     anchor: sprite.anchor.as_vec(),
                     original_entity: Some(original_entity),
-                },
-            );
+                });
         }
     }
 }
@@ -746,13 +745,10 @@ pub fn prepare_sprite_image_bind_groups(
             if batch_image_changed {
                 batch_item_index = item_index;
 
-                batches.push((
-                    item.entity(),
-                    SpriteBatch {
-                        image_handle_id: batch_image_handle,
-                        range: index..index,
-                    },
-                ));
+                batches.push((item.entity(), SpriteBatch {
+                    image_handle_id: batch_image_handle,
+                    range: index..index,
+                }));
             }
 
             transparent_phase.items[batch_item_index]

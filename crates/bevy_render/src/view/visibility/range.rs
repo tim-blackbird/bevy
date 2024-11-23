@@ -16,22 +16,22 @@ use bevy_ecs::{
     schedule::IntoSystemConfigs as _,
     system::{Query, Res, ResMut, Resource},
 };
-use bevy_math::{vec4, FloatOrd, Vec4};
+use bevy_math::{FloatOrd, Vec4, vec4};
 use bevy_reflect::Reflect;
 use bevy_transform::components::GlobalTransform;
-use bevy_utils::{prelude::default, HashMap};
+use bevy_utils::{HashMap, prelude::default};
 use nonmax::NonMaxU16;
 use wgpu::{BufferBindingType, BufferUsages};
 
-use super::{check_visibility, VisibilitySystems};
+use super::{VisibilitySystems, check_visibility};
 use crate::sync_world::{MainEntity, MainEntityHashMap};
 use crate::{
+    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
     camera::Camera,
     mesh::Mesh3d,
     primitives::Aabb,
     render_resource::BufferVec,
     renderer::{RenderDevice, RenderQueue},
-    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
 };
 
 /// We need at least 4 storage buffer bindings available to enable the
@@ -278,13 +278,10 @@ impl RenderVisibilityRanges {
                 .unwrap_or_default()
             });
 
-        self.entities.insert(
-            entity,
-            RenderVisibilityEntityInfo {
-                buffer_index,
-                is_abrupt: visibility_range.is_abrupt(),
-            },
-        );
+        self.entities.insert(entity, RenderVisibilityEntityInfo {
+            buffer_index,
+            is_abrupt: visibility_range.is_abrupt(),
+        });
     }
 
     /// Returns the index in the GPU buffer corresponding to the visible range

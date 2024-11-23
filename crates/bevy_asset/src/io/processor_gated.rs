@@ -1,7 +1,7 @@
 use crate::{
+    AssetPath,
     io::{AssetReader, AssetReaderError, AssetSourceId, PathStream, Reader},
     processor::{AssetProcessorData, ProcessStatus},
-    AssetPath,
 };
 use alloc::sync::Arc;
 use async_lock::RwLockReadGuardArc;

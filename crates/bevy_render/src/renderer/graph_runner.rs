@@ -1,11 +1,11 @@
 use bevy_ecs::{prelude::Entity, world::World};
+use bevy_utils::HashMap;
 #[cfg(feature = "trace")]
 use bevy_utils::tracing::info_span;
-use bevy_utils::HashMap;
 
 use alloc::{borrow::Cow, collections::VecDeque};
 use derive_more::derive::{Display, Error, From};
-use smallvec::{smallvec, SmallVec};
+use smallvec::{SmallVec, smallvec};
 
 use crate::{
     diagnostic::internal::{DiagnosticsRecorder, RenderDiagnosticsMutex},
@@ -38,7 +38,9 @@ pub enum RenderGraphRunnerError {
         slot_index: usize,
         slot_name: Cow<'static, str>,
     },
-    #[display("graph '{sub_graph:?}' could not be run because slot '{slot_name}' at index {slot_index} has no value")]
+    #[display(
+        "graph '{sub_graph:?}' could not be run because slot '{slot_name}' at index {slot_index} has no value"
+    )]
     MissingInput {
         slot_index: usize,
         slot_name: Cow<'static, str>,

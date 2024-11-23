@@ -63,8 +63,8 @@ use crate::{
     component::{Component, ComponentId},
     entity::Entity,
     world::{
-        unsafe_world_cell::UnsafeEntityCell, EntityMut, EntityWorldMut, FilteredEntityMut,
-        FilteredEntityRef, World,
+        EntityMut, EntityWorldMut, FilteredEntityMut, FilteredEntityRef, World,
+        unsafe_world_cell::UnsafeEntityCell,
     },
 };
 use bevy_reflect::{FromReflect, FromType, PartialReflect, Reflect, TypePath, TypeRegistry};

@@ -1,11 +1,12 @@
 pub mod visibility;
 pub mod window;
 
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 pub use visibility::*;
 pub use window::*;
 
 use crate::{
+    Render, RenderApp, RenderSet,
     camera::{
         CameraMainTextureUsages, ClearColor, ClearColorConfig, Exposure, ExtractedCamera,
         ManualTextureViews, MipBias, NormalizedRenderTarget, TemporalJitter,
@@ -21,7 +22,6 @@ use crate::{
         CachedTexture, ColorAttachment, DepthAttachment, GpuImage, OutputColorAttachment,
         TextureCache,
     },
-    Render, RenderApp, RenderSet,
 };
 use alloc::sync::Arc;
 use bevy_app::{App, Plugin};
@@ -29,11 +29,11 @@ use bevy_color::LinearRgba;
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::prelude::*;
 use bevy_image::BevyDefault as _;
-use bevy_math::{mat3, vec2, vec3, Mat3, Mat4, UVec4, Vec2, Vec3, Vec4, Vec4Swizzles};
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_math::{Mat3, Mat4, UVec4, Vec2, Vec3, Vec4, Vec4Swizzles, mat3, vec2, vec3};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render_macros::ExtractComponent;
 use bevy_transform::components::GlobalTransform;
-use bevy_utils::{hashbrown::hash_map::Entry, HashMap};
+use bevy_utils::{HashMap, hashbrown::hash_map::Entry};
 use core::{
     ops::Range,
     sync::atomic::{AtomicUsize, Ordering},
@@ -969,34 +969,25 @@ pub fn prepare_view_targets(
                         _ => &[],
                     },
                 };
-                let a = texture_cache.get(
-                    &render_device,
-                    TextureDescriptor {
-                        label: Some("main_texture_a"),
-                        ..descriptor
-                    },
-                );
-                let b = texture_cache.get(
-                    &render_device,
-                    TextureDescriptor {
-                        label: Some("main_texture_b"),
-                        ..descriptor
-                    },
-                );
+                let a = texture_cache.get(&render_device, TextureDescriptor {
+                    label: Some("main_texture_a"),
+                    ..descriptor
+                });
+                let b = texture_cache.get(&render_device, TextureDescriptor {
+                    label: Some("main_texture_b"),
+                    ..descriptor
+                });
                 let sampled = if msaa.samples() > 1 {
-                    let sampled = texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("main_texture_sampled"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: msaa.samples(),
-                            dimension: TextureDimension::D2,
-                            format: main_texture_format,
-                            usage: TextureUsages::RENDER_ATTACHMENT,
-                            view_formats: descriptor.view_formats,
-                        },
-                    );
+                    let sampled = texture_cache.get(&render_device, TextureDescriptor {
+                        label: Some("main_texture_sampled"),
+                        size,
+                        mip_level_count: 1,
+                        sample_count: msaa.samples(),
+                        dimension: TextureDimension::D2,
+                        format: main_texture_format,
+                        usage: TextureUsages::RENDER_ATTACHMENT,
+                        view_formats: descriptor.view_formats,
+                    });
                     Some(sampled)
                 } else {
                     None

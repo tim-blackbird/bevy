@@ -5,11 +5,11 @@
 //! the derive helper attribute for `Reflect`, which looks like: `#[reflect(ignore)]`.
 
 use crate::{
-    attribute_parser::terminated_parser, custom_attributes::CustomAttributes,
-    REFLECT_ATTRIBUTE_NAME,
+    REFLECT_ATTRIBUTE_NAME, attribute_parser::terminated_parser,
+    custom_attributes::CustomAttributes,
 };
 use quote::ToTokens;
-use syn::{parse::ParseStream, Attribute, LitStr, Meta, Token, Type};
+use syn::{Attribute, LitStr, Meta, Token, Type, parse::ParseStream};
 
 mod kw {
     syn::custom_keyword!(ignore);
@@ -136,10 +136,10 @@ impl FieldAttributes {
     /// - `#[reflect(ignore)]`
     fn parse_ignore(&mut self, input: ParseStream) -> syn::Result<()> {
         if self.ignore != ReflectIgnoreBehavior::None {
-            return Err(input.error(format!(
-                "only one of {:?} is allowed",
-                [IGNORE_ALL_ATTR, IGNORE_SERIALIZATION_ATTR]
-            )));
+            return Err(input.error(format!("only one of {:?} is allowed", [
+                IGNORE_ALL_ATTR,
+                IGNORE_SERIALIZATION_ATTR
+            ])));
         }
 
         input.parse::<kw::ignore>()?;
@@ -153,10 +153,10 @@ impl FieldAttributes {
     /// - `#[reflect(skip_serializing)]`
     fn parse_skip_serializing(&mut self, input: ParseStream) -> syn::Result<()> {
         if self.ignore != ReflectIgnoreBehavior::None {
-            return Err(input.error(format!(
-                "only one of {:?} is allowed",
-                [IGNORE_ALL_ATTR, IGNORE_SERIALIZATION_ATTR]
-            )));
+            return Err(input.error(format!("only one of {:?} is allowed", [
+                IGNORE_ALL_ATTR,
+                IGNORE_SERIALIZATION_ATTR
+            ])));
         }
 
         input.parse::<kw::skip_serializing>()?;

@@ -72,20 +72,14 @@ fn setup(
     animation.set_duration(2.0);
 
     // Add events at the specified time.
-    animation.add_event(
-        0.0,
-        MessageEvent {
-            value: "HELLO".into(),
-            color: ALICE_BLUE.into(),
-        },
-    );
-    animation.add_event(
-        1.0,
-        MessageEvent {
-            value: "BYE".into(),
-            color: CRIMSON.into(),
-        },
-    );
+    animation.add_event(0.0, MessageEvent {
+        value: "HELLO".into(),
+        color: ALICE_BLUE.into(),
+    });
+    animation.add_event(1.0, MessageEvent {
+        value: "BYE".into(),
+        color: CRIMSON.into(),
+    });
 
     // Create the animation graph.
     let (graph, animation_index) = AnimationGraph::from_clip(animations.add(animation));

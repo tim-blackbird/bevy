@@ -11,7 +11,7 @@ use bevy_ecs::{
     entity::{Entity, EntityHashMap},
     reflect::ReflectComponent,
 };
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render::sync_world::MainEntity;
 use bevy_render::{
     mesh::Mesh3d,

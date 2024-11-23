@@ -9,16 +9,17 @@
 use core::num::NonZero;
 
 use bevy_app::{App, Plugin};
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 use bevy_ecs::{
     component::Component,
     entity::Entity,
     query::{Has, QueryState, Without},
-    schedule::{common_conditions::resource_exists, IntoSystemConfigs as _},
-    system::{lifetimeless::Read, Commands, Res, ResMut, Resource},
+    schedule::{IntoSystemConfigs as _, common_conditions::resource_exists},
+    system::{Commands, Res, ResMut, Resource, lifetimeless::Read},
     world::{FromWorld, World},
 };
 use bevy_render::{
+    Render, RenderApp, RenderSet,
     batching::gpu_preprocessing::{
         BatchedInstanceBuffers, GpuPreprocessingSupport, IndirectParameters,
         IndirectParametersBuffer, PreprocessWorkItem,
@@ -26,22 +27,21 @@ use bevy_render::{
     graph::CameraDriverLabel,
     render_graph::{Node, NodeRunError, RenderGraph, RenderGraphContext},
     render_resource::{
-        binding_types::{storage_buffer, storage_buffer_read_only, uniform_buffer},
         BindGroup, BindGroupEntries, BindGroupLayout, BindingResource, BufferBinding,
         CachedComputePipelineId, ComputePassDescriptor, ComputePipelineDescriptor,
         DynamicBindGroupLayoutEntries, PipelineCache, Shader, ShaderStages, ShaderType,
         SpecializedComputePipeline, SpecializedComputePipelines,
+        binding_types::{storage_buffer, storage_buffer_read_only, uniform_buffer},
     },
     renderer::{RenderContext, RenderDevice, RenderQueue},
     view::{GpuCulling, ViewUniform, ViewUniformOffset, ViewUniforms},
-    Render, RenderApp, RenderSet,
 };
 use bevy_utils::tracing::warn;
 use bitflags::bitflags;
-use smallvec::{smallvec, SmallVec};
+use smallvec::{SmallVec, smallvec};
 
 use crate::{
-    graph::NodePbr, MeshCullingData, MeshCullingDataBuffer, MeshInputUniform, MeshUniform,
+    MeshCullingData, MeshCullingDataBuffer, MeshInputUniform, MeshUniform, graph::NodePbr,
 };
 
 /// The handle to the `mesh_preprocess.wgsl` compute shader.

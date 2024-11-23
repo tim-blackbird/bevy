@@ -1,5 +1,5 @@
 use crate as bevy_reflect;
-use crate::{std_traits::ReflectDefault, ReflectDeserialize, ReflectSerialize};
+use crate::{ReflectDeserialize, ReflectSerialize, std_traits::ReflectDefault};
 use assert_type_match::assert_type_match;
 use bevy_reflect_derive::{impl_reflect, impl_reflect_opaque};
 use glam::*;
@@ -379,16 +379,16 @@ impl_reflect_opaque!(::glam::BVec4A(Debug, Default, Deserialize, Serialize));
 #[cfg(test)]
 mod tests {
     use ron::{
-        ser::{to_string_pretty, PrettyConfig},
         Deserializer,
+        ser::{PrettyConfig, to_string_pretty},
     };
     use serde::de::DeserializeSeed;
     use static_assertions::assert_impl_all;
 
     use crate::{
+        Enum, GetTypeRegistration, TypeRegistry,
         prelude::*,
         serde::{ReflectDeserializer, ReflectSerializer},
-        Enum, GetTypeRegistration, TypeRegistry,
     };
 
     use super::*;

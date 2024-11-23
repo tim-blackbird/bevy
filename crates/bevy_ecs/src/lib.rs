@@ -53,8 +53,8 @@ pub mod prelude {
         query::{Added, AnyOf, Changed, Has, Or, QueryBuilder, QueryState, With, Without},
         removal_detection::RemovedComponents,
         schedule::{
-            apply_deferred, common_conditions::*, Condition, IntoSystemConfigs, IntoSystemSet,
-            IntoSystemSetConfigs, Schedule, Schedules, SystemSet,
+            Condition, IntoSystemConfigs, IntoSystemSet, IntoSystemSetConfigs, Schedule, Schedules,
+            SystemSet, apply_deferred, common_conditions::*,
         },
         system::{
             Commands, Deferred, EntityCommand, EntityCommands, In, InMut, InRef, IntoSystem, Local,
@@ -184,13 +184,10 @@ mod tests {
             },
         );
 
-        assert_eq!(
-            ids,
-            &[
-                world.register_component::<TableStored>(),
-                world.register_component::<SparseStored>(),
-            ]
-        );
+        assert_eq!(ids, &[
+            world.register_component::<TableStored>(),
+            world.register_component::<SparseStored>(),
+        ]);
 
         let e1 = world
             .spawn(FooBundle {
@@ -238,15 +235,12 @@ mod tests {
             },
         );
 
-        assert_eq!(
-            ids,
-            &[
-                world.register_component::<A>(),
-                world.register_component::<TableStored>(),
-                world.register_component::<SparseStored>(),
-                world.register_component::<B>(),
-            ]
-        );
+        assert_eq!(ids, &[
+            world.register_component::<A>(),
+            world.register_component::<TableStored>(),
+            world.register_component::<SparseStored>(),
+            world.register_component::<B>(),
+        ]);
 
         let e3 = world
             .spawn(NestedBundle {
@@ -355,13 +349,10 @@ mod tests {
             .iter(&world)
             .map(|(e, &i, &s)| (e, i, s))
             .collect::<Vec<_>>();
-        assert_eq!(
-            ents,
-            &[
-                (e, A(123), TableStored("abc")),
-                (f, A(456), TableStored("def"))
-            ]
-        );
+        assert_eq!(ents, &[
+            (e, A(123), TableStored("abc")),
+            (f, A(456), TableStored("def"))
+        ]);
     }
 
     #[test]
@@ -375,13 +366,10 @@ mod tests {
             .query::<(Entity, &A, &TableStored)>()
             .iter(&world)
             .for_each(|(e, &i, &s)| results.push((e, i, s)));
-        assert_eq!(
-            results,
-            &[
-                (e, A(123), TableStored("abc")),
-                (f, A(456), TableStored("def"))
-            ]
-        );
+        assert_eq!(results, &[
+            (e, A(123), TableStored("abc")),
+            (f, A(456), TableStored("def"))
+        ]);
     }
 
     #[test]
@@ -445,10 +433,13 @@ mod tests {
                 results.lock().unwrap().push((e, i));
             });
         results.lock().unwrap().sort();
-        assert_eq!(
-            &*results.lock().unwrap(),
-            &[(e1, 1), (e2, 2), (e3, 3), (e4, 4), (e5, 5)]
-        );
+        assert_eq!(&*results.lock().unwrap(), &[
+            (e1, 1),
+            (e2, 2),
+            (e3, 3),
+            (e4, 4),
+            (e5, 5)
+        ]);
     }
 
     #[test]
@@ -466,10 +457,13 @@ mod tests {
             .par_iter(&world)
             .for_each(|(e, &SparseStored(i))| results.lock().unwrap().push((e, i)));
         results.lock().unwrap().sort();
-        assert_eq!(
-            &*results.lock().unwrap(),
-            &[(e1, 1), (e2, 2), (e3, 3), (e4, 4), (e5, 5)]
-        );
+        assert_eq!(&*results.lock().unwrap(), &[
+            (e1, 1),
+            (e2, 2),
+            (e3, 3),
+            (e4, 4),
+            (e5, 5)
+        ]);
     }
 
     #[test]
@@ -861,15 +855,19 @@ mod tests {
             1
         );
         assert!(world.query::<&A>().get(&world, a).is_ok());
-        assert!(world
-            .query_filtered::<(), Added<A>>()
-            .get(&world, a)
-            .is_ok());
+        assert!(
+            world
+                .query_filtered::<(), Added<A>>()
+                .get(&world, a)
+                .is_ok()
+        );
         assert!(world.query::<&A>().get(&world, a).is_ok());
-        assert!(world
-            .query_filtered::<(), Added<A>>()
-            .get(&world, a)
-            .is_ok());
+        assert!(
+            world
+                .query_filtered::<(), Added<A>>()
+                .get(&world, a)
+                .is_ok()
+        );
 
         world.clear_trackers();
 
@@ -884,15 +882,19 @@ mod tests {
             0
         );
         assert!(world.query::<&A>().get(&world, a).is_ok());
-        assert!(world
-            .query_filtered::<(), Added<A>>()
-            .get(&world, a)
-            .is_err());
+        assert!(
+            world
+                .query_filtered::<(), Added<A>>()
+                .get(&world, a)
+                .is_err()
+        );
         assert!(world.query::<&A>().get(&world, a).is_ok());
-        assert!(world
-            .query_filtered::<(), Added<A>>()
-            .get(&world, a)
-            .is_err());
+        assert!(
+            world
+                .query_filtered::<(), Added<A>>()
+                .get(&world, a)
+                .is_err()
+        );
     }
 
     #[test]
@@ -1047,7 +1049,11 @@ mod tests {
         // ensure changing an entity's archetypes also moves its changed state
         world.entity_mut(e1).insert(C);
 
-        assert_eq!(get_filtered::<Changed<SparseStored>>(&mut world), HashSet::from([e3, e1]), "changed entities list should not change (although the order will due to archetype moves)");
+        assert_eq!(
+            get_filtered::<Changed<SparseStored>>(&mut world),
+            HashSet::from([e3, e1]),
+            "changed entities list should not change (although the order will due to archetype moves)"
+        );
 
         // spawning a new SparseStored entity should not change existing changed state
         world.entity_mut(e1).insert(SparseStored(0));
@@ -1746,7 +1752,11 @@ mod tests {
 
         assert_eq!(
             component_values,
-            [(Some(&A(0)), &B(1), &C), (Some(&A(0)), &B(2), &C), (None, &B(3), &C)],
+            [
+                (Some(&A(0)), &B(1), &C),
+                (Some(&A(0)), &B(2), &C),
+                (None, &B(3), &C)
+            ],
             "all entities should have had their B component replaced, received C component, and had their A component (or lack thereof) unchanged"
         );
     }
@@ -1868,12 +1878,9 @@ mod tests {
         );
 
         let id = world
-            .spawn((
-                X,
-                Y {
-                    value: "foo".to_string(),
-                },
-            ))
+            .spawn((X, Y {
+                value: "foo".to_string(),
+            }))
             .id();
         assert_eq!(
             "foo",
@@ -2230,12 +2237,9 @@ mod tests {
         );
 
         let id = world
-            .spawn((
-                X,
-                Y {
-                    value: "foo".to_string(),
-                },
-            ))
+            .spawn((X, Y {
+                value: "foo".to_string(),
+            }))
             .id();
         assert_eq!(
             "foo",
@@ -2400,8 +2404,8 @@ mod tests {
     }
 
     #[test]
-    fn runtime_required_components_deep_require_does_not_override_shallow_require_deep_subtree_after_shallow(
-    ) {
+    fn runtime_required_components_deep_require_does_not_override_shallow_require_deep_subtree_after_shallow()
+     {
         #[derive(Component)]
         struct A;
         #[derive(Component, Default)]
@@ -2545,10 +2549,13 @@ mod tests {
         assert_eq!(to_vec(required_a), vec![(b, 0), (c, 1)]);
         assert_eq!(to_vec(required_b), vec![(c, 0)]);
         assert_eq!(to_vec(required_c), vec![]);
-        assert_eq!(
-            to_vec(required_x),
-            vec![(a, 0), (b, 1), (c, 2), (y, 0), (z, 1)]
-        );
+        assert_eq!(to_vec(required_x), vec![
+            (a, 0),
+            (b, 1),
+            (c, 2),
+            (y, 0),
+            (z, 1)
+        ]);
         assert_eq!(to_vec(required_y), vec![(b, 1), (c, 2), (z, 0)]);
         assert_eq!(to_vec(required_z), vec![(b, 0), (c, 1)]);
     }

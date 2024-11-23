@@ -5,7 +5,7 @@ use crate::{
     bundle::Bundle,
     change_detection::Mut,
     entity::Entity,
-    system::{input::SystemInput, BoxedSystem, IntoSystem, System},
+    system::{BoxedSystem, IntoSystem, System, input::SystemInput},
     world::{Command, World},
 };
 use bevy_ecs_macros::{Component, Resource};
@@ -634,7 +634,9 @@ pub enum RegisteredSystemError<I: SystemInput = (), O = ()> {
     /// System could not be run due to parameters that failed validation.
     ///
     /// This can occur because the data required by the system was not present in the world.
-    #[display("The data required by the system {_0:?} was not found in the world and the system did not run due to failed parameter validation.")]
+    #[display(
+        "The data required by the system {_0:?} was not found in the world and the system did not run due to failed parameter validation."
+    )]
     InvalidParams(SystemId<I, O>),
 }
 
@@ -694,8 +696,8 @@ mod tests {
     fn local_variables() {
         // The `Local` begins at the default value of 0
         fn doubling(last_counter: Local<Counter>, mut counter: ResMut<Counter>) {
-            counter.0 += last_counter.0 .0;
-            last_counter.0 .0 = counter.0;
+            counter.0 += last_counter.0.0;
+            last_counter.0.0 = counter.0;
         }
 
         let mut world = World::new();

@@ -1,5 +1,5 @@
 use crate::{
-    self as bevy_reflect, std_traits::ReflectDefault, ReflectDeserialize, ReflectSerialize,
+    self as bevy_reflect, ReflectDeserialize, ReflectSerialize, std_traits::ReflectDefault,
 };
 use bevy_reflect_derive::impl_reflect_opaque;
 

@@ -163,7 +163,8 @@ unsafe fn propagate_recursive(
     let Some(children) = children else { return };
     for (child, actual_parent) in parent_query.iter_many(children) {
         assert_eq!(
-            actual_parent.get(), entity,
+            actual_parent.get(),
+            entity,
             "Malformed hierarchy. This probably means that your hierarchy has been improperly maintained, or contains a cycle"
         );
         // SAFETY: The caller guarantees that `transform_query` will not be fetched
@@ -187,7 +188,7 @@ unsafe fn propagate_recursive(
 mod test {
     use bevy_app::prelude::*;
     use bevy_ecs::{prelude::*, world::CommandQueue};
-    use bevy_math::{vec3, Vec3};
+    use bevy_math::{Vec3, vec3};
     use bevy_tasks::{ComputeTaskPool, TaskPool};
 
     use crate::systems::*;
@@ -415,10 +416,9 @@ mod test {
 
         // check the `Children` structure is spawned
         assert_eq!(&**app.world().get::<Children>(parent).unwrap(), &[child]);
-        assert_eq!(
-            &**app.world().get::<Children>(child).unwrap(),
-            &[grandchild]
-        );
+        assert_eq!(&**app.world().get::<Children>(child).unwrap(), &[
+            grandchild
+        ]);
         // Note that at this point, the `GlobalTransform`s will not have updated yet, due to `Commands` delay
         app.update();
 
@@ -491,12 +491,16 @@ mod test {
         // Child should be positioned relative to its parent
         let parent_global_transform = *world.entity(parent).get::<GlobalTransform>().unwrap();
         let child_global_transform = *world.entity(child).get::<GlobalTransform>().unwrap();
-        assert!(parent_global_transform
-            .translation()
-            .abs_diff_eq(translation, 0.1));
-        assert!(child_global_transform
-            .translation()
-            .abs_diff_eq(2. * translation, 0.1));
+        assert!(
+            parent_global_transform
+                .translation()
+                .abs_diff_eq(translation, 0.1)
+        );
+        assert!(
+            child_global_transform
+                .translation()
+                .abs_diff_eq(2. * translation, 0.1)
+        );
 
         // Reparent child
         world.entity_mut(child).remove_parent();

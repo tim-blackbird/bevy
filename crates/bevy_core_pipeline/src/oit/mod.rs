@@ -1,11 +1,12 @@
 //! Order Independent Transparency (OIT) for 3d rendering. See [`OrderIndependentTransparencyPlugin`] for more details.
 
 use bevy_app::prelude::*;
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 use bevy_ecs::{component::*, prelude::*};
 use bevy_math::UVec2;
 use bevy_reflect::Reflect;
 use bevy_render::{
+    Render, RenderApp, RenderSet,
     camera::{Camera, ExtractedCamera},
     extract_component::{ExtractComponent, ExtractComponentPlugin},
     render_graph::{RenderGraphApp, ViewNodeRunner},
@@ -14,21 +15,20 @@ use bevy_render::{
     },
     renderer::{RenderDevice, RenderQueue},
     view::Msaa,
-    Render, RenderApp, RenderSet,
 };
 use bevy_utils::{
-    tracing::{trace, warn},
     HashSet, Instant,
+    tracing::{trace, warn},
 };
 use bevy_window::PrimaryWindow;
 use resolve::{
-    node::{OitResolveNode, OitResolvePass},
     OitResolvePlugin,
+    node::{OitResolveNode, OitResolvePass},
 };
 
 use crate::core_3d::{
-    graph::{Core3d, Node3d},
     Camera3d,
+    graph::{Core3d, Node3d},
 };
 
 /// Module that defines the necesasry systems to resolve the OIT buffer and render it to the screen.

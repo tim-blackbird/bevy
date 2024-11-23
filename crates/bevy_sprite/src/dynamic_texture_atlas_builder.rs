@@ -5,7 +5,7 @@ use bevy_render::{
     render_asset::{RenderAsset, RenderAssetUsages},
     texture::GpuImage,
 };
-use guillotiere::{size2, Allocation, AtlasAllocator};
+use guillotiere::{Allocation, AtlasAllocator, size2};
 
 /// Helper utility to update [`TextureAtlasLayout`] on the fly.
 ///

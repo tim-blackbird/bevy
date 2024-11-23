@@ -48,15 +48,12 @@ fn atlas_render_system(
             }
             let font_atlas = &font_atlas[state.atlas_count as usize];
             state.atlas_count += 1;
-            commands.spawn((
-                ImageNode::new(font_atlas.texture.clone()),
-                Node {
-                    position_type: PositionType::Absolute,
-                    top: Val::ZERO,
-                    left: Val::Px(512.0 * x_offset),
-                    ..default()
-                },
-            ));
+            commands.spawn((ImageNode::new(font_atlas.texture.clone()), Node {
+                position_type: PositionType::Absolute,
+                top: Val::ZERO,
+                left: Val::Px(512.0 * x_offset),
+                ..default()
+            }));
         }
     }
 }

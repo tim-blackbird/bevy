@@ -1,5 +1,5 @@
 use super::{BorderRect, TextureSlice};
-use bevy_math::{vec2, Rect, Vec2};
+use bevy_math::{Rect, Vec2, vec2};
 use bevy_reflect::Reflect;
 
 /// Slices a texture using the **9-slicing** technique. This allows to reuse an image at various sizes
@@ -310,17 +310,14 @@ mod test {
         };
         let render_rect = Vec2::splat(100.);
         let slices = slicer.corner_slices(base_rect, render_rect);
-        assert_eq!(
-            slices[0],
-            TextureSlice {
-                texture_rect: Rect {
-                    min: Vec2::ZERO,
-                    max: Vec2::splat(10.0)
-                },
-                draw_size: Vec2::new(10.0, 10.0),
-                offset: Vec2::new(-45.0, 45.0),
-            }
-        );
+        assert_eq!(slices[0], TextureSlice {
+            texture_rect: Rect {
+                min: Vec2::ZERO,
+                max: Vec2::splat(10.0)
+            },
+            draw_size: Vec2::new(10.0, 10.0),
+            offset: Vec2::new(-45.0, 45.0),
+        });
     }
 
     #[test]
@@ -342,17 +339,14 @@ mod test {
         };
         let render_rect = Vec2::splat(100.);
         let slices = slicer.corner_slices(base_rect, render_rect);
-        assert_eq!(
-            slices[0],
-            TextureSlice {
-                texture_rect: Rect {
-                    min: Vec2::ZERO,
-                    max: Vec2::new(20.0, 10.0)
-                },
-                draw_size: Vec2::new(20.0, 10.0),
-                offset: Vec2::new(-40.0, 45.0),
-            }
-        );
+        assert_eq!(slices[0], TextureSlice {
+            texture_rect: Rect {
+                min: Vec2::ZERO,
+                max: Vec2::new(20.0, 10.0)
+            },
+            draw_size: Vec2::new(20.0, 10.0),
+            offset: Vec2::new(-40.0, 45.0),
+        });
     }
 
     #[test]
@@ -376,17 +370,14 @@ mod test {
         let corners = slicer.corner_slices(rect, render_size);
 
         let vertical_sides = slicer.vertical_side_slices(&corners, rect, render_size);
-        assert_eq!(
-            corners[0],
-            TextureSlice {
-                texture_rect: Rect {
-                    min: Vec2::ZERO,
-                    max: Vec2::new(5.0, 10.0)
-                },
-                draw_size: Vec2::new(5.0, 10.0),
-                offset: Vec2::new(-47.5, 45.0),
-            }
-        );
+        assert_eq!(corners[0], TextureSlice {
+            texture_rect: Rect {
+                min: Vec2::ZERO,
+                max: Vec2::new(5.0, 10.0)
+            },
+            draw_size: Vec2::new(5.0, 10.0),
+            offset: Vec2::new(-47.5, 45.0),
+        });
         assert_eq!(
             vertical_sides[0], // top
             TextureSlice {
@@ -419,16 +410,13 @@ mod test {
         };
         let render_rect = Vec2::splat(100.);
         let slices = slicer.corner_slices(base_rect, render_rect);
-        assert_eq!(
-            slices[0],
-            TextureSlice {
-                texture_rect: Rect {
-                    min: Vec2::ZERO,
-                    max: Vec2::new(0.0, 10.0)
-                },
-                draw_size: Vec2::new(0.0, 10.0),
-                offset: Vec2::new(-50.0, 45.0),
-            }
-        );
+        assert_eq!(slices[0], TextureSlice {
+            texture_rect: Rect {
+                min: Vec2::ZERO,
+                max: Vec2::new(0.0, 10.0)
+            },
+            draw_size: Vec2::new(0.0, 10.0),
+            offset: Vec2::new(-50.0, 45.0),
+        });
     }
 }

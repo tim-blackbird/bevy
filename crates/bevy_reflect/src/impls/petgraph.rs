@@ -1,6 +1,6 @@
 use crate::{
-    self as bevy_reflect, impl_reflect_opaque, prelude::ReflectDefault, ReflectDeserialize,
-    ReflectSerialize,
+    self as bevy_reflect, ReflectDeserialize, ReflectSerialize, impl_reflect_opaque,
+    prelude::ReflectDefault,
 };
 
 impl_reflect_opaque!(::petgraph::graph::NodeIndex(

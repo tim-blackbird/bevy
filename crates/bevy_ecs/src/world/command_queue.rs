@@ -2,9 +2,9 @@ use crate::system::{SystemBuffer, SystemMeta};
 
 use core::{
     fmt::Debug,
-    mem::{size_of, MaybeUninit},
+    mem::{MaybeUninit, size_of},
     panic::AssertUnwindSafe,
-    ptr::{addr_of_mut, NonNull},
+    ptr::{NonNull, addr_of_mut},
 };
 
 use bevy_ptr::{OwningPtr, Unaligned};
@@ -311,7 +311,9 @@ impl RawCommandQueue {
 impl Drop for CommandQueue {
     fn drop(&mut self) {
         if !self.bytes.is_empty() {
-            warn!("CommandQueue has un-applied commands being dropped. Did you forget to call SystemState::apply?");
+            warn!(
+                "CommandQueue has un-applied commands being dropped. Did you forget to call SystemState::apply?"
+            );
         }
         // SAFETY: A reference is always a valid pointer
         unsafe { self.get_raw().apply_or_drop_queued(None) };

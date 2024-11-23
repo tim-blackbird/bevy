@@ -7,11 +7,11 @@
 //! processing deserialized reflection data, or even just storing type-erased versions of your functions.
 
 use bevy::reflect::{
+    PartialReflect, Reflect,
     func::{
         ArgList, DynamicFunction, DynamicFunctionMut, FunctionInfo, FunctionResult, IntoFunction,
         IntoFunctionMut, Return,
     },
-    PartialReflect, Reflect,
 };
 
 // Note that the `dbg!` invocations are used purely for demonstration purposes

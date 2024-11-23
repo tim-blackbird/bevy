@@ -27,7 +27,7 @@ pub use reader::EventReader;
 pub use registry::{EventRegistry, ShouldUpdateEvents};
 pub use send_event::SendEvent;
 pub use update::{
-    event_update_condition, event_update_system, signal_event_update_system, EventUpdates,
+    EventUpdates, event_update_condition, event_update_system, signal_event_update_system,
 };
 pub use writer::EventWriter;
 
@@ -159,9 +159,11 @@ mod tests {
         events.update();
         events.send(TestEvent { i: 3 });
 
-        assert!(reader
-            .read(&events)
-            .eq([TestEvent { i: 2 }, TestEvent { i: 3 }].iter()));
+        assert!(
+            reader
+                .read(&events)
+                .eq([TestEvent { i: 2 }, TestEvent { i: 3 }].iter())
+        );
     }
 
     #[test]
@@ -172,9 +174,11 @@ mod tests {
     #[test]
     fn test_events_drain_and_read() {
         events_clear_and_read_impl(|events| {
-            assert!(events
-                .drain()
-                .eq(vec![TestEvent { i: 0 }, TestEvent { i: 1 }].into_iter()));
+            assert!(
+                events
+                    .drain()
+                    .eq(vec![TestEvent { i: 0 }, TestEvent { i: 1 }].into_iter())
+            );
         });
     }
 
@@ -261,10 +265,11 @@ mod tests {
         assert_eq!(old_events.len(), 2);
 
         old_events.extend(events.update_drain());
-        assert_eq!(
-            old_events,
-            &[TestEvent { i: 0 }, TestEvent { i: 1 }, TestEvent { i: 2 }]
-        );
+        assert_eq!(old_events, &[
+            TestEvent { i: 0 },
+            TestEvent { i: 1 },
+            TestEvent { i: 2 }
+        ]);
     }
 
     #[test]
@@ -290,9 +295,11 @@ mod tests {
         let mut reader = events.get_cursor();
 
         events.extend(vec![TestEvent { i: 0 }, TestEvent { i: 1 }]);
-        assert!(reader
-            .read(&events)
-            .eq([TestEvent { i: 0 }, TestEvent { i: 1 }].iter()));
+        assert!(
+            reader
+                .read(&events)
+                .eq([TestEvent { i: 0 }, TestEvent { i: 1 }].iter())
+        );
     }
 
     // Cursor
@@ -328,20 +335,18 @@ mod tests {
         let sent_event = write_cursor.read_mut(&mut events).next().unwrap();
         assert_eq!(sent_event, &mut TestEvent { i: 0 });
         *sent_event = TestEvent { i: 1 }; // Mutate whole event
-        assert_eq!(
-            read_cursor.read(&events).next().unwrap(),
-            &TestEvent { i: 1 }
-        );
+        assert_eq!(read_cursor.read(&events).next().unwrap(), &TestEvent {
+            i: 1
+        });
         assert!(read_cursor.read(&events).next().is_none());
 
         events.send(TestEvent { i: 2 });
         let sent_event = write_cursor.read_mut(&mut events).next().unwrap();
         assert_eq!(sent_event, &mut TestEvent { i: 2 });
         sent_event.i = 3; // Mutate sub value
-        assert_eq!(
-            read_cursor.read(&events).next().unwrap(),
-            &TestEvent { i: 3 }
-        );
+        assert_eq!(read_cursor.read(&events).next().unwrap(), &TestEvent {
+            i: 3
+        });
         assert!(read_cursor.read(&events).next().is_none());
 
         events.clear();

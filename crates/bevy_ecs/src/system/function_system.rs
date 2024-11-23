@@ -5,10 +5,10 @@ use crate::{
     query::{Access, FilteredAccessSet},
     schedule::{InternedSystemSet, SystemSet},
     system::{
-        check_system_change_tick, ReadOnlySystemParam, System, SystemIn, SystemInput, SystemParam,
-        SystemParamItem,
+        ReadOnlySystemParam, System, SystemIn, SystemInput, SystemParam, SystemParamItem,
+        check_system_change_tick,
     },
-    world::{unsafe_world_cell::UnsafeWorldCell, DeferredWorld, World, WorldId},
+    world::{DeferredWorld, World, WorldId, unsafe_world_cell::UnsafeWorldCell},
 };
 
 use alloc::borrow::Cow;
@@ -16,7 +16,7 @@ use bevy_utils::all_tuples;
 use core::marker::PhantomData;
 
 #[cfg(feature = "trace")]
-use bevy_utils::tracing::{info_span, Span};
+use bevy_utils::tracing::{Span, info_span};
 
 use super::{In, IntoSystem, ReadOnlySystem, SystemParamBuilder};
 
@@ -466,7 +466,9 @@ impl<Param: SystemParam> SystemState<Param> {
         #[track_caller]
         #[cold]
         fn panic_mismatched(this: WorldId, other: WorldId) -> ! {
-            panic!("Encountered a mismatched World. This SystemState was created from {this:?}, but a method was called using {other:?}.");
+            panic!(
+                "Encountered a mismatched World. This SystemState was created from {this:?}, but a method was called using {other:?}."
+            );
         }
 
         if !self.matches_world(world_id) {
@@ -497,7 +499,11 @@ impl<Param: SystemParam> SystemState<Param> {
     /// This method only accesses world metadata.
     #[inline]
     pub fn update_archetypes_unsafe_world_cell(&mut self, world: UnsafeWorldCell) {
-        assert_eq!(self.world_id, world.id(), "Encountered a mismatched World. A System cannot be used with Worlds other than the one it was initialized with.");
+        assert_eq!(
+            self.world_id,
+            world.id(),
+            "Encountered a mismatched World. A System cannot be used with Worlds other than the one it was initialized with."
+        );
 
         let archetypes = world.archetypes();
         let old_generation =
@@ -782,7 +788,11 @@ where
     }
 
     fn update_archetype_component_access(&mut self, world: UnsafeWorldCell) {
-        assert_eq!(self.world_id, Some(world.id()), "Encountered a mismatched World. A System cannot be used with Worlds other than the one it was initialized with.");
+        assert_eq!(
+            self.world_id,
+            Some(world.id()),
+            "Encountered a mismatched World. A System cannot be used with Worlds other than the one it was initialized with."
+        );
         let archetypes = world.archetypes();
         let old_generation =
             core::mem::replace(&mut self.archetype_generation, archetypes.generation());

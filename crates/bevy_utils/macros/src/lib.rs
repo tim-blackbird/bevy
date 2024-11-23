@@ -6,11 +6,11 @@ use proc_macro::TokenStream;
 use proc_macro2::{Span as Span2, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use syn::{
+    Attribute, Error, Ident, LitInt, LitStr, Result,
     parse::{Parse, ParseStream},
     parse_macro_input,
     spanned::Spanned as _,
     token::Comma,
-    Attribute, Error, Ident, LitInt, LitStr, Result,
 };
 struct AllTuples {
     fake_variadic: bool,
@@ -341,7 +341,7 @@ fn parse_fake_variadic_attr(input: ParseStream) -> Result<bool> {
             return Err(Error::new(
                 input.span(),
                 format!("Expected exactly one attribute, got {}", attributes.len()),
-            ))
+            ));
         }
     };
 

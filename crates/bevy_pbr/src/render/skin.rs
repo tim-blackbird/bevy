@@ -5,12 +5,12 @@ use bevy_ecs::prelude::*;
 use bevy_math::Mat4;
 use bevy_render::sync_world::MainEntityHashMap;
 use bevy_render::{
+    Extract,
     batching::NoAutomaticBatching,
     mesh::skinning::{SkinnedMesh, SkinnedMeshInverseBindposes},
     render_resource::{BufferUsages, RawBufferVec},
     renderer::{RenderDevice, RenderQueue},
     view::ViewVisibility,
-    Extract,
 };
 use bevy_transform::prelude::GlobalTransform;
 

@@ -15,7 +15,7 @@
 //! [Depth of field]: https://en.wikipedia.org/wiki/Depth_of_field
 
 use bevy_app::{App, Plugin};
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::{
     component::Component,
@@ -23,46 +23,46 @@ use bevy_ecs::{
     query::{QueryItem, With},
     reflect::ReflectComponent,
     schedule::IntoSystemConfigs as _,
-    system::{lifetimeless::Read, Commands, Query, Res, ResMut, Resource},
+    system::{Commands, Query, Res, ResMut, Resource, lifetimeless::Read},
     world::{FromWorld, World},
 };
 use bevy_image::BevyDefault as _;
 use bevy_math::ops;
-use bevy_reflect::{prelude::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, prelude::ReflectDefault};
 use bevy_render::{
+    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
     camera::{PhysicalCameraParameters, Projection},
     extract_component::{ComponentUniforms, DynamicUniformIndex, UniformComponentPlugin},
     render_graph::{
         NodeRunError, RenderGraphApp as _, RenderGraphContext, ViewNode, ViewNodeRunner,
     },
     render_resource::{
-        binding_types::{
-            sampler, texture_2d, texture_depth_2d, texture_depth_2d_multisampled, uniform_buffer,
-        },
         BindGroup, BindGroupEntries, BindGroupLayout, BindGroupLayoutEntries,
         CachedRenderPipelineId, ColorTargetState, ColorWrites, FilterMode, FragmentState, LoadOp,
         Operations, PipelineCache, RenderPassColorAttachment, RenderPassDescriptor,
         RenderPipelineDescriptor, Sampler, SamplerBindingType, SamplerDescriptor, Shader,
         ShaderStages, ShaderType, SpecializedRenderPipeline, SpecializedRenderPipelines, StoreOp,
         TextureDescriptor, TextureDimension, TextureFormat, TextureSampleType, TextureUsages,
+        binding_types::{
+            sampler, texture_2d, texture_depth_2d, texture_depth_2d_multisampled, uniform_buffer,
+        },
     },
     renderer::{RenderContext, RenderDevice},
     sync_component::SyncComponentPlugin,
     sync_world::RenderEntity,
     texture::{CachedTexture, TextureCache},
     view::{
-        prepare_view_targets, ExtractedView, Msaa, ViewDepthTexture, ViewTarget, ViewUniform,
-        ViewUniformOffset, ViewUniforms,
+        ExtractedView, Msaa, ViewDepthTexture, ViewTarget, ViewUniform, ViewUniformOffset,
+        ViewUniforms, prepare_view_targets,
     },
-    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
 };
 use bevy_utils::{info_once, prelude::default, warn_once};
 use smallvec::SmallVec;
 
 use crate::{
     core_3d::{
-        graph::{Core3d, Node3d},
         Camera3d, DEPTH_TEXTURE_SAMPLING_SUPPORTED,
+        graph::{Core3d, Node3d},
     },
     fullscreen_vertex_shader::fullscreen_shader_vertex_state,
 };
@@ -452,11 +452,9 @@ impl ViewNode for DepthOfFieldNode {
             // Set the per-view bind group.
             render_pass.set_bind_group(0, &view_bind_group, &[view_uniform_offset.offset]);
             // Set the global bind group shared among all invocations of the shader.
-            render_pass.set_bind_group(
-                1,
-                global_bind_group,
-                &[depth_of_field_uniform_index.index()],
-            );
+            render_pass.set_bind_group(1, global_bind_group, &[
+                depth_of_field_uniform_index.index()
+            ]);
             // Render the full-screen pass.
             render_pass.draw(0..3, 0..1);
         }
@@ -847,20 +845,17 @@ fn extract_depth_of_field_settings(
             calculate_focal_length(depth_of_field.sensor_height, perspective_projection.fov);
 
         // Convert `DepthOfField` to `DepthOfFieldUniform`.
-        entity_commands.insert((
-            *depth_of_field,
-            DepthOfFieldUniform {
-                focal_distance: depth_of_field.focal_distance,
-                focal_length,
-                coc_scale_factor: focal_length * focal_length
-                    / (depth_of_field.sensor_height * depth_of_field.aperture_f_stops),
-                max_circle_of_confusion_diameter: depth_of_field.max_circle_of_confusion_diameter,
-                max_depth: depth_of_field.max_depth,
-                pad_a: 0,
-                pad_b: 0,
-                pad_c: 0,
-            },
-        ));
+        entity_commands.insert((*depth_of_field, DepthOfFieldUniform {
+            focal_distance: depth_of_field.focal_distance,
+            focal_length,
+            coc_scale_factor: focal_length * focal_length
+                / (depth_of_field.sensor_height * depth_of_field.aperture_f_stops),
+            max_circle_of_confusion_diameter: depth_of_field.max_circle_of_confusion_diameter,
+            max_depth: depth_of_field.max_depth,
+            pad_a: 0,
+            pad_b: 0,
+            pad_c: 0,
+        }));
     }
 }
 

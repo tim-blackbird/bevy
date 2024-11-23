@@ -8,7 +8,7 @@ use core::any::type_name;
 use core::fmt::{self, Debug};
 
 #[cfg(feature = "bevy_reflect")]
-use bevy_reflect::{utility::GenericTypePathCell, Reflect, TypePath};
+use bevy_reflect::{Reflect, TypePath, utility::GenericTypePathCell};
 
 #[cfg(feature = "bevy_reflect")]
 mod paths {
@@ -363,7 +363,7 @@ mod tests {
     //! - 'static closures
     //! - function pointers
     use super::{SampleCurve, UnevenSampleCurve};
-    use crate::{curve::Interval, VectorSpace};
+    use crate::{VectorSpace, curve::Interval};
     use bevy_reflect::Reflect;
 
     #[test]

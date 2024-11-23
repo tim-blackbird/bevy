@@ -48,7 +48,7 @@ fn setup(mut commands: Commands) {
 mod splash {
     use bevy::prelude::*;
 
-    use super::{despawn_screen, GameState};
+    use super::{GameState, despawn_screen};
 
     // This plugin will display a splash screen with Bevy logo for 1 second before switching to the menu
     pub fn splash_plugin(app: &mut App) {
@@ -85,14 +85,11 @@ mod splash {
                 OnSplashScreen,
             ))
             .with_children(|parent| {
-                parent.spawn((
-                    ImageNode::new(icon),
-                    Node {
-                        // This will set the logo to be 200px wide, and auto adjust its height
-                        width: Val::Px(200.0),
-                        ..default()
-                    },
-                ));
+                parent.spawn((ImageNode::new(icon), Node {
+                    // This will set the logo to be 200px wide, and auto adjust its height
+                    width: Val::Px(200.0),
+                    ..default()
+                }));
             });
         // Insert the timer as a resource
         commands.insert_resource(SplashTimer(Timer::from_seconds(1.0, TimerMode::Once)));
@@ -116,7 +113,7 @@ mod game {
         prelude::*,
     };
 
-    use super::{despawn_screen, DisplayQuality, GameState, Volume, TEXT_COLOR};
+    use super::{DisplayQuality, GameState, TEXT_COLOR, Volume, despawn_screen};
 
     // This plugin will contain the game. In this case, it's just be a screen that will
     // display the current settings for 5 seconds before returning to the menu
@@ -178,13 +175,10 @@ mod game {
                                 ..default()
                             },
                         ));
-                        p.spawn((
-                            Text::default(),
-                            Node {
-                                margin: UiRect::all(Val::Px(50.0)),
-                                ..default()
-                            },
-                        ))
+                        p.spawn((Text::default(), Node {
+                            margin: UiRect::all(Val::Px(50.0)),
+                            ..default()
+                        }))
                         .with_children(|p| {
                             p.spawn((
                                 TextSpan(format!("quality: {:?}", *display_quality)),
@@ -232,7 +226,7 @@ mod game {
 mod menu {
     use bevy::{app::AppExit, color::palettes::css::CRIMSON, prelude::*};
 
-    use super::{despawn_screen, DisplayQuality, GameState, Volume, TEXT_COLOR};
+    use super::{DisplayQuality, GameState, TEXT_COLOR, Volume, despawn_screen};
 
     // This plugin manages the menu, with 5 different screens:
     // - a main menu with "New Game", "Settings", "Quit"

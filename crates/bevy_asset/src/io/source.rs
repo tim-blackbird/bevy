@@ -1,13 +1,13 @@
 use crate::{
-    io::{processor_gated::ProcessorGatedReader, AssetSourceEvent, AssetWatcher},
+    io::{AssetSourceEvent, AssetWatcher, processor_gated::ProcessorGatedReader},
     processor::AssetProcessorData,
 };
 use alloc::sync::Arc;
 use atomicow::CowArc;
 use bevy_ecs::system::Resource;
 use bevy_utils::{
-    tracing::{error, warn},
     Duration, HashMap,
+    tracing::{error, warn},
 };
 use core::{fmt::Display, hash::Hash};
 use derive_more::derive::{Display, Error};
@@ -230,10 +230,12 @@ impl AssetSourceBuilder {
     /// Will use the given `watcher` function to construct unprocessed [`AssetWatcher`] instances.
     pub fn with_watcher(
         mut self,
-        watcher: impl FnMut(crossbeam_channel::Sender<AssetSourceEvent>) -> Option<Box<dyn AssetWatcher>>
-            + Send
-            + Sync
-            + 'static,
+        watcher: impl FnMut(
+            crossbeam_channel::Sender<AssetSourceEvent>,
+        ) -> Option<Box<dyn AssetWatcher>>
+        + Send
+        + Sync
+        + 'static,
     ) -> Self {
         self.watcher = Some(Box::new(watcher));
         self
@@ -260,10 +262,12 @@ impl AssetSourceBuilder {
     /// Will use the given `watcher` function to construct processed [`AssetWatcher`] instances.
     pub fn with_processed_watcher(
         mut self,
-        watcher: impl FnMut(crossbeam_channel::Sender<AssetSourceEvent>) -> Option<Box<dyn AssetWatcher>>
-            + Send
-            + Sync
-            + 'static,
+        watcher: impl FnMut(
+            crossbeam_channel::Sender<AssetSourceEvent>,
+        ) -> Option<Box<dyn AssetWatcher>>
+        + Send
+        + Sync
+        + 'static,
     ) -> Self {
         self.processed_watcher = Some(Box::new(watcher));
         self
@@ -522,8 +526,8 @@ impl AssetSource {
         path: String,
         file_debounce_wait_time: Duration,
     ) -> impl FnMut(crossbeam_channel::Sender<AssetSourceEvent>) -> Option<Box<dyn AssetWatcher>>
-           + Send
-           + Sync {
+    + Send
+    + Sync {
         move |sender: crossbeam_channel::Sender<AssetSourceEvent>| {
             #[cfg(all(
                 feature = "file_watcher",

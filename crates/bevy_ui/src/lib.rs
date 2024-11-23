@@ -21,7 +21,7 @@ pub mod widget;
 pub mod picking_backend;
 
 use bevy_derive::{Deref, DerefMut};
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 mod accessibility;
 // This module is not re-exported, but is instead made public.
 // This is intended to discourage accidental use of the experimental API.
@@ -54,30 +54,30 @@ pub mod prelude {
     #[doc(hidden)]
     pub use {
         crate::{
+            Interaction, MaterialNode, UiMaterialPlugin, UiScale,
             geometry::*,
             node_bundles::*,
             ui_material::*,
             ui_node::*,
             widget::{Button, ImageNode, Label},
-            Interaction, MaterialNode, UiMaterialPlugin, UiScale,
         },
         // `bevy_sprite` re-exports for texture slicing
         bevy_sprite::{BorderRect, SliceScaleMode, SpriteImageMode, TextureSlicer},
     };
 }
 
-use bevy_app::{prelude::*, Animation};
+use bevy_app::{Animation, prelude::*};
 use bevy_ecs::prelude::*;
 use bevy_input::InputSystem;
 use bevy_render::{
-    camera::CameraUpdateSystem,
-    view::{check_visibility, VisibilitySystems},
     RenderApp,
+    camera::CameraUpdateSystem,
+    view::{VisibilitySystems, check_visibility},
 };
 use bevy_transform::TransformSystem;
 use layout::ui_surface::UiSurface;
-use stack::ui_stack_system;
 pub use stack::UiStack;
+use stack::ui_stack_system;
 use update::{update_clipping_system, update_target_camera_system};
 
 /// The basic plugin for Bevy UI

@@ -9,15 +9,15 @@ use bevy_ecs::{
     component::Component,
     entity::Entity,
     query::With,
-    schedule::{common_conditions::resource_changed, IntoSystemConfigs},
+    schedule::{IntoSystemConfigs, common_conditions::resource_changed},
     system::{Commands, Query, Res, Resource},
 };
 use bevy_hierarchy::{BuildChildren, ChildBuild};
 use bevy_render::view::Visibility;
 use bevy_text::{Font, TextColor, TextFont, TextSpan};
 use bevy_ui::{
-    widget::{Text, TextUiWriter},
     GlobalZIndex, Node, PositionType,
+    widget::{Text, TextUiWriter},
 };
 use bevy_utils::default;
 

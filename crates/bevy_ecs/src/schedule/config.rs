@@ -2,10 +2,10 @@ use bevy_utils::all_tuples;
 
 use crate::{
     schedule::{
+        Chain,
         condition::{BoxedCondition, Condition},
         graph_utils::{Ambiguity, Dependency, DependencyKind, GraphInfo},
         set::{InternedSystemSet, IntoSystemSet, SystemSet},
-        Chain,
     },
     system::{BoxedSystem, IntoSystem, System},
 };

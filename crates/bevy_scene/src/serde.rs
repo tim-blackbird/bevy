@@ -3,18 +3,18 @@
 use crate::{DynamicEntity, DynamicScene};
 use bevy_ecs::entity::Entity;
 use bevy_reflect::{
+    PartialReflect, ReflectFromReflect, TypeRegistry,
     serde::{
         ReflectDeserializer, TypeRegistrationDeserializer, TypedReflectDeserializer,
         TypedReflectSerializer,
     },
-    PartialReflect, ReflectFromReflect, TypeRegistry,
 };
 use bevy_utils::HashSet;
 use core::fmt::Formatter;
 use serde::{
+    Deserialize, Deserializer, Serialize, Serializer,
     de::{DeserializeSeed, Error, MapAccess, SeqAccess, Visitor},
     ser::{SerializeMap, SerializeStruct},
-    Deserialize, Deserializer, Serialize, Serializer,
 };
 
 /// Name of the serialized scene struct type.
@@ -79,20 +79,14 @@ impl<'a> Serialize for SceneSerializer<'a> {
         S: Serializer,
     {
         let mut state = serializer.serialize_struct(SCENE_STRUCT, 2)?;
-        state.serialize_field(
-            SCENE_RESOURCES,
-            &SceneMapSerializer {
-                entries: &self.scene.resources,
-                registry: self.registry,
-            },
-        )?;
-        state.serialize_field(
-            SCENE_ENTITIES,
-            &EntitiesSerializer {
-                entities: &self.scene.entities,
-                registry: self.registry,
-            },
-        )?;
+        state.serialize_field(SCENE_RESOURCES, &SceneMapSerializer {
+            entries: &self.scene.resources,
+            registry: self.registry,
+        })?;
+        state.serialize_field(SCENE_ENTITIES, &EntitiesSerializer {
+            entities: &self.scene.entities,
+            registry: self.registry,
+        })?;
         state.end()
     }
 }
@@ -112,13 +106,10 @@ impl<'a> Serialize for EntitiesSerializer<'a> {
     {
         let mut state = serializer.serialize_map(Some(self.entities.len()))?;
         for entity in self.entities {
-            state.serialize_entry(
-                &entity.entity,
-                &EntitySerializer {
-                    entity,
-                    registry: self.registry,
-                },
-            )?;
+            state.serialize_entry(&entity.entity, &EntitySerializer {
+                entity,
+                registry: self.registry,
+            })?;
         }
         state.end()
     }
@@ -138,13 +129,10 @@ impl<'a> Serialize for EntitySerializer<'a> {
         S: Serializer,
     {
         let mut state = serializer.serialize_struct(ENTITY_STRUCT, 1)?;
-        state.serialize_field(
-            ENTITY_FIELD_COMPONENTS,
-            &SceneMapSerializer {
-                entries: &self.entity.components,
-                registry: self.registry,
-            },
-        )?;
+        state.serialize_field(ENTITY_FIELD_COMPONENTS, &SceneMapSerializer {
+            entries: &self.entity.components,
+            registry: self.registry,
+        })?;
         state.end()
     }
 }
@@ -510,9 +498,8 @@ impl<'a, 'de> Visitor<'de> for SceneMapVisitor<'a> {
 #[cfg(test)]
 mod tests {
     use crate::{
-        ron,
+        DynamicScene, DynamicSceneBuilder, ron,
         serde::{SceneDeserializer, SceneSerializer},
-        DynamicScene, DynamicSceneBuilder,
     };
     use bevy_ecs::{
         entity::{Entity, EntityHashMap, VisitEntities, VisitEntitiesMut},
@@ -523,7 +510,7 @@ mod tests {
     };
     use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
     use bincode::Options;
-    use serde::{de::DeserializeSeed, Deserialize, Serialize};
+    use serde::{Deserialize, Serialize, de::DeserializeSeed};
     use std::io::BufReader;
 
     #[derive(Component, Reflect, Default)]
@@ -538,7 +525,7 @@ mod tests {
 
     // De/serialize as hex.
     mod qux {
-        use serde::{de::Error, Deserialize, Deserializer, Serializer};
+        use serde::{Deserialize, Deserializer, Serializer, de::Error};
 
         pub fn serialize<S>(value: &u32, serializer: S) -> Result<S::Ok, S::Error>
         where
@@ -772,10 +759,12 @@ mod tests {
             .unwrap();
 
         assert_eq!(foo, bar_to_foo.0);
-        assert!(dst_world
-            .query_filtered::<&MyEntityRef, With<Foo>>()
-            .iter(&dst_world)
-            .all(|r| world.get_entity(r.0).is_err()));
+        assert!(
+            dst_world
+                .query_filtered::<&MyEntityRef, With<Foo>>()
+                .iter(&dst_world)
+                .all(|r| world.get_entity(r.0).is_err())
+        );
     }
 
     #[test]

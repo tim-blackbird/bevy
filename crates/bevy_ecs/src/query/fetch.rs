@@ -7,8 +7,8 @@ use crate::{
     query::{Access, DebugCheckedUnwrap, FilteredAccess, WorldQuery},
     storage::{ComponentSparseSet, Table, TableRow},
     world::{
-        unsafe_world_cell::UnsafeWorldCell, EntityMut, EntityMutExcept, EntityRef, EntityRefExcept,
-        FilteredEntityMut, FilteredEntityRef, Mut, Ref, World,
+        EntityMut, EntityMutExcept, EntityRef, EntityRefExcept, FilteredEntityMut,
+        FilteredEntityRef, Mut, Ref, World, unsafe_world_cell::UnsafeWorldCell,
     },
 };
 use bevy_ptr::{ThinSlicePtr, UnsafeCellDeref};
@@ -2402,7 +2402,7 @@ mod tests {
     use super::*;
     use crate::{
         self as bevy_ecs,
-        system::{assert_is_system, Query},
+        system::{Query, assert_is_system},
     };
 
     #[derive(Component)]

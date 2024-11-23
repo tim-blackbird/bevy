@@ -6,11 +6,11 @@ pub mod ui_texture_slice_pipeline;
 
 use crate::widget::ImageNode;
 use crate::{
-    experimental::UiChildren, BackgroundColor, BorderColor, CalculatedClip, ComputedNode,
-    DefaultUiCamera, Outline, ResolvedBorderRadius, TargetCamera, UiAntiAlias, UiBoxShadowSamples,
+    BackgroundColor, BorderColor, CalculatedClip, ComputedNode, DefaultUiCamera, Outline,
+    ResolvedBorderRadius, TargetCamera, UiAntiAlias, UiBoxShadowSamples, experimental::UiChildren,
 };
 use bevy_app::prelude::*;
-use bevy_asset::{load_internal_asset, AssetEvent, AssetId, Assets, Handle};
+use bevy_asset::{AssetEvent, AssetId, Assets, Handle, load_internal_asset};
 use bevy_color::{Alpha, ColorToComponents, LinearRgba};
 use bevy_core_pipeline::core_2d::graph::{Core2d, Node2d};
 use bevy_core_pipeline::core_3d::graph::{Core3d, Node3d};
@@ -23,21 +23,21 @@ use bevy_render::render_phase::ViewSortedRenderPhases;
 use bevy_render::sync_world::MainEntity;
 use bevy_render::texture::TRANSPARENT_IMAGE_HANDLE;
 use bevy_render::{
+    Extract, RenderApp, RenderSet,
     camera::Camera,
     render_asset::RenderAssets,
     render_graph::{RenderGraph, RunGraphOnViewNode},
-    render_phase::{sort_phase_system, AddRenderCommand, DrawFunctions},
+    render_phase::{AddRenderCommand, DrawFunctions, sort_phase_system},
     render_resource::*,
     renderer::{RenderDevice, RenderQueue},
     view::{ExtractedView, ViewUniforms},
-    Extract, RenderApp, RenderSet,
 };
 use bevy_render::{
+    ExtractSchedule, Render,
     render_phase::{PhaseItem, PhaseItemExtraIndex},
     sync_world::{RenderEntity, TemporaryRenderEntity},
     texture::GpuImage,
     view::ViewVisibility,
-    ExtractSchedule, Render,
 };
 use bevy_sprite::TextureAtlasLayout;
 use bevy_sprite::{BorderRect, SpriteAssetEvents};
@@ -709,22 +709,19 @@ pub fn extract_text_sections(
             {
                 let id = commands.spawn(TemporaryRenderEntity).id();
 
-                extracted_uinodes.uinodes.insert(
-                    id,
-                    ExtractedUiNode {
-                        stack_index: uinode.stack_index,
-                        color,
-                        image: atlas_info.texture.id(),
-                        clip: clip.map(|clip| clip.clip),
-                        camera_entity: render_camera_entity.id(),
-                        rect,
-                        item: ExtractedUiItem::Glyphs {
-                            atlas_scaling: Vec2::ONE,
-                            range: start..end,
-                        },
-                        main_entity: entity.into(),
+                extracted_uinodes.uinodes.insert(id, ExtractedUiNode {
+                    stack_index: uinode.stack_index,
+                    color,
+                    image: atlas_info.texture.id(),
+                    clip: clip.map(|clip| clip.clip),
+                    camera_entity: render_camera_entity.id(),
+                    rect,
+                    item: ExtractedUiItem::Glyphs {
+                        atlas_scaling: Vec2::ONE,
+                        range: start..end,
                     },
-                );
+                    main_entity: entity.into(),
+                });
                 start = end;
             }
 
@@ -817,14 +814,10 @@ pub fn queue_uinodes(
             continue;
         };
 
-        let pipeline = pipelines.specialize(
-            &pipeline_cache,
-            &ui_pipeline,
-            UiPipelineKey {
-                hdr: view.hdr,
-                anti_alias: matches!(ui_anti_alias, None | Some(UiAntiAlias::On)),
-            },
-        );
+        let pipeline = pipelines.specialize(&pipeline_cache, &ui_pipeline, UiPipelineKey {
+            hdr: view.hdr,
+            anti_alias: matches!(ui_anti_alias, None | Some(UiAntiAlias::On)),
+        });
         transparent_phase.add(TransparentUi {
             draw_function,
             pipeline,

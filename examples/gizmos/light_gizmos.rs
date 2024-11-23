@@ -122,16 +122,12 @@ fn setup(
         light_config.color = LightGizmoColor::MatchLightColor;
 
         commands
-            .spawn((
-                Text::new("Gizmo color mode: "),
-                GizmoColorText,
-                Node {
-                    position_type: PositionType::Absolute,
-                    bottom: Val::Px(12.0),
-                    left: Val::Px(12.0),
-                    ..default()
-                },
-            ))
+            .spawn((Text::new("Gizmo color mode: "), GizmoColorText, Node {
+                position_type: PositionType::Absolute,
+                bottom: Val::Px(12.0),
+                left: Val::Px(12.0),
+                ..default()
+            }))
             .with_child(TextSpan(gizmo_color_text(light_config)));
     }
 }

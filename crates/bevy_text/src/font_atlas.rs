@@ -102,13 +102,11 @@ impl FontAtlas {
             self.dynamic_texture_atlas_builder
                 .add_texture(atlas_layout, texture, atlas_texture)
         {
-            self.glyph_to_atlas_index.insert(
-                cache_key,
-                GlyphAtlasLocation {
+            self.glyph_to_atlas_index
+                .insert(cache_key, GlyphAtlasLocation {
                     glyph_index,
                     offset,
-                },
-            );
+                });
             Ok(())
         } else {
             Err(TextError::FailedToAddGlyph(cache_key.glyph_id))

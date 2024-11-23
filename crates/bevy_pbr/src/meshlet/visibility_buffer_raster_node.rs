@@ -395,11 +395,10 @@ fn cull_pass(
         0,
         bytemuck::cast_slice(&[scene_cluster_count, raster_cluster_rightmost_slot]),
     );
-    cull_pass.set_bind_group(
-        0,
-        culling_bind_group,
-        &[view_offset.offset, previous_view_offset.offset],
-    );
+    cull_pass.set_bind_group(0, culling_bind_group, &[
+        view_offset.offset,
+        previous_view_offset.offset,
+    ]);
     cull_pass.dispatch_workgroups(culling_workgroups, culling_workgroups, culling_workgroups);
 
     if let (Some(remap_1d_to_2d_dispatch_pipeline), Some(remap_1d_to_2d_dispatch_bind_group)) = (
@@ -437,11 +436,9 @@ fn raster_pass(
         timestamp_writes: None,
     });
     software_pass.set_pipeline(visibility_buffer_hardware_software_pipeline);
-    software_pass.set_bind_group(
-        0,
-        &meshlet_view_bind_groups.visibility_buffer_raster,
-        &[view_offset.offset],
-    );
+    software_pass.set_bind_group(0, &meshlet_view_bind_groups.visibility_buffer_raster, &[
+        view_offset.offset,
+    ]);
     software_pass
         .dispatch_workgroups_indirect(visibility_buffer_hardware_software_indirect_args, 0);
     drop(software_pass);
@@ -473,11 +470,9 @@ fn raster_pass(
         0,
         &raster_cluster_rightmost_slot.to_le_bytes(),
     );
-    hardware_pass.set_bind_group(
-        0,
-        &meshlet_view_bind_groups.visibility_buffer_raster,
-        &[view_offset.offset],
-    );
+    hardware_pass.set_bind_group(0, &meshlet_view_bind_groups.visibility_buffer_raster, &[
+        view_offset.offset,
+    ]);
     hardware_pass.draw_indirect(visibility_buffer_hardware_raster_indirect_args, 0);
 }
 

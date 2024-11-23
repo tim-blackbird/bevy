@@ -4,9 +4,9 @@ use bevy_ecs::{component::Component, entity::Entity, query::QueryData};
 
 use alloc::borrow::Cow;
 #[cfg(feature = "bevy_reflect")]
-use bevy_reflect::std_traits::ReflectDefault;
-#[cfg(feature = "bevy_reflect")]
 use bevy_reflect::Reflect;
+#[cfg(feature = "bevy_reflect")]
+use bevy_reflect::std_traits::ReflectDefault;
 use bevy_utils::AHasher;
 use core::{
     hash::{Hash, Hasher},

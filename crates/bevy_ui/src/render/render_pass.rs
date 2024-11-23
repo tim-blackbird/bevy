@@ -4,7 +4,7 @@ use super::{ImageNodeBindGroups, UiBatch, UiMeta};
 use crate::DefaultCameraView;
 use bevy_ecs::{
     prelude::*,
-    system::{lifetimeless::*, SystemParamItem},
+    system::{SystemParamItem, lifetimeless::*},
 };
 use bevy_math::FloatOrd;
 use bevy_render::sync_world::MainEntity;

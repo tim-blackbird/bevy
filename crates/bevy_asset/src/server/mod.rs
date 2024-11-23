@@ -2,6 +2,9 @@ mod info;
 mod loaders;
 
 use crate::{
+    Asset, AssetEvent, AssetHandleProvider, AssetId, AssetLoadFailedEvent, AssetMetaCheck, Assets,
+    DeserializeMetaError, ErasedLoadedAsset, Handle, LoadedUntypedAsset, UntypedAssetId,
+    UntypedAssetLoadFailedEvent, UntypedHandle,
     folder::LoadedFolder,
     io::{
         AssetReaderError, AssetSource, AssetSourceEvent, AssetSourceId, AssetSources,
@@ -9,21 +12,18 @@ use crate::{
     },
     loader::{AssetLoader, ErasedAssetLoader, LoadContext, LoadedAsset},
     meta::{
-        loader_settings_meta_transform, AssetActionMinimal, AssetMetaDyn, AssetMetaMinimal,
-        MetaTransform, Settings,
+        AssetActionMinimal, AssetMetaDyn, AssetMetaMinimal, MetaTransform, Settings,
+        loader_settings_meta_transform,
     },
     path::AssetPath,
-    Asset, AssetEvent, AssetHandleProvider, AssetId, AssetLoadFailedEvent, AssetMetaCheck, Assets,
-    DeserializeMetaError, ErasedLoadedAsset, Handle, LoadedUntypedAsset, UntypedAssetId,
-    UntypedAssetLoadFailedEvent, UntypedHandle,
 };
 use alloc::sync::Arc;
 use atomicow::CowArc;
 use bevy_ecs::prelude::*;
 use bevy_tasks::IoTaskPool;
 use bevy_utils::{
-    tracing::{error, info},
     HashSet,
+    tracing::{error, info},
 };
 use core::{any::TypeId, future::Future, panic::AssertUnwindSafe, task::Poll};
 use crossbeam_channel::{Receiver, Sender};
@@ -1248,12 +1248,12 @@ impl AssetServer {
                         AssetActionMinimal::Process { .. } => {
                             return Err(AssetLoadError::CannotLoadProcessedAsset {
                                 path: asset_path.clone_owned(),
-                            })
+                            });
                         }
                         AssetActionMinimal::Ignore => {
                             return Err(AssetLoadError::CannotLoadIgnoredAsset {
                                 path: asset_path.clone_owned(),
-                            })
+                            });
                         }
                     };
                     let loader = self.get_asset_loader_with_type_name(&loader_name).await?;
@@ -1724,14 +1724,18 @@ impl RecursiveDependencyLoadState {
 /// An error that occurs during an [`Asset`] load.
 #[derive(Error, Display, Debug, Clone, From)]
 pub enum AssetLoadError {
-    #[display("Requested handle of type {requested:?} for asset '{path}' does not match actual asset type '{actual_asset_name}', which used loader '{loader_name}'")]
+    #[display(
+        "Requested handle of type {requested:?} for asset '{path}' does not match actual asset type '{actual_asset_name}', which used loader '{loader_name}'"
+    )]
     RequestedHandleTypeMismatch {
         path: AssetPath<'static>,
         requested: TypeId,
         actual_asset_name: &'static str,
         loader_name: &'static str,
     },
-    #[display("Could not find an asset loader matching: Loader Name: {loader_name:?}; Asset Type: {loader_name:?}; Extension: {extension:?}; Path: {asset_path:?};")]
+    #[display(
+        "Could not find an asset loader matching: Loader Name: {loader_name:?}; Asset Type: {loader_name:?}; Extension: {extension:?}; Path: {asset_path:?};"
+    )]
     MissingAssetLoader {
         loader_name: Option<String>,
         asset_type_id: Option<TypeId>,

@@ -1,11 +1,11 @@
 use alloc::ffi::CString;
 use bevy_utils::tracing::{
+    Event, Id, Level, Subscriber,
     field::Field,
     span::{Attributes, Record},
-    Event, Id, Level, Subscriber,
 };
 use core::fmt::{Debug, Write};
-use tracing_subscriber::{field::Visit, layer::Context, registry::LookupSpan, Layer};
+use tracing_subscriber::{Layer, field::Visit, layer::Context, registry::LookupSpan};
 
 #[derive(Default)]
 pub(crate) struct AndroidLayer;

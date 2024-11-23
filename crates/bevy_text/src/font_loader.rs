@@ -1,5 +1,5 @@
 use crate::Font;
-use bevy_asset::{io::Reader, AssetLoader, LoadContext};
+use bevy_asset::{AssetLoader, LoadContext, io::Reader};
 use derive_more::derive::{Display, Error, From};
 
 #[derive(Default)]

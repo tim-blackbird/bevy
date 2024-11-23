@@ -4,7 +4,7 @@ use bevy_core_pipeline::{
     oit::{OitBuffers, OrderIndependentTransparencySettings},
     prepass::ViewPrepassTextures,
     tonemapping::{
-        get_lut_bind_group_layout_entries, get_lut_bindings, Tonemapping, TonemappingLuts,
+        Tonemapping, TonemappingLuts, get_lut_bind_group_layout_entries, get_lut_bindings,
     },
 };
 use bevy_derive::{Deref, DerefMut};
@@ -24,8 +24,8 @@ use bevy_render::{
     renderer::RenderDevice,
     texture::{FallbackImage, FallbackImageMsaa, FallbackImageZero, GpuImage},
     view::{
-        Msaa, RenderVisibilityRanges, ViewUniform, ViewUniforms,
-        VISIBILITY_RANGES_STORAGE_BUFFER_COUNT,
+        Msaa, RenderVisibilityRanges, VISIBILITY_RANGES_STORAGE_BUFFER_COUNT, ViewUniform,
+        ViewUniforms,
     },
 };
 use core::{array, num::NonZero};
@@ -40,16 +40,17 @@ use environment_map::EnvironmentMapLight;
 #[cfg(debug_assertions)]
 use crate::MESH_PIPELINE_VIEW_LAYOUT_SAFE_MAX_TEXTURES;
 use crate::{
+    CLUSTERED_FORWARD_STORAGE_BUFFER_COUNT, EnvironmentMapUniformBuffer, FogMeta,
+    GlobalClusterableObjectMeta, GpuClusterableObjects, GpuFog, GpuLights, LightMeta,
+    LightProbesBuffer, LightProbesUniform, MeshPipeline, MeshPipelineKey, RenderViewLightProbes,
+    ScreenSpaceAmbientOcclusionResources, ScreenSpaceReflectionsBuffer,
+    ScreenSpaceReflectionsUniform, ShadowSamplers, ViewClusterBindings, ViewShadowBindings,
     environment_map::{self, RenderViewEnvironmentMapBindGroupEntries},
     irradiance_volume::{
-        self, IrradianceVolume, RenderViewIrradianceVolumeBindGroupEntries,
-        IRRADIANCE_VOLUMES_ARE_USABLE,
+        self, IRRADIANCE_VOLUMES_ARE_USABLE, IrradianceVolume,
+        RenderViewIrradianceVolumeBindGroupEntries,
     },
-    prepass, EnvironmentMapUniformBuffer, FogMeta, GlobalClusterableObjectMeta,
-    GpuClusterableObjects, GpuFog, GpuLights, LightMeta, LightProbesBuffer, LightProbesUniform,
-    MeshPipeline, MeshPipelineKey, RenderViewLightProbes, ScreenSpaceAmbientOcclusionResources,
-    ScreenSpaceReflectionsBuffer, ScreenSpaceReflectionsUniform, ShadowSamplers,
-    ViewClusterBindings, ViewShadowBindings, CLUSTERED_FORWARD_STORAGE_BUFFER_COUNT,
+    prepass,
 };
 
 #[derive(Clone)]
@@ -444,7 +445,9 @@ impl MeshPipelineViewLayouts {
         #[cfg(debug_assertions)]
         if layout.texture_count > MESH_PIPELINE_VIEW_LAYOUT_SAFE_MAX_TEXTURES {
             // Issue our own warning here because Naga's error message is a bit cryptic in this situation
-            warn_once!("Too many textures in mesh pipeline view layout, this might cause us to hit `wgpu::Limits::max_sampled_textures_per_shader_stage` in some environments.");
+            warn_once!(
+                "Too many textures in mesh pipeline view layout, this might cause us to hit `wgpu::Limits::max_sampled_textures_per_shader_stage` in some environments."
+            );
         }
 
         &layout.bind_group_layout

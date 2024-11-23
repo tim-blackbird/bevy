@@ -1,6 +1,6 @@
 use crate::AssetPath;
 use async_fs::File;
-use bevy_utils::{tracing::error, HashSet};
+use bevy_utils::{HashSet, tracing::error};
 use derive_more::derive::{Display, Error, From};
 use futures_lite::{AsyncReadExt, AsyncWriteExt};
 use std::path::PathBuf;

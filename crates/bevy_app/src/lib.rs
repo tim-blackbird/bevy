@@ -37,6 +37,7 @@ pub use terminal_ctrl_c_handler::*;
 pub mod prelude {
     #[doc(hidden)]
     pub use crate::{
+        Plugin, PluginGroup,
         app::{App, AppExit},
         main_schedule::{
             First, FixedFirst, FixedLast, FixedPostUpdate, FixedPreUpdate, FixedUpdate, Last, Main,
@@ -44,6 +45,5 @@ pub mod prelude {
             RunFixedMainLoopSystem, SpawnScene, Startup, Update,
         },
         sub_app::SubApp,
-        Plugin, PluginGroup,
     };
 }

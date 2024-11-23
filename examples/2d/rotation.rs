@@ -61,13 +61,10 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let vertical_margin = BOUNDS.y / 4.0;
 
     // player controlled ship
-    commands.spawn((
-        Sprite::from_image(ship_handle),
-        Player {
-            movement_speed: 500.0,                  // meters per second
-            rotation_speed: f32::to_radians(360.0), // degrees per second
-        },
-    ));
+    commands.spawn((Sprite::from_image(ship_handle), Player {
+        movement_speed: 500.0,                  // meters per second
+        rotation_speed: f32::to_radians(360.0), // degrees per second
+    }));
 
     // enemy that snaps to face the player spawns on the bottom and left
     commands.spawn((

@@ -5,7 +5,7 @@ use bevy_ecs::{
     prelude::{Component, ReflectComponent},
 };
 use bevy_math::{CompassOctant, DVec2, IVec2, UVec2, Vec2};
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 
 #[cfg(feature = "serialize")]
 use bevy_reflect::{ReflectDeserialize, ReflectSerialize};

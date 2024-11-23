@@ -13,9 +13,9 @@ use bevy::{
     pbr::wireframe::{NoWireframe, Wireframe, WireframeColor, WireframeConfig, WireframePlugin},
     prelude::*,
     render::{
+        RenderPlugin,
         render_resource::WgpuFeatures,
         settings::{RenderCreation, WgpuSettings},
-        RenderPlugin,
     },
 };
 
@@ -99,15 +99,12 @@ fn setup(
     ));
 
     // Text used to show controls
-    commands.spawn((
-        Text::default(),
-        Node {
-            position_type: PositionType::Absolute,
-            top: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((Text::default(), Node {
+        position_type: PositionType::Absolute,
+        top: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 /// This system let's you toggle various wireframe settings

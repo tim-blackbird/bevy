@@ -1,5 +1,5 @@
 use crate::{
-    render_resource::AsBindGroupError, ExtractSchedule, MainWorld, Render, RenderApp, RenderSet,
+    ExtractSchedule, MainWorld, Render, RenderApp, RenderSet, render_resource::AsBindGroupError,
 };
 use bevy_app::{App, Plugin, SubApp};
 pub use bevy_asset::RenderAssetUsages;
@@ -12,8 +12,8 @@ use bevy_ecs::{
 };
 use bevy_render_macros::ExtractResource;
 use bevy_utils::{
-    tracing::{debug, error},
     HashMap, HashSet,
+    tracing::{debug, error},
 };
 use core::marker::PhantomData;
 use derive_more::derive::{Display, Error};

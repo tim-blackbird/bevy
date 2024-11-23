@@ -15,7 +15,7 @@ pub use texture_attachment::*;
 pub use texture_cache::*;
 
 use crate::{
-    render_asset::RenderAssetPlugin, renderer::RenderDevice, Render, RenderApp, RenderSet,
+    Render, RenderApp, RenderSet, render_asset::RenderAssetPlugin, renderer::RenderDevice,
 };
 use bevy_app::{App, Plugin};
 use bevy_asset::{AssetApp, Assets, Handle};

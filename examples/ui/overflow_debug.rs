@@ -159,14 +159,11 @@ fn spawn_text(
     update_transform: impl UpdateTransform + Component,
 ) {
     spawn_container(parent, update_transform, |parent| {
-        parent.spawn((
-            Text::new("Bevy"),
-            TextFont {
-                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                font_size: 100.0,
-                ..default()
-            },
-        ));
+        parent.spawn((Text::new("Bevy"), TextFont {
+            font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+            font_size: 100.0,
+            ..default()
+        }));
     });
 }
 

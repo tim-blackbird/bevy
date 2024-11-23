@@ -53,15 +53,15 @@ use bevy_ecs::{
 };
 use bevy_image::Image;
 use bevy_math::Quat;
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render::{
     extract_instances::ExtractInstance,
     prelude::SpatialBundle,
     render_asset::RenderAssets,
     render_resource::{
-        binding_types::{self, uniform_buffer},
         BindGroupLayoutEntryBuilder, Sampler, SamplerBindingType, Shader, ShaderStages,
         TextureSampleType, TextureView,
+        binding_types::{self, uniform_buffer},
     },
     renderer::RenderDevice,
     texture::{FallbackImage, GpuImage},
@@ -70,8 +70,8 @@ use bevy_render::{
 use core::{num::NonZero, ops::Deref};
 
 use crate::{
-    add_cubemap_texture_view, binding_arrays_are_usable, EnvironmentMapUniform, LightProbe,
-    MAX_VIEW_LIGHT_PROBES,
+    EnvironmentMapUniform, LightProbe, MAX_VIEW_LIGHT_PROBES, add_cubemap_texture_view,
+    binding_arrays_are_usable,
 };
 
 use super::{LightProbeComponent, RenderViewLightProbes};

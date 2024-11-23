@@ -9,7 +9,7 @@ use bevy_ecs::{
 use bevy_math::{UVec2, Vec2};
 use bevy_utils::default;
 
-use crate::{layout::convert, LayoutContext, LayoutError, Measure, MeasureArgs, Node, NodeMeasure};
+use crate::{LayoutContext, LayoutError, Measure, MeasureArgs, Node, NodeMeasure, layout::convert};
 use bevy_text::CosmicFontSystem;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -466,22 +466,28 @@ mod tests {
         // assign root node to camera
         ui_surface.set_camera_children(camera_entity, [root_node_entity].into_iter());
 
-        assert!(ui_surface
-            .camera_entity_to_taffy
-            .contains_key(&camera_entity));
-        assert!(ui_surface
-            .camera_entity_to_taffy
-            .get(&camera_entity)
-            .unwrap()
-            .contains_key(&root_node_entity));
+        assert!(
+            ui_surface
+                .camera_entity_to_taffy
+                .contains_key(&camera_entity)
+        );
+        assert!(
+            ui_surface
+                .camera_entity_to_taffy
+                .get(&camera_entity)
+                .unwrap()
+                .contains_key(&root_node_entity)
+        );
         assert!(ui_surface.camera_roots.contains_key(&camera_entity));
         let root_node_pair = get_root_node_pair_exact(&ui_surface, root_node_entity, camera_entity)
             .expect("expected root node pair");
-        assert!(ui_surface
-            .camera_roots
-            .get(&camera_entity)
-            .unwrap()
-            .contains(root_node_pair));
+        assert!(
+            ui_surface
+                .camera_roots
+                .get(&camera_entity)
+                .unwrap()
+                .contains(root_node_pair)
+        );
 
         ui_surface.remove_camera_entities([camera_entity]);
 
@@ -489,9 +495,11 @@ mod tests {
         assert!(ui_surface.entity_to_taffy.contains_key(&root_node_entity));
 
         // `camera_roots` and `camera_entity_to_taffy` should no longer contain entries for `camera_entity`
-        assert!(!ui_surface
-            .camera_entity_to_taffy
-            .contains_key(&camera_entity));
+        assert!(
+            !ui_surface
+                .camera_entity_to_taffy
+                .contains_key(&camera_entity)
+        );
 
         return; // TODO: can't pass the test if we continue - not implemented (remove allow(unreachable_code))
 
@@ -515,39 +523,49 @@ mod tests {
         ui_surface.set_camera_children(camera_entity, [root_node_entity].into_iter());
 
         assert!(ui_surface.entity_to_taffy.contains_key(&root_node_entity));
-        assert!(ui_surface
-            .camera_entity_to_taffy
-            .get(&camera_entity)
-            .unwrap()
-            .contains_key(&root_node_entity));
+        assert!(
+            ui_surface
+                .camera_entity_to_taffy
+                .get(&camera_entity)
+                .unwrap()
+                .contains_key(&root_node_entity)
+        );
         let root_node_pair =
             get_root_node_pair_exact(&ui_surface, root_node_entity, camera_entity).unwrap();
-        assert!(ui_surface
-            .camera_roots
-            .get(&camera_entity)
-            .unwrap()
-            .contains(root_node_pair));
+        assert!(
+            ui_surface
+                .camera_roots
+                .get(&camera_entity)
+                .unwrap()
+                .contains(root_node_pair)
+        );
 
         ui_surface.remove_entities([root_node_entity]);
         assert!(!ui_surface.entity_to_taffy.contains_key(&root_node_entity));
 
         return; // TODO: can't pass the test if we continue - not implemented (remove allow(unreachable_code))
 
-        assert!(!ui_surface
-            .camera_entity_to_taffy
-            .get(&camera_entity)
-            .unwrap()
-            .contains_key(&root_node_entity));
-        assert!(!ui_surface
-            .camera_entity_to_taffy
-            .get(&camera_entity)
-            .unwrap()
-            .contains_key(&root_node_entity));
-        assert!(ui_surface
-            .camera_roots
-            .get(&camera_entity)
-            .unwrap()
-            .is_empty());
+        assert!(
+            !ui_surface
+                .camera_entity_to_taffy
+                .get(&camera_entity)
+                .unwrap()
+                .contains_key(&root_node_entity)
+        );
+        assert!(
+            !ui_surface
+                .camera_entity_to_taffy
+                .get(&camera_entity)
+                .unwrap()
+                .contains_key(&root_node_entity)
+        );
+        assert!(
+            ui_surface
+                .camera_roots
+                .get(&camera_entity)
+                .unwrap()
+                .is_empty()
+        );
     }
 
     #[test]
@@ -560,9 +578,11 @@ mod tests {
         let mut content_size = ContentSize::default();
         content_size.set(NodeMeasure::Fixed(FixedMeasure { size: Vec2::ONE }));
         let measure_func = content_size.measure.take().unwrap();
-        assert!(ui_surface
-            .update_node_context(root_node_entity, measure_func)
-            .is_some());
+        assert!(
+            ui_surface
+                .update_node_context(root_node_entity, measure_func)
+                .is_some()
+        );
     }
 
     #[test]

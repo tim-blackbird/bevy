@@ -1,6 +1,6 @@
 use crate::{
-    attributes::{impl_custom_attribute_methods, CustomAttributes},
     NamedField, UnnamedField,
+    attributes::{CustomAttributes, impl_custom_attribute_methods},
 };
 use bevy_utils::HashMap;
 use core::slice::Iter;

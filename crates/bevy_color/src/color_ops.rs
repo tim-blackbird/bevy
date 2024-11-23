@@ -140,7 +140,7 @@ mod tests {
     use core::fmt::Debug;
 
     use super::*;
-    use crate::{testing::assert_approx_eq, Hsla};
+    use crate::{Hsla, testing::assert_approx_eq};
 
     #[test]
     fn test_rotate_hue() {

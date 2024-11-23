@@ -295,7 +295,7 @@ pub mod sample_curves;
 // bevy_math::curve re-exports all commonly-needed curve-related items.
 pub use adaptors::*;
 pub use easing::*;
-pub use interval::{interval, Interval};
+pub use interval::{Interval, interval};
 pub use sample_curves::*;
 
 use cores::{EvenCore, UnevenCore};
@@ -979,8 +979,8 @@ pub enum ResamplingError {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{ops, Quat};
-    use approx::{assert_abs_diff_eq, AbsDiffEq};
+    use crate::{Quat, ops};
+    use approx::{AbsDiffEq, assert_abs_diff_eq};
     use core::f32::consts::TAU;
     use glam::*;
 

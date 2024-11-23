@@ -1,10 +1,10 @@
 use crate::io::{
-    get_meta_path, AssetReader, AssetReaderError, EmptyPathStream, PathStream, Reader, VecReader,
+    AssetReader, AssetReaderError, EmptyPathStream, PathStream, Reader, VecReader, get_meta_path,
 };
 use bevy_utils::tracing::error;
-use js_sys::{Uint8Array, JSON};
+use js_sys::{JSON, Uint8Array};
 use std::path::{Path, PathBuf};
-use wasm_bindgen::{prelude::wasm_bindgen, JsCast, JsValue};
+use wasm_bindgen::{JsCast, JsValue, prelude::wasm_bindgen};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::Response;
 

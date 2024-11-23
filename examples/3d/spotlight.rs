@@ -126,15 +126,12 @@ fn setup(
         Transform::from_xyz(-4.0, 5.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
     ));
 
-    commands.spawn((
-        Text::new(INSTRUCTIONS),
-        Node {
-            position_type: PositionType::Absolute,
-            top: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((Text::new(INSTRUCTIONS), Node {
+        position_type: PositionType::Absolute,
+        top: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 fn light_sway(time: Res<Time>, mut query: Query<(&mut Transform, &mut SpotLight)>) {

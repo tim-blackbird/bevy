@@ -1,11 +1,11 @@
 use crate::io::{
-    file::{get_asset_path, get_base_path, new_asset_event_debouncer, FilesystemEventHandler},
-    memory::Dir,
     AssetSourceEvent, AssetWatcher,
+    file::{FilesystemEventHandler, get_asset_path, get_base_path, new_asset_event_debouncer},
+    memory::Dir,
 };
 use alloc::sync::Arc;
-use bevy_utils::{tracing::warn, Duration, HashMap};
-use notify_debouncer_full::{notify::RecommendedWatcher, Debouncer, RecommendedCache};
+use bevy_utils::{Duration, HashMap, tracing::warn};
+use notify_debouncer_full::{Debouncer, RecommendedCache, notify::RecommendedWatcher};
 use parking_lot::RwLock;
 use std::{
     fs::File,

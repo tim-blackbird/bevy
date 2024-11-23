@@ -1,14 +1,14 @@
 use super::RenderQueue;
+use crate::WgpuWrapper;
 use crate::render_resource::{
     BindGroup, BindGroupLayout, Buffer, ComputePipeline, RawRenderPipelineDescriptor,
     RenderPipeline, Sampler, Texture,
 };
-use crate::WgpuWrapper;
 use alloc::sync::Arc;
 use bevy_ecs::system::Resource;
 use wgpu::{
-    util::DeviceExt, BindGroupDescriptor, BindGroupEntry, BindGroupLayoutDescriptor,
-    BindGroupLayoutEntry, BufferAsyncError, BufferBindingType, MaintainResult,
+    BindGroupDescriptor, BindGroupEntry, BindGroupLayoutDescriptor, BindGroupLayoutEntry,
+    BufferAsyncError, BufferBindingType, MaintainResult, util::DeviceExt,
 };
 
 /// This GPU device is responsible for the creation of most rendering and compute resources.

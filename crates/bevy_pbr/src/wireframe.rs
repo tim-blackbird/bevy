@@ -1,9 +1,9 @@
 use crate::{Material, MaterialPipeline, MaterialPipelineKey, MaterialPlugin, MeshMaterial3d};
 use bevy_app::{Plugin, Startup, Update};
-use bevy_asset::{load_internal_asset, Asset, Assets, Handle};
+use bevy_asset::{Asset, Assets, Handle, load_internal_asset};
 use bevy_color::{Color, LinearRgba};
 use bevy_ecs::prelude::*;
-use bevy_reflect::{std_traits::ReflectDefault, Reflect, TypePath};
+use bevy_reflect::{Reflect, TypePath, std_traits::ReflectDefault};
 use bevy_render::{
     extract_resource::ExtractResource,
     mesh::{Mesh3d, MeshVertexBufferLayoutRef},

@@ -199,7 +199,7 @@ pub fn interval(start: f32, end: f32) -> Result<Interval, InvalidIntervalError> 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use approx::{assert_abs_diff_eq, AbsDiffEq};
+    use approx::{AbsDiffEq, assert_abs_diff_eq};
 
     #[test]
     fn make_intervals() {
@@ -262,14 +262,16 @@ mod tests {
         let ivl6 = Interval::EVERYWHERE;
 
         assert!(ivl1.intersect(ivl2).is_ok_and(|ivl| ivl == Interval::UNIT));
-        assert!(ivl1
-            .intersect(ivl3)
-            .is_ok_and(|ivl| ivl == interval(-1.0, 0.0).unwrap()));
+        assert!(
+            ivl1.intersect(ivl3)
+                .is_ok_and(|ivl| ivl == interval(-1.0, 0.0).unwrap())
+        );
         assert!(ivl2.intersect(ivl3).is_err());
         assert!(ivl1.intersect(ivl4).is_ok_and(|ivl| ivl == Interval::UNIT));
-        assert!(ivl1
-            .intersect(ivl5)
-            .is_ok_and(|ivl| ivl == interval(-1.0, 0.0).unwrap()));
+        assert!(
+            ivl1.intersect(ivl5)
+                .is_ok_and(|ivl| ivl == interval(-1.0, 0.0).unwrap())
+        );
         assert!(ivl4.intersect(ivl5).is_err());
         assert_eq!(ivl1.intersect(ivl6).unwrap(), ivl1);
         assert_eq!(ivl4.intersect(ivl6).unwrap(), ivl4);

@@ -79,10 +79,10 @@ pub mod prelude {
             SpotLightBundle,
         },
         fog::{DistanceFog, FogFalloff},
-        light::{light_consts, AmbientLight, DirectionalLight, PointLight, SpotLight},
+        light::{AmbientLight, DirectionalLight, PointLight, SpotLight, light_consts},
         light_probe::{
-            environment_map::{EnvironmentMapLight, ReflectionProbeBundle},
             LightProbe,
+            environment_map::{EnvironmentMapLight, ReflectionProbeBundle},
         },
         material::{Material, MaterialPlugin},
         mesh_material::MeshMaterial3d,
@@ -113,11 +113,12 @@ pub mod graph {
 
 use crate::{deferred::DeferredPbrLightingPlugin, graph::NodePbr};
 use bevy_app::prelude::*;
-use bevy_asset::{load_internal_asset, AssetApp, Assets, Handle};
+use bevy_asset::{AssetApp, Assets, Handle, load_internal_asset};
 use bevy_core_pipeline::core_3d::graph::{Core3d, Node3d};
 use bevy_ecs::prelude::*;
 use bevy_image::Image;
 use bevy_render::{
+    ExtractSchedule, Render, RenderApp, RenderSet,
     alpha::AlphaMode,
     camera::{
         CameraProjection, CameraUpdateSystem, OrthographicProjection, PerspectiveProjection,
@@ -130,8 +131,7 @@ use bevy_render::{
     render_resource::Shader,
     sync_component::SyncComponentPlugin,
     texture::GpuImage,
-    view::{check_visibility, VisibilitySystems},
-    ExtractSchedule, Render, RenderApp, RenderSet,
+    view::{VisibilitySystems, check_visibility},
 };
 
 use bevy_transform::TransformSystem;
@@ -427,13 +427,10 @@ impl Plugin for PbrPlugin {
         // Initialize the default material handle.
         app.world_mut()
             .resource_mut::<Assets<StandardMaterial>>()
-            .insert(
-                &Handle::<StandardMaterial>::default(),
-                StandardMaterial {
-                    base_color: Color::srgb(1.0, 0.0, 0.5),
-                    ..Default::default()
-                },
-            );
+            .insert(&Handle::<StandardMaterial>::default(), StandardMaterial {
+                base_color: Color::srgb(1.0, 0.0, 0.5),
+                ..Default::default()
+            });
 
         let Some(render_app) = app.get_sub_app_mut(RenderApp) else {
             return;

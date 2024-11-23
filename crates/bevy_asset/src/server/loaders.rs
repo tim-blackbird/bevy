@@ -5,12 +5,12 @@ use crate::{
 use alloc::sync::Arc;
 use async_broadcast::RecvError;
 use bevy_tasks::IoTaskPool;
-use bevy_utils::{tracing::warn, HashMap, TypeIdMap};
 #[cfg(feature = "trace")]
 use bevy_utils::{
-    tracing::{info_span, instrument::Instrument},
     ConditionalSendFuture,
+    tracing::{info_span, instrument::Instrument},
 };
+use bevy_utils::{HashMap, TypeIdMap, tracing::warn};
 use core::any::TypeId;
 use derive_more::derive::{Display, Error, From};
 
@@ -70,8 +70,10 @@ impl AssetLoaders {
 
             let duplicate_asset_registration = !list.is_empty();
             if !duplicate_extensions.is_empty() && duplicate_asset_registration {
-                warn!("Duplicate AssetLoader registered for Asset type `{loader_asset_type_name}` with extensions `{duplicate_extensions:?}`. \
-                Loader must be specified in a .meta file in order to load assets of this type with these extensions.");
+                warn!(
+                    "Duplicate AssetLoader registered for Asset type `{loader_asset_type_name}` with extensions `{duplicate_extensions:?}`. \
+                Loader must be specified in a .meta file in order to load assets of this type with these extensions."
+                );
             }
 
             list.push(loader_index);
@@ -129,8 +131,10 @@ impl AssetLoaders {
 
         let duplicate_asset_registration = !list.is_empty();
         if !duplicate_extensions.is_empty() && duplicate_asset_registration {
-            warn!("Duplicate AssetLoader preregistered for Asset type `{loader_asset_type_name}` with extensions `{duplicate_extensions:?}`. \
-            Loader must be specified in a .meta file in order to load assets of this type with these extensions.");
+            warn!(
+                "Duplicate AssetLoader preregistered for Asset type `{loader_asset_type_name}` with extensions `{duplicate_extensions:?}`. \
+            Loader must be specified in a .meta file in order to load assets of this type with these extensions."
+            );
         }
 
         list.push(loader_index);
@@ -331,7 +335,7 @@ mod tests {
     use core::marker::PhantomData;
     use std::{
         path::Path,
-        sync::mpsc::{channel, Receiver, Sender},
+        sync::mpsc::{Receiver, Sender, channel},
     };
 
     use bevy_reflect::TypePath;

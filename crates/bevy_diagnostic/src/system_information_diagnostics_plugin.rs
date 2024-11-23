@@ -65,7 +65,7 @@ pub mod internal {
 
     use bevy_app::{App, First, Startup, Update};
     use bevy_ecs::system::Resource;
-    use bevy_tasks::{available_parallelism, block_on, poll_once, AsyncComputeTaskPool, Task};
+    use bevy_tasks::{AsyncComputeTaskPool, Task, available_parallelism, block_on, poll_once};
     use bevy_utils::tracing::info;
     use sysinfo::{CpuRefreshKind, MemoryRefreshKind, RefreshKind, System};
 

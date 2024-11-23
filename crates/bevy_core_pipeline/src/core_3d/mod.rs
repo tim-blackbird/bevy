@@ -77,14 +77,15 @@ use bevy_image::{BevyDefault, Image};
 use bevy_math::FloatOrd;
 use bevy_render::sync_world::MainEntity;
 use bevy_render::{
+    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
     camera::{Camera, ExtractedCamera},
     extract_component::ExtractComponentPlugin,
     prelude::Msaa,
     render_graph::{EmptyNode, RenderGraphApp, ViewNodeRunner},
     render_phase::{
-        sort_phase_system, BinnedPhaseItem, CachedRenderPipelinePhaseItem, DrawFunctionId,
-        DrawFunctions, PhaseItem, PhaseItemExtraIndex, SortedPhaseItem, ViewBinnedRenderPhases,
-        ViewSortedRenderPhases,
+        BinnedPhaseItem, CachedRenderPipelinePhaseItem, DrawFunctionId, DrawFunctions, PhaseItem,
+        PhaseItemExtraIndex, SortedPhaseItem, ViewBinnedRenderPhases, ViewSortedRenderPhases,
+        sort_phase_system,
     },
     render_resource::{
         BindGroupId, CachedRenderPipelineId, Extent3d, FilterMode, Sampler, SamplerDescriptor,
@@ -94,22 +95,21 @@ use bevy_render::{
     sync_world::RenderEntity,
     texture::{ColorAttachment, TextureCache},
     view::{ExtractedView, ViewDepthTexture, ViewTarget},
-    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
 };
-use bevy_utils::{tracing::warn, HashMap};
+use bevy_utils::{HashMap, tracing::warn};
 
 use crate::{
     core_3d::main_transmissive_pass_3d_node::MainTransmissivePass3dNode,
     deferred::{
-        copy_lighting_id::CopyDeferredLightingIdNode, node::DeferredGBufferPrepassNode,
-        AlphaMask3dDeferred, Opaque3dDeferred, DEFERRED_LIGHTING_PASS_ID_FORMAT,
-        DEFERRED_PREPASS_FORMAT,
+        AlphaMask3dDeferred, DEFERRED_LIGHTING_PASS_ID_FORMAT, DEFERRED_PREPASS_FORMAT,
+        Opaque3dDeferred, copy_lighting_id::CopyDeferredLightingIdNode,
+        node::DeferredGBufferPrepassNode,
     },
     dof::DepthOfFieldNode,
     prepass::{
-        node::PrepassNode, AlphaMask3dPrepass, DeferredPrepass, DepthPrepass, MotionVectorPrepass,
-        NormalPrepass, Opaque3dPrepass, OpaqueNoLightmap3dBinKey, ViewPrepassTextures,
-        MOTION_VECTOR_PREPASS_FORMAT, NORMAL_PREPASS_FORMAT,
+        AlphaMask3dPrepass, DeferredPrepass, DepthPrepass, MOTION_VECTOR_PREPASS_FORMAT,
+        MotionVectorPrepass, NORMAL_PREPASS_FORMAT, NormalPrepass, Opaque3dPrepass,
+        OpaqueNoLightmap3dBinKey, ViewPrepassTextures, node::PrepassNode,
     },
     skybox::SkyboxPlugin,
     tonemapping::TonemappingNode,
@@ -884,20 +884,16 @@ pub fn prepare_prepass_textures(
             normal_textures
                 .entry(camera.target.clone())
                 .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("prepass_normal_texture"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: msaa.samples(),
-                            dimension: TextureDimension::D2,
-                            format: NORMAL_PREPASS_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
+                    texture_cache.get(&render_device, TextureDescriptor {
+                        label: Some("prepass_normal_texture"),
+                        size,
+                        mip_level_count: 1,
+                        sample_count: msaa.samples(),
+                        dimension: TextureDimension::D2,
+                        format: NORMAL_PREPASS_FORMAT,
+                        usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                        view_formats: &[],
+                    })
                 })
                 .clone()
         });
@@ -906,20 +902,16 @@ pub fn prepare_prepass_textures(
             motion_vectors_textures
                 .entry(camera.target.clone())
                 .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("prepass_motion_vectors_textures"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: msaa.samples(),
-                            dimension: TextureDimension::D2,
-                            format: MOTION_VECTOR_PREPASS_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
+                    texture_cache.get(&render_device, TextureDescriptor {
+                        label: Some("prepass_motion_vectors_textures"),
+                        size,
+                        mip_level_count: 1,
+                        sample_count: msaa.samples(),
+                        dimension: TextureDimension::D2,
+                        format: MOTION_VECTOR_PREPASS_FORMAT,
+                        usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                        view_formats: &[],
+                    })
                 })
                 .clone()
         });
@@ -928,20 +920,16 @@ pub fn prepare_prepass_textures(
             deferred_textures
                 .entry(camera.target.clone())
                 .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("prepass_deferred_texture"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: 1,
-                            dimension: TextureDimension::D2,
-                            format: DEFERRED_PREPASS_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
+                    texture_cache.get(&render_device, TextureDescriptor {
+                        label: Some("prepass_deferred_texture"),
+                        size,
+                        mip_level_count: 1,
+                        sample_count: 1,
+                        dimension: TextureDimension::D2,
+                        format: DEFERRED_PREPASS_FORMAT,
+                        usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                        view_formats: &[],
+                    })
                 })
                 .clone()
         });
@@ -950,20 +938,16 @@ pub fn prepare_prepass_textures(
             deferred_lighting_id_textures
                 .entry(camera.target.clone())
                 .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("deferred_lighting_pass_id_texture"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: 1,
-                            dimension: TextureDimension::D2,
-                            format: DEFERRED_LIGHTING_PASS_ID_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
+                    texture_cache.get(&render_device, TextureDescriptor {
+                        label: Some("deferred_lighting_pass_id_texture"),
+                        size,
+                        mip_level_count: 1,
+                        sample_count: 1,
+                        dimension: TextureDimension::D2,
+                        format: DEFERRED_LIGHTING_PASS_ID_FORMAT,
+                        usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                        view_formats: &[],
+                    })
                 })
                 .clone()
         });

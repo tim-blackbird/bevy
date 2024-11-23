@@ -1,7 +1,7 @@
 use bevy_asset::{Asset, AssetId, Assets, Handle};
 use bevy_image::Image;
 use bevy_math::{URect, UVec2};
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 #[cfg(feature = "serialize")]
 use bevy_reflect::{ReflectDeserialize, ReflectSerialize};
 use bevy_utils::HashMap;

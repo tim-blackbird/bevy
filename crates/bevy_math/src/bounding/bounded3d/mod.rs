@@ -4,7 +4,7 @@ mod primitive_impls;
 use glam::Mat3;
 
 use super::{BoundingVolume, IntersectsVolume};
-use crate::{ops::FloatPow, Isometry3d, Quat, Vec3A};
+use crate::{Isometry3d, Quat, Vec3A, ops::FloatPow};
 
 #[cfg(feature = "bevy_reflect")]
 use bevy_reflect::Reflect;
@@ -264,8 +264,9 @@ impl IntersectsVolume<BoundingSphere> for Aabb3d {
 mod aabb3d_tests {
     use super::Aabb3d;
     use crate::{
+        Quat, Vec3, Vec3A,
         bounding::{BoundingSphere, BoundingVolume, IntersectsVolume},
-        ops, Quat, Vec3, Vec3A,
+        ops,
     };
 
     #[test]
@@ -643,8 +644,8 @@ mod bounding_sphere_tests {
 
     use super::BoundingSphere;
     use crate::{
-        bounding::{BoundingVolume, IntersectsVolume},
         Quat, Vec3, Vec3A,
+        bounding::{BoundingVolume, IntersectsVolume},
     };
 
     #[test]

@@ -1,34 +1,35 @@
 use bevy_app::Plugin;
-use bevy_asset::{load_internal_asset, AssetId, Handle};
+use bevy_asset::{AssetId, Handle, load_internal_asset};
 
 use crate::Material2dBindGroupId;
 use bevy_core_pipeline::{
-    core_2d::{AlphaMask2d, Camera2d, Opaque2d, Transparent2d, CORE_2D_DEPTH_FORMAT},
+    core_2d::{AlphaMask2d, CORE_2D_DEPTH_FORMAT, Camera2d, Opaque2d, Transparent2d},
     tonemapping::{
-        get_lut_bind_group_layout_entries, get_lut_bindings, Tonemapping, TonemappingLuts,
+        Tonemapping, TonemappingLuts, get_lut_bind_group_layout_entries, get_lut_bindings,
     },
 };
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::{
     prelude::*,
     query::ROQueryItem,
-    system::{lifetimeless::*, SystemParamItem, SystemState},
+    system::{SystemParamItem, SystemState, lifetimeless::*},
 };
 use bevy_image::{BevyDefault, Image, ImageSampler, TextureFormatPixelInfo};
 use bevy_math::{Affine3, Vec4};
 use bevy_render::{
+    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
     batching::{
+        GetBatchData, GetFullBatchData, NoAutomaticBatching,
         gpu_preprocessing::IndirectParameters,
         no_gpu_preprocessing::{
-            self, batch_and_prepare_binned_render_phase, batch_and_prepare_sorted_render_phase,
-            write_batched_instance_buffer, BatchedInstanceBuffer,
+            self, BatchedInstanceBuffer, batch_and_prepare_binned_render_phase,
+            batch_and_prepare_sorted_render_phase, write_batched_instance_buffer,
         },
-        GetBatchData, GetFullBatchData, NoAutomaticBatching,
     },
     globals::{GlobalsBuffer, GlobalsUniform},
     mesh::{
-        allocator::MeshAllocator, Mesh, Mesh2d, MeshVertexBufferLayoutRef, RenderMesh,
-        RenderMeshBufferInfo,
+        Mesh, Mesh2d, MeshVertexBufferLayoutRef, RenderMesh, RenderMeshBufferInfo,
+        allocator::MeshAllocator,
     },
     render_asset::RenderAssets,
     render_phase::{PhaseItem, RenderCommand, RenderCommandResult, TrackedRenderPass},
@@ -39,7 +40,6 @@ use bevy_render::{
     view::{
         ExtractedView, ViewTarget, ViewUniform, ViewUniformOffset, ViewUniforms, ViewVisibility,
     },
-    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
 };
 use bevy_transform::components::GlobalTransform;
 use bevy_utils::tracing::error;
@@ -222,18 +222,15 @@ pub fn extract_mesh2d(
         if !view_visibility.get() {
             continue;
         }
-        render_mesh_instances.insert(
-            entity.into(),
-            RenderMesh2dInstance {
-                transforms: Mesh2dTransforms {
-                    world_from_local: (&transform.affine()).into(),
-                    flags: MeshFlags::empty().bits(),
-                },
-                mesh_asset_id: handle.0.id(),
-                material_bind_group_id: Material2dBindGroupId::default(),
-                automatic_batching: !no_automatic_batching,
+        render_mesh_instances.insert(entity.into(), RenderMesh2dInstance {
+            transforms: Mesh2dTransforms {
+                world_from_local: (&transform.affine()).into(),
+                flags: MeshFlags::empty().bits(),
             },
-        );
+            mesh_asset_id: handle.0.id(),
+            material_bind_group_id: Material2dBindGroupId::default(),
+            automatic_batching: !no_automatic_batching,
+        });
     }
 }
 

@@ -4,9 +4,9 @@ use std::sync::{Mutex, MutexGuard};
 
 use bevy_tasks::{ComputeTaskPool, Scope, TaskPool, ThreadExecutor};
 #[cfg(feature = "trace")]
-use bevy_utils::tracing::info_span;
-#[cfg(feature = "trace")]
 use bevy_utils::tracing::Span;
+#[cfg(feature = "trace")]
+use bevy_utils::tracing::info_span;
 use bevy_utils::{default, syncunsafecell::SyncUnsafeCell};
 use core::panic::AssertUnwindSafe;
 
@@ -17,9 +17,9 @@ use crate::{
     archetype::ArchetypeComponentId,
     prelude::Resource,
     query::Access,
-    schedule::{is_apply_deferred, BoxedCondition, ExecutorKind, SystemExecutor, SystemSchedule},
+    schedule::{BoxedCondition, ExecutorKind, SystemExecutor, SystemSchedule, is_apply_deferred},
     system::BoxedSystem,
-    world::{unsafe_world_cell::UnsafeWorldCell, World},
+    world::{World, unsafe_world_cell::UnsafeWorldCell},
 };
 
 use crate as bevy_ecs;

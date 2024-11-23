@@ -27,132 +27,105 @@ use rand::Rng;
 
 /// pre-defined test configurations with name
 const CONFIGS: [(&str, Cfg); 9] = [
-    (
-        "large_tree",
-        Cfg {
-            test_case: TestCase::NonUniformTree {
-                depth: 18,
-                branch_width: 8,
-            },
-            update_filter: UpdateFilter {
-                probability: 0.5,
-                min_depth: 0,
-                max_depth: u32::MAX,
-            },
+    ("large_tree", Cfg {
+        test_case: TestCase::NonUniformTree {
+            depth: 18,
+            branch_width: 8,
         },
-    ),
-    (
-        "wide_tree",
-        Cfg {
-            test_case: TestCase::Tree {
-                depth: 3,
-                branch_width: 500,
-            },
-            update_filter: UpdateFilter {
-                probability: 0.5,
-                min_depth: 0,
-                max_depth: u32::MAX,
-            },
+        update_filter: UpdateFilter {
+            probability: 0.5,
+            min_depth: 0,
+            max_depth: u32::MAX,
         },
-    ),
-    (
-        "deep_tree",
-        Cfg {
-            test_case: TestCase::NonUniformTree {
-                depth: 25,
-                branch_width: 2,
-            },
-            update_filter: UpdateFilter {
-                probability: 0.5,
-                min_depth: 0,
-                max_depth: u32::MAX,
-            },
+    }),
+    ("wide_tree", Cfg {
+        test_case: TestCase::Tree {
+            depth: 3,
+            branch_width: 500,
         },
-    ),
-    (
-        "chain",
-        Cfg {
-            test_case: TestCase::Tree {
-                depth: 2500,
-                branch_width: 1,
-            },
-            update_filter: UpdateFilter {
-                probability: 0.5,
-                min_depth: 0,
-                max_depth: u32::MAX,
-            },
+        update_filter: UpdateFilter {
+            probability: 0.5,
+            min_depth: 0,
+            max_depth: u32::MAX,
         },
-    ),
-    (
-        "update_leaves",
-        Cfg {
-            test_case: TestCase::Tree {
-                depth: 18,
-                branch_width: 2,
-            },
-            update_filter: UpdateFilter {
-                probability: 0.5,
-                min_depth: 17,
-                max_depth: u32::MAX,
-            },
+    }),
+    ("deep_tree", Cfg {
+        test_case: TestCase::NonUniformTree {
+            depth: 25,
+            branch_width: 2,
         },
-    ),
-    (
-        "update_shallow",
-        Cfg {
-            test_case: TestCase::Tree {
-                depth: 18,
-                branch_width: 2,
-            },
-            update_filter: UpdateFilter {
-                probability: 0.5,
-                min_depth: 0,
-                max_depth: 8,
-            },
+        update_filter: UpdateFilter {
+            probability: 0.5,
+            min_depth: 0,
+            max_depth: u32::MAX,
         },
-    ),
-    (
-        "humanoids_active",
-        Cfg {
-            test_case: TestCase::Humanoids {
-                active: 4000,
-                inactive: 0,
-            },
-            update_filter: UpdateFilter {
-                probability: 1.0,
-                min_depth: 0,
-                max_depth: u32::MAX,
-            },
+    }),
+    ("chain", Cfg {
+        test_case: TestCase::Tree {
+            depth: 2500,
+            branch_width: 1,
         },
-    ),
-    (
-        "humanoids_inactive",
-        Cfg {
-            test_case: TestCase::Humanoids {
-                active: 10,
-                inactive: 3990,
-            },
-            update_filter: UpdateFilter {
-                probability: 1.0,
-                min_depth: 0,
-                max_depth: u32::MAX,
-            },
+        update_filter: UpdateFilter {
+            probability: 0.5,
+            min_depth: 0,
+            max_depth: u32::MAX,
         },
-    ),
-    (
-        "humanoids_mixed",
-        Cfg {
-            test_case: TestCase::Humanoids {
-                active: 2000,
-                inactive: 2000,
-            },
-            update_filter: UpdateFilter {
-                probability: 1.0,
-                min_depth: 0,
-                max_depth: u32::MAX,
-            },
+    }),
+    ("update_leaves", Cfg {
+        test_case: TestCase::Tree {
+            depth: 18,
+            branch_width: 2,
         },
-    ),
+        update_filter: UpdateFilter {
+            probability: 0.5,
+            min_depth: 17,
+            max_depth: u32::MAX,
+        },
+    }),
+    ("update_shallow", Cfg {
+        test_case: TestCase::Tree {
+            depth: 18,
+            branch_width: 2,
+        },
+        update_filter: UpdateFilter {
+            probability: 0.5,
+            min_depth: 0,
+            max_depth: 8,
+        },
+    }),
+    ("humanoids_active", Cfg {
+        test_case: TestCase::Humanoids {
+            active: 4000,
+            inactive: 0,
+        },
+        update_filter: UpdateFilter {
+            probability: 1.0,
+            min_depth: 0,
+            max_depth: u32::MAX,
+        },
+    }),
+    ("humanoids_inactive", Cfg {
+        test_case: TestCase::Humanoids {
+            active: 10,
+            inactive: 3990,
+        },
+        update_filter: UpdateFilter {
+            probability: 1.0,
+            min_depth: 0,
+            max_depth: u32::MAX,
+        },
+    }),
+    ("humanoids_mixed", Cfg {
+        test_case: TestCase::Humanoids {
+            active: 2000,
+            inactive: 2000,
+        },
+        update_filter: UpdateFilter {
+            probability: 1.0,
+            min_depth: 0,
+            max_depth: u32::MAX,
+        },
+    }),
 ];
 
 fn print_available_configs() {

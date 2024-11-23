@@ -1,16 +1,16 @@
 use crate::{
+    DynamicEnum, DynamicStruct, DynamicTuple, DynamicVariant, EnumInfo, StructVariantInfo,
+    TupleVariantInfo, TypeRegistration, TypeRegistry, VariantInfo,
     serde::{
+        TypedReflectDeserializer,
         de::{
             error_utils::make_custom_error,
             helpers::ExpectedValues,
             registration_utils::try_get_registration,
             struct_utils::{visit_struct, visit_struct_seq},
-            tuple_utils::{visit_tuple, TupleLikeInfo},
+            tuple_utils::{TupleLikeInfo, visit_tuple},
         },
-        TypedReflectDeserializer,
     },
-    DynamicEnum, DynamicStruct, DynamicTuple, DynamicVariant, EnumInfo, StructVariantInfo,
-    TupleVariantInfo, TypeRegistration, TypeRegistry, VariantInfo,
 };
 use core::{fmt, fmt::Formatter};
 use serde::de::{DeserializeSeed, EnumAccess, Error, MapAccess, SeqAccess, VariantAccess, Visitor};
@@ -46,15 +46,12 @@ impl<'de, P: ReflectDeserializerProcessor> Visitor<'de> for EnumVisitor<'_, P> {
         let value: DynamicVariant = match variant_info {
             VariantInfo::Unit(..) => variant.unit_variant()?.into(),
             VariantInfo::Struct(struct_info) => variant
-                .struct_variant(
-                    struct_info.field_names(),
-                    StructVariantVisitor {
-                        struct_info,
-                        registration: self.registration,
-                        registry: self.registry,
-                        processor: self.processor,
-                    },
-                )?
+                .struct_variant(struct_info.field_names(), StructVariantVisitor {
+                    struct_info,
+                    registration: self.registration,
+                    registry: self.registry,
+                    processor: self.processor,
+                })?
                 .into(),
             VariantInfo::Tuple(tuple_info) if tuple_info.field_len() == 1 => {
                 let registration = try_get_registration(
@@ -72,15 +69,12 @@ impl<'de, P: ReflectDeserializerProcessor> Visitor<'de> for EnumVisitor<'_, P> {
                 dynamic_tuple.into()
             }
             VariantInfo::Tuple(tuple_info) => variant
-                .tuple_variant(
-                    tuple_info.field_len(),
-                    TupleVariantVisitor {
-                        tuple_info,
-                        registration: self.registration,
-                        registry: self.registry,
-                        processor: self.processor,
-                    },
-                )?
+                .tuple_variant(tuple_info.field_len(), TupleVariantVisitor {
+                    tuple_info,
+                    registration: self.registration,
+                    registry: self.registry,
+                    processor: self.processor,
+                })?
                 .into(),
         };
         let variant_name = variant_info.name();

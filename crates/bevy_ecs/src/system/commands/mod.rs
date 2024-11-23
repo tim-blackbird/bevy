@@ -14,10 +14,10 @@ use crate::{
     entity::{Entities, Entity},
     event::{Event, SendEvent},
     observer::{Observer, TriggerEvent, TriggerTargets},
-    system::{input::SystemInput, RunSystemWithInput, SystemId},
+    system::{RunSystemWithInput, SystemId, input::SystemInput},
     world::{
-        command_queue::RawCommandQueue, unsafe_world_cell::UnsafeWorldCell, Command, CommandQueue,
-        EntityWorldMut, FromWorld, SpawnBatchIter, World,
+        Command, CommandQueue, EntityWorldMut, FromWorld, SpawnBatchIter, World,
+        command_queue::RawCommandQueue, unsafe_world_cell::UnsafeWorldCell,
     },
 };
 use bevy_ptr::OwningPtr;
@@ -1979,7 +1979,11 @@ fn insert<T: Bundle>(bundle: T, mode: InsertMode) -> impl EntityCommand {
                 caller,
             );
         } else {
-            panic!("error[B0003]: {caller}: Could not insert a bundle (of type `{}`) for entity {:?} because it doesn't exist in this World. See: https://bevyengine.org/learn/errors/b0003", core::any::type_name::<T>(), entity);
+            panic!(
+                "error[B0003]: {caller}: Could not insert a bundle (of type `{}`) for entity {:?} because it doesn't exist in this World. See: https://bevyengine.org/learn/errors/b0003",
+                core::any::type_name::<T>(),
+                entity
+            );
         }
     }
 }
@@ -1998,7 +2002,11 @@ fn insert_from_world<T: Component + FromWorld>(mode: InsertMode) -> impl EntityC
                 caller,
             );
         } else {
-            panic!("error[B0003]: {caller}: Could not insert a bundle (of type `{}`) for entity {:?} because it doesn't exist in this World. See: https://bevyengine.org/learn/errors/b0003", core::any::type_name::<T>(), entity);
+            panic!(
+                "error[B0003]: {caller}: Could not insert a bundle (of type `{}`) for entity {:?} because it doesn't exist in this World. See: https://bevyengine.org/learn/errors/b0003",
+                core::any::type_name::<T>(),
+                entity
+            );
         }
     }
 }

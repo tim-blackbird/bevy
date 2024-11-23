@@ -7,7 +7,7 @@
 //! [`SpecializedMeshPipeline`] let's you customize the entire pipeline used when rendering a mesh.
 
 use bevy::{
-    core_pipeline::core_3d::{Opaque3d, Opaque3dBinKey, CORE_3D_DEPTH_FORMAT},
+    core_pipeline::core_3d::{CORE_3D_DEPTH_FORMAT, Opaque3d, Opaque3dBinKey},
     math::{vec3, vec4},
     pbr::{
         DrawMesh, MeshPipeline, MeshPipelineKey, MeshPipelineViewLayoutKey, RenderMeshInstances,
@@ -15,6 +15,7 @@ use bevy::{
     },
     prelude::*,
     render::{
+        Render, RenderApp, RenderSet,
         extract_component::{ExtractComponent, ExtractComponentPlugin},
         mesh::{Indices, MeshVertexBufferLayoutRef, PrimitiveTopology, RenderMesh},
         render_asset::{RenderAssetUsages, RenderAssets},
@@ -29,7 +30,6 @@ use bevy::{
             SpecializedMeshPipelines, TextureFormat, VertexState,
         },
         view::{self, ExtractedView, RenderVisibleEntities, ViewTarget, VisibilitySystems},
-        Render, RenderApp, RenderSet,
     },
 };
 
@@ -53,22 +53,16 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
         RenderAssetUsages::default(),
     )
     .with_inserted_indices(Indices::U32(vec![0, 1, 2]))
-    .with_inserted_attribute(
-        Mesh::ATTRIBUTE_POSITION,
-        vec![
-            vec3(-0.5, -0.5, 0.0),
-            vec3(0.5, -0.5, 0.0),
-            vec3(0.0, 0.25, 0.0),
-        ],
-    )
-    .with_inserted_attribute(
-        Mesh::ATTRIBUTE_COLOR,
-        vec![
-            vec4(1.0, 0.0, 0.0, 1.0),
-            vec4(0.0, 1.0, 0.0, 1.0),
-            vec4(0.0, 0.0, 1.0, 1.0),
-        ],
-    );
+    .with_inserted_attribute(Mesh::ATTRIBUTE_POSITION, vec![
+        vec3(-0.5, -0.5, 0.0),
+        vec3(0.5, -0.5, 0.0),
+        vec3(0.0, 0.25, 0.0),
+    ])
+    .with_inserted_attribute(Mesh::ATTRIBUTE_COLOR, vec![
+        vec4(1.0, 0.0, 0.0, 1.0),
+        vec4(0.0, 1.0, 0.0, 1.0),
+        vec4(0.0, 0.0, 1.0, 1.0),
+    ]);
 
     // spawn 3 triangles to show that batching works
     for (x, y) in [-0.5, 0.0, 0.5].into_iter().zip([-0.25, 0.5, -0.25]) {

@@ -1,7 +1,7 @@
 //! Adaptors used by the Curve API for transforming and combining curves together.
 
-use super::interval::*;
 use super::Curve;
+use super::interval::*;
 
 use crate::VectorSpace;
 use core::any::type_name;
@@ -9,7 +9,7 @@ use core::fmt::{self, Debug};
 use core::marker::PhantomData;
 
 #[cfg(feature = "bevy_reflect")]
-use bevy_reflect::{utility::GenericTypePathCell, FromReflect, Reflect, TypePath};
+use bevy_reflect::{FromReflect, Reflect, TypePath, utility::GenericTypePathCell};
 
 #[cfg(feature = "bevy_reflect")]
 mod paths {

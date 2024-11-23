@@ -4,7 +4,7 @@ use core::panic::AssertUnwindSafe;
 use fixedbitset::FixedBitSet;
 
 use crate::{
-    schedule::{is_apply_deferred, BoxedCondition, ExecutorKind, SystemExecutor, SystemSchedule},
+    schedule::{BoxedCondition, ExecutorKind, SystemExecutor, SystemSchedule, is_apply_deferred},
     world::World,
 };
 

@@ -222,10 +222,14 @@ fn insert_reflect(
         .expect("component should represent a type.");
     let type_path = type_info.type_path();
     let Ok(mut entity) = world.get_entity_mut(entity) else {
-        panic!("error[B0003]: Could not insert a reflected component (of type {type_path}) for entity {entity:?} because it doesn't exist in this World. See: https://bevyengine.org/learn/errors/b0003");
+        panic!(
+            "error[B0003]: Could not insert a reflected component (of type {type_path}) for entity {entity:?} because it doesn't exist in this World. See: https://bevyengine.org/learn/errors/b0003"
+        );
     };
     let Some(type_registration) = type_registry.get(type_info.type_id()) else {
-        panic!("`{type_path}` should be registered in type registry via `App::register_type<{type_path}>`");
+        panic!(
+            "`{type_path}` should be registered in type registry via `App::register_type<{type_path}>`"
+        );
     };
 
     if let Some(reflect_component) = type_registration.data::<ReflectComponent>() {

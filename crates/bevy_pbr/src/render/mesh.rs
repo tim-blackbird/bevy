@@ -1,27 +1,29 @@
 use core::mem::{self, size_of};
 
 use allocator::MeshAllocator;
-use bevy_asset::{load_internal_asset, AssetId};
+use bevy_asset::{AssetId, load_internal_asset};
 use bevy_core_pipeline::{
-    core_3d::{AlphaMask3d, Opaque3d, Transmissive3d, Transparent3d, CORE_3D_DEPTH_FORMAT},
+    core_3d::{AlphaMask3d, CORE_3D_DEPTH_FORMAT, Opaque3d, Transmissive3d, Transparent3d},
     deferred::{AlphaMask3dDeferred, Opaque3dDeferred},
-    oit::{prepare_oit_buffers, OrderIndependentTransparencySettingsOffset},
+    oit::{OrderIndependentTransparencySettingsOffset, prepare_oit_buffers},
     prepass::MotionVectorPrepass,
 };
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::{
     prelude::*,
     query::ROQueryItem,
-    system::{lifetimeless::*, SystemParamItem, SystemState},
+    system::{SystemParamItem, SystemState, lifetimeless::*},
 };
 use bevy_image::{BevyDefault, ImageSampler, TextureFormatPixelInfo};
 use bevy_math::{Affine3, Rect, UVec2, Vec3, Vec4};
 use bevy_render::{
+    Extract,
     batching::{
+        GetBatchData, GetFullBatchData, NoAutomaticBatching,
         gpu_preprocessing::{
             self, GpuPreprocessingSupport, IndirectParameters, IndirectParametersBuffer,
         },
-        no_gpu_preprocessing, GetBatchData, GetFullBatchData, NoAutomaticBatching,
+        no_gpu_preprocessing,
     },
     camera::Camera,
     mesh::*,
@@ -35,22 +37,21 @@ use bevy_render::{
     renderer::{RenderDevice, RenderQueue},
     texture::DefaultImageSampler,
     view::{
-        prepare_view_targets, GpuCulling, RenderVisibilityRanges, ViewTarget, ViewUniformOffset,
-        ViewVisibility, VisibilityRange,
+        GpuCulling, RenderVisibilityRanges, ViewTarget, ViewUniformOffset, ViewVisibility,
+        VisibilityRange, prepare_view_targets,
     },
-    Extract,
 };
 use bevy_transform::components::GlobalTransform;
 use bevy_utils::{
-    tracing::{error, warn},
     Entry, HashMap, Parallel,
+    tracing::{error, warn},
 };
 
 use crate::{
     render::{
         morph::{
-            extract_morphs, no_automatic_morph_batching, prepare_morphs, MorphIndices,
-            MorphUniforms,
+            MorphIndices, MorphUniforms, extract_morphs, no_automatic_morph_batching,
+            prepare_morphs,
         },
         skin::no_automatic_skin_batching,
     },
@@ -59,7 +60,7 @@ use crate::{
 use bevy_render::sync_world::{MainEntity, MainEntityHashMap};
 use bytemuck::{Pod, Zeroable};
 use nonmax::{NonMaxU16, NonMaxU32};
-use smallvec::{smallvec, SmallVec};
+use smallvec::{SmallVec, smallvec};
 use static_assertions::const_assert_eq;
 
 use self::irradiance_volume::IRRADIANCE_VOLUMES_ARE_USABLE;
@@ -799,16 +800,13 @@ impl RenderMeshInstanceGpuBuilder {
         });
 
         // Record the [`RenderMeshInstance`].
-        render_mesh_instances.insert(
-            entity,
-            RenderMeshInstanceGpu {
-                translation: self.world_from_local.translation,
-                shared: self.shared,
-                current_uniform_index: (current_uniform_index as u32)
-                    .try_into()
-                    .unwrap_or_default(),
-            },
-        );
+        render_mesh_instances.insert(entity, RenderMeshInstanceGpu {
+            translation: self.world_from_local.translation,
+            shared: self.shared,
+            current_uniform_index: (current_uniform_index as u32)
+                .try_into()
+                .unwrap_or_default(),
+        });
 
         current_uniform_index
     }
@@ -925,20 +923,17 @@ pub fn extract_meshes_for_cpu_building(
             );
 
             let world_from_local = transform.affine();
-            queue.push((
-                entity,
-                RenderMeshInstanceCpu {
-                    transforms: MeshTransforms {
-                        world_from_local: (&world_from_local).into(),
-                        previous_world_from_local: (&previous_transform
-                            .map(|t| t.0)
-                            .unwrap_or(world_from_local))
-                            .into(),
-                        flags: mesh_flags.bits(),
-                    },
-                    shared,
+            queue.push((entity, RenderMeshInstanceCpu {
+                transforms: MeshTransforms {
+                    world_from_local: (&world_from_local).into(),
+                    previous_world_from_local: (&previous_transform
+                        .map(|t| t.0)
+                        .unwrap_or(world_from_local))
+                        .into(),
+                    flags: mesh_flags.bits(),
                 },
-            ));
+                shared,
+            }));
         },
     );
 

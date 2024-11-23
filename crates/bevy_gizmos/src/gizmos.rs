@@ -6,7 +6,7 @@ use bevy_color::{Color, LinearRgba};
 use bevy_ecs::{
     component::Tick,
     system::{Deferred, ReadOnlySystemParam, Res, Resource, SystemBuffer, SystemMeta, SystemParam},
-    world::{unsafe_world_cell::UnsafeWorldCell, World},
+    world::{World, unsafe_world_cell::UnsafeWorldCell},
 };
 use bevy_math::{Isometry2d, Isometry3d, Vec2, Vec3};
 use bevy_transform::TransformPoint;

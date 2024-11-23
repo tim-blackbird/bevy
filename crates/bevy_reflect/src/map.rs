@@ -5,9 +5,8 @@ use bevy_utils::hashbrown::HashTable;
 
 use crate::generics::impl_generic_info_methods;
 use crate::{
-    self as bevy_reflect, type_info::impl_type_methods, ApplyError, Generics, MaybeTyped,
-    PartialReflect, Reflect, ReflectKind, ReflectMut, ReflectOwned, ReflectRef, Type, TypeInfo,
-    TypePath,
+    self as bevy_reflect, ApplyError, Generics, MaybeTyped, PartialReflect, Reflect, ReflectKind,
+    ReflectMut, ReflectOwned, ReflectRef, Type, TypeInfo, TypePath, type_info::impl_type_methods,
 };
 
 /// A trait used to power [map-like] operations via [reflection].

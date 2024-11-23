@@ -1,4 +1,4 @@
-use crate::func::{args::ArgError, Return};
+use crate::func::{Return, args::ArgError};
 use alloc::borrow::Cow;
 use derive_more::derive::{Display, Error, From};
 

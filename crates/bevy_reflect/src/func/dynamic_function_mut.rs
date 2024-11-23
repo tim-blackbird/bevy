@@ -2,8 +2,8 @@ use alloc::borrow::Cow;
 use core::fmt::{Debug, Formatter};
 
 use crate::func::{
-    args::ArgList, info::FunctionInfo, DynamicFunction, FunctionError, FunctionResult,
-    IntoFunctionMut,
+    DynamicFunction, FunctionError, FunctionResult, IntoFunctionMut, args::ArgList,
+    info::FunctionInfo,
 };
 
 /// A dynamic representation of a function.
@@ -282,22 +282,16 @@ mod tests {
 
         let args = ArgList::default().push_owned(25_i32);
         let error = func.call(args).unwrap_err();
-        assert!(matches!(
-            error,
-            FunctionError::ArgCountMismatch {
-                expected: 2,
-                received: 1
-            }
-        ));
+        assert!(matches!(error, FunctionError::ArgCountMismatch {
+            expected: 2,
+            received: 1
+        }));
 
         let args = ArgList::default().push_owned(25_i32);
         let error = func.call_once(args).unwrap_err();
-        assert!(matches!(
-            error,
-            FunctionError::ArgCountMismatch {
-                expected: 2,
-                received: 1
-            }
-        ));
+        assert!(matches!(error, FunctionError::ArgCountMismatch {
+            expected: 2,
+            received: 1
+        }));
     }
 }

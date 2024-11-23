@@ -18,10 +18,10 @@ use crate::{
     prelude::World,
     query::DebugCheckedUnwrap,
     storage::{SparseSetIndex, SparseSets, Storages, Table, TableRow},
-    world::{unsafe_world_cell::UnsafeWorldCell, ON_ADD, ON_INSERT, ON_REPLACE},
+    world::{ON_ADD, ON_INSERT, ON_REPLACE, unsafe_world_cell::UnsafeWorldCell},
 };
 use bevy_ptr::{ConstNonNull, OwningPtr};
-use bevy_utils::{all_tuples, HashMap, HashSet, TypeIdMap};
+use bevy_utils::{HashMap, HashSet, TypeIdMap, all_tuples};
 #[cfg(feature = "track_change_detection")]
 use core::panic::Location;
 use core::{any::TypeId, ptr::NonNull};
@@ -954,15 +954,12 @@ impl<'w> BundleInserter<'w> {
                     let swapped_location =
                         // SAFETY: If the swap was successful, swapped_entity must be valid.
                         unsafe { entities.get(swapped_entity).debug_checked_unwrap() };
-                    entities.set(
-                        swapped_entity.index(),
-                        EntityLocation {
-                            archetype_id: swapped_location.archetype_id,
-                            archetype_row: location.archetype_row,
-                            table_id: swapped_location.table_id,
-                            table_row: swapped_location.table_row,
-                        },
-                    );
+                    entities.set(swapped_entity.index(), EntityLocation {
+                        archetype_id: swapped_location.archetype_id,
+                        archetype_row: location.archetype_row,
+                        table_id: swapped_location.table_id,
+                        table_row: swapped_location.table_row,
+                    });
                 }
                 let new_location = new_archetype.allocate(entity, result.table_row);
                 entities.set(entity.index(), new_location);
@@ -1004,15 +1001,12 @@ impl<'w> BundleInserter<'w> {
                     let swapped_location =
                         // SAFETY: If the swap was successful, swapped_entity must be valid.
                         unsafe { entities.get(swapped_entity).debug_checked_unwrap() };
-                    entities.set(
-                        swapped_entity.index(),
-                        EntityLocation {
-                            archetype_id: swapped_location.archetype_id,
-                            archetype_row: location.archetype_row,
-                            table_id: swapped_location.table_id,
-                            table_row: swapped_location.table_row,
-                        },
-                    );
+                    entities.set(swapped_entity.index(), EntityLocation {
+                        archetype_id: swapped_location.archetype_id,
+                        archetype_row: location.archetype_row,
+                        table_id: swapped_location.table_id,
+                        table_row: swapped_location.table_row,
+                    });
                 }
                 // PERF: store "non bundle" components in edge, then just move those to avoid
                 // redundant copies
@@ -1026,15 +1020,12 @@ impl<'w> BundleInserter<'w> {
                         // SAFETY: If the swap was successful, swapped_entity must be valid.
                         unsafe { entities.get(swapped_entity).debug_checked_unwrap() };
 
-                    entities.set(
-                        swapped_entity.index(),
-                        EntityLocation {
-                            archetype_id: swapped_location.archetype_id,
-                            archetype_row: swapped_location.archetype_row,
-                            table_id: swapped_location.table_id,
-                            table_row: result.table_row,
-                        },
-                    );
+                    entities.set(swapped_entity.index(), EntityLocation {
+                        archetype_id: swapped_location.archetype_id,
+                        archetype_row: swapped_location.archetype_row,
+                        table_id: swapped_location.table_id,
+                        table_row: result.table_row,
+                    });
 
                     if archetype.id() == swapped_location.archetype_id {
                         archetype

@@ -1,6 +1,6 @@
 use crate::{
     entity::Entity,
-    identifier::masks::{IdentifierMask, HIGH_MASK},
+    identifier::masks::{HIGH_MASK, IdentifierMask},
     world::World,
 };
 

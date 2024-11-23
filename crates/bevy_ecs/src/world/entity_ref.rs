@@ -10,14 +10,14 @@ use crate::{
     removal_detection::RemovedComponentEvents,
     storage::Storages,
     system::IntoObserverSystem,
-    world::{error::EntityComponentError, DeferredWorld, Mut, World},
+    world::{DeferredWorld, Mut, World, error::EntityComponentError},
 };
 use bevy_ptr::{OwningPtr, Ptr};
 use bevy_utils::{HashMap, HashSet};
 use core::{any::TypeId, marker::PhantomData, mem::MaybeUninit};
 use derive_more::derive::{Display, Error};
 
-use super::{unsafe_world_cell::UnsafeEntityCell, Ref, ON_REMOVE, ON_REPLACE};
+use super::{ON_REMOVE, ON_REPLACE, Ref, unsafe_world_cell::UnsafeEntityCell};
 
 /// A read-only reference to a particular [`Entity`] and all of its components.
 ///
@@ -1426,15 +1426,12 @@ impl<'w> EntityWorldMut<'w> {
         if let Some(swapped_entity) = remove_result.swapped_entity {
             let swapped_location = entities.get(swapped_entity).unwrap();
 
-            entities.set(
-                swapped_entity.index(),
-                EntityLocation {
-                    archetype_id: swapped_location.archetype_id,
-                    archetype_row: old_location.archetype_row,
-                    table_id: swapped_location.table_id,
-                    table_row: swapped_location.table_row,
-                },
-            );
+            entities.set(swapped_entity.index(), EntityLocation {
+                archetype_id: swapped_location.archetype_id,
+                archetype_row: old_location.archetype_row,
+                table_id: swapped_location.table_id,
+                table_row: swapped_location.table_row,
+            });
         }
         let old_table_row = remove_result.table_row;
         let old_table_id = old_archetype.table_id();
@@ -1462,15 +1459,12 @@ impl<'w> EntityWorldMut<'w> {
             if let Some(swapped_entity) = move_result.swapped_entity {
                 let swapped_location = entities.get(swapped_entity).unwrap();
 
-                entities.set(
-                    swapped_entity.index(),
-                    EntityLocation {
-                        archetype_id: swapped_location.archetype_id,
-                        archetype_row: swapped_location.archetype_row,
-                        table_id: swapped_location.table_id,
-                        table_row: old_location.table_row,
-                    },
-                );
+                entities.set(swapped_entity.index(), EntityLocation {
+                    archetype_id: swapped_location.archetype_id,
+                    archetype_row: swapped_location.archetype_row,
+                    table_id: swapped_location.table_id,
+                    table_row: old_location.table_row,
+                });
                 archetypes[swapped_location.archetype_id]
                     .set_entity_table_row(swapped_location.archetype_row, old_table_row);
             }
@@ -1712,15 +1706,12 @@ impl<'w> EntityWorldMut<'w> {
                 // SAFETY: swapped_entity is valid and the swapped entity's components are
                 // moved to the new location immediately after.
                 unsafe {
-                    world.entities.set(
-                        swapped_entity.index(),
-                        EntityLocation {
-                            archetype_id: swapped_location.archetype_id,
-                            archetype_row: location.archetype_row,
-                            table_id: swapped_location.table_id,
-                            table_row: swapped_location.table_row,
-                        },
-                    );
+                    world.entities.set(swapped_entity.index(), EntityLocation {
+                        archetype_id: swapped_location.archetype_id,
+                        archetype_row: location.archetype_row,
+                        table_id: swapped_location.table_id,
+                        table_row: swapped_location.table_row,
+                    });
                 }
             }
             table_row = remove_result.table_row;
@@ -1740,15 +1731,12 @@ impl<'w> EntityWorldMut<'w> {
             // SAFETY: `moved_entity` is valid and the provided `EntityLocation` accurately reflects
             //         the current location of the entity and its component data.
             unsafe {
-                world.entities.set(
-                    moved_entity.index(),
-                    EntityLocation {
-                        archetype_id: moved_location.archetype_id,
-                        archetype_row: moved_location.archetype_row,
-                        table_id: moved_location.table_id,
-                        table_row,
-                    },
-                );
+                world.entities.set(moved_entity.index(), EntityLocation {
+                    archetype_id: moved_location.archetype_id,
+                    archetype_row: moved_location.archetype_row,
+                    table_id: moved_location.table_id,
+                    table_row,
+                });
             }
             world.archetypes[moved_location.archetype_id]
                 .set_entity_table_row(moved_location.archetype_row, table_row);
@@ -2809,9 +2797,7 @@ impl<'a> From<&'a mut EntityWorldMut<'_>> for FilteredEntityMut<'a> {
 pub enum TryFromFilteredError {
     /// Error indicating that the filtered entity does not have read access to
     /// all components.
-    #[display(
-        "Conversion failed, filtered entity ref does not have read access to all components"
-    )]
+    #[display("Conversion failed, filtered entity ref does not have read access to all components")]
     MissingReadAllAccess,
     /// Error indicating that the filtered entity does not have write access to
     /// all components.
@@ -3483,8 +3469,8 @@ mod tests {
         change_detection::MutUntyped,
         component::ComponentId,
         prelude::*,
-        system::{assert_is_system, RunSystemOnce as _},
-        world::{error::EntityComponentError, FilteredEntityMut, FilteredEntityRef},
+        system::{RunSystemOnce as _, assert_is_system},
+        world::{FilteredEntityMut, FilteredEntityRef, error::EntityComponentError},
     };
 
     use super::{EntityMutExcept, EntityRefExcept};
@@ -3848,10 +3834,10 @@ mod tests {
             .iter(&world)
             .collect();
 
-        assert_eq!(
-            dynamic_components,
-            vec![(&TestComponent(42), &TestComponent2(84))]
-        );
+        assert_eq!(dynamic_components, vec![(
+            &TestComponent(42),
+            &TestComponent2(84)
+        )]);
 
         // Compare with `World` generated using static type equivalents
         let mut static_world = World::new();
@@ -4014,9 +4000,11 @@ mod tests {
 
         fn system(_: Query<&mut TestComponent>, mut query: Query<EntityMutExcept<TestComponent2>>) {
             for mut entity_mut in query.iter_mut() {
-                assert!(entity_mut
-                    .get_mut::<TestComponent2>()
-                    .is_some_and(|component| component.0 == 0));
+                assert!(
+                    entity_mut
+                        .get_mut::<TestComponent2>()
+                        .is_some_and(|component| component.0 == 0)
+                );
             }
         }
     }
@@ -4032,9 +4020,11 @@ mod tests {
 
         fn system(_: Query<&mut TestComponent>, mut query: Query<EntityMutExcept<TestComponent>>) {
             for mut entity_mut in query.iter_mut() {
-                assert!(entity_mut
-                    .get_mut::<TestComponent2>()
-                    .is_some_and(|component| component.0 == 0));
+                assert!(
+                    entity_mut
+                        .get_mut::<TestComponent2>()
+                        .is_some_and(|component| component.0 == 0)
+                );
             }
         }
     }

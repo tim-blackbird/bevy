@@ -4,11 +4,12 @@ use crate::{
     fullscreen_vertex_shader::fullscreen_shader_vertex_state,
 };
 use bevy_app::prelude::*;
-use bevy_asset::{load_internal_asset, Handle};
+use bevy_asset::{Handle, load_internal_asset};
 use bevy_ecs::prelude::*;
 use bevy_image::BevyDefault as _;
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render::{
+    Render, RenderApp, RenderSet,
     extract_component::{ExtractComponent, ExtractComponentPlugin},
     prelude::Camera,
     render_graph::{RenderGraphApp, ViewNodeRunner},
@@ -18,7 +19,6 @@ use bevy_render::{
     },
     renderer::RenderDevice,
     view::{ExtractedView, ViewTarget},
-    Render, RenderApp, RenderSet,
 };
 use bevy_utils::default;
 
@@ -212,19 +212,15 @@ pub fn prepare_fxaa_pipelines(
         if !fxaa.enabled {
             continue;
         }
-        let pipeline_id = pipelines.specialize(
-            &pipeline_cache,
-            &fxaa_pipeline,
-            FxaaPipelineKey {
-                edge_threshold: fxaa.edge_threshold,
-                edge_threshold_min: fxaa.edge_threshold_min,
-                texture_format: if view.hdr {
-                    ViewTarget::TEXTURE_FORMAT_HDR
-                } else {
-                    TextureFormat::bevy_default()
-                },
+        let pipeline_id = pipelines.specialize(&pipeline_cache, &fxaa_pipeline, FxaaPipelineKey {
+            edge_threshold: fxaa.edge_threshold,
+            edge_threshold_min: fxaa.edge_threshold_min,
+            texture_format: if view.hdr {
+                ViewTarget::TEXTURE_FORMAT_HDR
+            } else {
+                TextureFormat::bevy_default()
             },
-        );
+        });
 
         commands
             .entity(entity)

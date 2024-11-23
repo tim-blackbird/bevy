@@ -3,12 +3,12 @@ use derive_more::derive::{Display, Error, From};
 
 use super::{Measured2d, Primitive2d, WindingOrder};
 use crate::{
-    ops::{self, FloatPow},
     Dir2, Vec2,
+    ops::{self, FloatPow},
 };
 
 #[cfg(feature = "bevy_reflect")]
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 #[cfg(all(feature = "serialize", feature = "bevy_reflect"))]
 use bevy_reflect::{ReflectDeserialize, ReflectSerialize};
 

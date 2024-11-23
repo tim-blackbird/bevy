@@ -2,7 +2,7 @@ use bevy_a11y::AccessibilityRequested;
 use bevy_ecs::entity::Entity;
 
 use bevy_ecs::entity::EntityHashMap;
-use bevy_utils::{tracing::warn, HashMap};
+use bevy_utils::{HashMap, tracing::warn};
 use bevy_window::{
     CursorGrabMode, MonitorSelection, Window, WindowMode, WindowPosition, WindowResolution,
     WindowWrapper,
@@ -18,7 +18,7 @@ use winit::{
 
 use crate::{
     accessibility::{
-        prepare_accessibility_for_window, AccessKitAdapters, WinitActionRequestHandlers,
+        AccessKitAdapters, WinitActionRequestHandlers, prepare_accessibility_for_window,
     },
     converters::{convert_enabled_buttons, convert_window_level, convert_window_theme},
     winit_monitors::WinitMonitors,
@@ -478,7 +478,9 @@ pub fn select_monitor(
     match monitor_selection {
         Current => {
             if current_monitor.is_none() {
-                warn!("Can't select current monitor on window creation or cannot find current monitor!");
+                warn!(
+                    "Can't select current monitor on window creation or cannot find current monitor!"
+                );
             }
             current_monitor
         }

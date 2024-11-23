@@ -18,7 +18,7 @@ use bevy::{
     core_pipeline::Skybox,
     math::{uvec3, vec3},
     pbr::{
-        irradiance_volume::IrradianceVolume, ExtendedMaterial, MaterialExtension, NotShadowCaster,
+        ExtendedMaterial, MaterialExtension, NotShadowCaster, irradiance_volume::IrradianceVolume,
     },
     prelude::*,
     render::render_resource::{AsBindGroup, ShaderRef, ShaderType},
@@ -288,15 +288,12 @@ fn spawn_fox(commands: &mut Commands, assets: &ExampleAssets) {
 }
 
 fn spawn_text(commands: &mut Commands, app_status: &AppStatus) {
-    commands.spawn((
-        app_status.create_text(),
-        Node {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((app_status.create_text(), Node {
+        position_type: PositionType::Absolute,
+        bottom: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 // A system that updates the help text.

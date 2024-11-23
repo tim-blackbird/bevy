@@ -1,11 +1,11 @@
 use bevy_utils::all_tuples;
 
 use crate::{
-    func::{
-        args::FromArg, macros::count_tokens, ArgList, FunctionError, FunctionResult, IntoReturn,
-        ReflectFnMut,
-    },
     Reflect, TypePath,
+    func::{
+        ArgList, FunctionError, FunctionResult, IntoReturn, ReflectFnMut, args::FromArg,
+        macros::count_tokens,
+    },
 };
 
 /// A reflection-based version of the [`Fn`] trait.

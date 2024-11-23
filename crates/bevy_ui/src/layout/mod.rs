@@ -1,7 +1,7 @@
 use crate::{
-    experimental::{UiChildren, UiRootNodes},
     BorderRadius, ComputedNode, ContentSize, DefaultUiCamera, Display, Node, Outline, OverflowAxis,
     ScrollPosition, TargetCamera, UiScale, Val,
+    experimental::{UiChildren, UiRootNodes},
 };
 use bevy_ecs::{
     change_detection::{DetectChanges, DetectChangesMut},
@@ -469,12 +469,12 @@ mod tests {
         event::Events,
         prelude::{Commands, Component, In, Query, With},
         query::Without,
-        schedule::{apply_deferred, IntoSystemConfigs, Schedule},
+        schedule::{IntoSystemConfigs, Schedule, apply_deferred},
         system::RunSystemOnce,
         world::World,
     };
     use bevy_hierarchy::{
-        despawn_with_children_recursive, BuildChildren, ChildBuild, Children, Parent,
+        BuildChildren, ChildBuild, Children, Parent, despawn_with_children_recursive,
     };
     use bevy_image::Image;
     use bevy_math::{Rect, UVec2, Vec2};
@@ -486,15 +486,15 @@ mod tests {
         prelude::GlobalTransform,
         systems::{propagate_transforms, sync_simple_transforms},
     };
-    use bevy_utils::{prelude::default, HashMap};
+    use bevy_utils::{HashMap, prelude::default};
     use bevy_window::{
         PrimaryWindow, Window, WindowCreated, WindowResized, WindowResolution,
         WindowScaleFactorChanged,
     };
 
     use crate::{
-        layout::ui_surface::UiSurface, prelude::*, ui_layout_system,
-        update::update_target_camera_system, ContentSize, LayoutContext,
+        ContentSize, LayoutContext, layout::ui_surface::UiSurface, prelude::*, ui_layout_system,
+        update::update_target_camera_system,
     };
 
     // these window dimensions are easy to convert to and from percentage values
@@ -638,9 +638,11 @@ mod tests {
         ui_schedule.run(&mut world);
 
         let ui_surface = world.resource::<UiSurface>();
-        assert!(ui_surface
-            .camera_entity_to_taffy
-            .contains_key(&camera_entity));
+        assert!(
+            ui_surface
+                .camera_entity_to_taffy
+                .contains_key(&camera_entity)
+        );
         assert_eq!(ui_surface.camera_entity_to_taffy.len(), 1);
 
         world.despawn(ui_entity);
@@ -650,9 +652,11 @@ mod tests {
         ui_schedule.run(&mut world);
 
         let ui_surface = world.resource::<UiSurface>();
-        assert!(!ui_surface
-            .camera_entity_to_taffy
-            .contains_key(&camera_entity));
+        assert!(
+            !ui_surface
+                .camera_entity_to_taffy
+                .contains_key(&camera_entity)
+        );
         assert!(ui_surface.camera_entity_to_taffy.is_empty());
     }
 
@@ -754,24 +758,30 @@ mod tests {
             let child_node = child_node_map[child_entity];
             assert_eq!(ui_surface.entity_to_taffy[child_entity], child_node);
             assert_eq!(ui_surface.taffy.parent(child_node), Some(ui_parent_node));
-            assert!(ui_surface
-                .taffy
-                .children(ui_parent_node)
-                .unwrap()
-                .contains(&child_node));
+            assert!(
+                ui_surface
+                    .taffy
+                    .children(ui_parent_node)
+                    .unwrap()
+                    .contains(&child_node)
+            );
         }
 
         // the nodes of the deleted children should have been removed from the layout tree
         for deleted_child_entity in &deleted_children {
-            assert!(!ui_surface
-                .entity_to_taffy
-                .contains_key(deleted_child_entity));
+            assert!(
+                !ui_surface
+                    .entity_to_taffy
+                    .contains_key(deleted_child_entity)
+            );
             let deleted_child_node = child_node_map[deleted_child_entity];
-            assert!(!ui_surface
-                .taffy
-                .children(ui_parent_node)
-                .unwrap()
-                .contains(&deleted_child_node));
+            assert!(
+                !ui_surface
+                    .taffy
+                    .children(ui_parent_node)
+                    .unwrap()
+                    .contains(&deleted_child_node)
+            );
         }
 
         // despawn the parent entity and its descendants
@@ -886,7 +896,10 @@ mod tests {
         let Some((_rect, is_overlapping)) = overlap_check else {
             unreachable!("test not setup properly");
         };
-        assert!(is_overlapping, "root ui nodes are expected to behave like they have absolute position and be independent from each other");
+        assert!(
+            is_overlapping,
+            "root ui nodes are expected to behave like they have absolute position and be independent from each other"
+        );
     }
 
     #[test]
@@ -976,13 +989,10 @@ mod tests {
 
         let (mut world, mut ui_schedule) = setup_ui_test_world();
 
-        world.spawn((
-            Camera2d,
-            Camera {
-                order: 1,
-                ..default()
-            },
-        ));
+        world.spawn((Camera2d, Camera {
+            order: 1,
+            ..default()
+        }));
 
         world.spawn((
             Node {
@@ -1026,7 +1036,9 @@ mod tests {
 
         let current_taffy_node_count = get_taffy_node_count(&world);
         if current_taffy_node_count > expected_max_taffy_node_count {
-            panic!("extra taffy nodes detected: current: {current_taffy_node_count} max expected: {expected_max_taffy_node_count}");
+            panic!(
+                "extra taffy nodes detected: current: {current_taffy_node_count} max expected: {expected_max_taffy_node_count}"
+            );
         }
     }
 

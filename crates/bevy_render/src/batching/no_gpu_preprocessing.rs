@@ -2,7 +2,7 @@
 
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::system::{Res, ResMut, Resource, StaticSystemParam};
-use smallvec::{smallvec, SmallVec};
+use smallvec::{SmallVec, smallvec};
 use wgpu::BindingResource;
 
 use crate::{

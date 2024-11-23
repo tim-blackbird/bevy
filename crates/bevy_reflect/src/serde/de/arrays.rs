@@ -1,6 +1,6 @@
 use crate::{
-    serde::{de::registration_utils::try_get_registration, TypedReflectDeserializer},
     ArrayInfo, DynamicArray, TypeRegistry,
+    serde::{TypedReflectDeserializer, de::registration_utils::try_get_registration},
 };
 use core::{fmt, fmt::Formatter};
 use serde::de::{Error, SeqAccess, Visitor};

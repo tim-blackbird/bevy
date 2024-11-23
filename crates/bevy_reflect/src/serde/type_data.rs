@@ -1,5 +1,5 @@
 use crate::Reflect;
-use bevy_utils::{hashbrown::hash_map::Iter, HashMap};
+use bevy_utils::{HashMap, hashbrown::hash_map::Iter};
 
 /// Contains data relevant to the automatic reflect powered (de)serialization of a type.
 #[derive(Debug, Clone)]

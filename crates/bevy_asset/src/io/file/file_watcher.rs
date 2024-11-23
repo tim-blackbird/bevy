@@ -2,16 +2,14 @@ use crate::{
     io::{AssetSourceEvent, AssetWatcher},
     path::normalize_path,
 };
-use bevy_utils::{tracing::error, Duration};
+use bevy_utils::{Duration, tracing::error};
 use crossbeam_channel::Sender;
 use notify_debouncer_full::{
-    new_debouncer,
+    DebounceEventResult, Debouncer, RecommendedCache, new_debouncer,
     notify::{
-        self,
+        self, RecommendedWatcher, RecursiveMode,
         event::{AccessKind, AccessMode, CreateKind, ModifyKind, RemoveKind, RenameMode},
-        RecommendedWatcher, RecursiveMode,
     },
-    DebounceEventResult, Debouncer, RecommendedCache,
 };
 use std::path::{Path, PathBuf};
 
@@ -31,15 +29,12 @@ impl FileWatcher {
         debounce_wait_time: Duration,
     ) -> Result<Self, notify::Error> {
         let root = normalize_path(super::get_base_path().join(root).as_path());
-        let watcher = new_asset_event_debouncer(
-            root.clone(),
-            debounce_wait_time,
-            FileEventHandler {
+        let watcher =
+            new_asset_event_debouncer(root.clone(), debounce_wait_time, FileEventHandler {
                 root,
                 sender,
                 last_event: None,
-            },
-        )?;
+            })?;
         Ok(FileWatcher { _watcher: watcher })
     }
 }
@@ -159,13 +154,10 @@ pub(crate) fn new_asset_event_debouncer(
                                 };
                                 // only the new "real" path is considered a directory
                                 if event.paths[1].is_dir() {
-                                    handler.handle(
-                                        &event.paths,
-                                        AssetSourceEvent::RenamedFolder {
-                                            old: old_path,
-                                            new: new_path,
-                                        },
-                                    );
+                                    handler.handle(&event.paths, AssetSourceEvent::RenamedFolder {
+                                        old: old_path,
+                                        new: new_path,
+                                    });
                                 } else {
                                     match (old_is_meta, new_is_meta) {
                                         (true, true) => {
@@ -188,13 +180,13 @@ pub(crate) fn new_asset_event_debouncer(
                                         }
                                         (true, false) => {
                                             error!(
-                                            "Asset metafile {old_path:?} was changed to asset file {new_path:?}, which is not supported. Try restarting your app to see if configuration is still valid"
-                                        );
+                                                "Asset metafile {old_path:?} was changed to asset file {new_path:?}, which is not supported. Try restarting your app to see if configuration is still valid"
+                                            );
                                         }
                                         (false, true) => {
                                             error!(
-                                            "Asset file {old_path:?} was changed to meta file {new_path:?}, which is not supported. Try restarting your app to see if configuration is still valid"
-                                        );
+                                                "Asset file {old_path:?} was changed to meta file {new_path:?}, which is not supported. Try restarting your app to see if configuration is still valid"
+                                            );
                                         }
                                     }
                                 }

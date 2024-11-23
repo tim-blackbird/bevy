@@ -5,11 +5,11 @@ use morph::{MeshMorphWeights, MorphWeights};
 pub mod allocator;
 mod components;
 use crate::{
+    RenderApp,
     primitives::Aabb,
     render_asset::{PrepareAssetError, RenderAsset, RenderAssetPlugin, RenderAssets},
     render_resource::TextureView,
     texture::GpuImage,
-    RenderApp,
 };
 use allocator::MeshAllocatorPlugin;
 use bevy_app::{App, Plugin, PostUpdate};
@@ -22,8 +22,8 @@ use bevy_ecs::{
 use bevy_ecs::{
     query::Without,
     system::{
-        lifetimeless::{SRes, SResMut},
         SystemParamItem,
+        lifetimeless::{SRes, SResMut},
     },
 };
 pub use components::{Mesh2d, Mesh3d};

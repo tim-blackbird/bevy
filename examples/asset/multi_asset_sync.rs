@@ -4,8 +4,8 @@ use std::{
     f32::consts::PI,
     ops::Drop,
     sync::{
-        atomic::{AtomicBool, AtomicU32, Ordering},
         Arc,
+        atomic::{AtomicBool, AtomicU32, Ordering},
     },
 };
 
@@ -169,16 +169,12 @@ fn setup_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
 fn setup_ui(mut commands: Commands) {
     // Display the result of async loading.
 
-    commands.spawn((
-        LoadingText,
-        Text::new("Loading...".to_owned()),
-        Node {
-            position_type: PositionType::Absolute,
-            left: Val::Px(12.0),
-            top: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((LoadingText, Text::new("Loading...".to_owned()), Node {
+        position_type: PositionType::Absolute,
+        left: Val::Px(12.0),
+        top: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 fn setup_scene(

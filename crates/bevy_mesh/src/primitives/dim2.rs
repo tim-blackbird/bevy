@@ -1,16 +1,15 @@
 use core::f32::consts::FRAC_PI_2;
 
-use crate::{primitives::dim3::triangle3d, Indices, Mesh, PerimeterSegment};
+use crate::{Indices, Mesh, PerimeterSegment, primitives::dim3::triangle3d};
 use bevy_asset::RenderAssetUsages;
 
 use super::{Extrudable, MeshBuilder, Meshable};
 use bevy_math::{
-    ops,
+    FloatExt, Vec2, ops,
     primitives::{
         Annulus, Capsule2d, Circle, CircularSector, CircularSegment, ConvexPolygon, Ellipse,
         Rectangle, RegularPolygon, Rhombus, Triangle2d, Triangle3d, WindingOrder,
     },
-    FloatExt, Vec2,
 };
 use wgpu::PrimitiveTopology;
 
@@ -729,12 +728,9 @@ pub struct RhombusMeshBuilder {
 impl MeshBuilder for RhombusMeshBuilder {
     fn build(&self) -> Mesh {
         let [hhd, vhd] = [self.half_diagonals.x, self.half_diagonals.y];
-        let positions = vec![
-            [hhd, 0.0, 0.0],
-            [-hhd, 0.0, 0.0],
-            [0.0, vhd, 0.0],
-            [0.0, -vhd, 0.0],
-        ];
+        let positions = vec![[hhd, 0.0, 0.0], [-hhd, 0.0, 0.0], [0.0, vhd, 0.0], [
+            0.0, -vhd, 0.0,
+        ]];
         let normals = vec![[0.0, 0.0, 1.0]; 4];
         let uvs = vec![[1.0, 0.5], [0.0, 0.5], [0.5, 0.0], [0.5, 1.0]];
         let indices = Indices::U32(vec![1, 0, 2, 1, 3, 0]);
@@ -846,12 +842,9 @@ pub struct RectangleMeshBuilder {
 impl MeshBuilder for RectangleMeshBuilder {
     fn build(&self) -> Mesh {
         let [hw, hh] = [self.half_size.x, self.half_size.y];
-        let positions = vec![
-            [hw, hh, 0.0],
-            [-hw, hh, 0.0],
-            [-hw, -hh, 0.0],
-            [hw, -hh, 0.0],
-        ];
+        let positions = vec![[hw, hh, 0.0], [-hw, hh, 0.0], [-hw, -hh, 0.0], [
+            hw, -hh, 0.0,
+        ]];
         let normals = vec![[0.0, 0.0, 1.0]; 4];
         let uvs = vec![[1.0, 0.0], [0.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
         let indices = Indices::U32(vec![0, 1, 2, 0, 2, 3]);
@@ -1053,7 +1046,7 @@ impl From<Capsule2d> for Mesh {
 
 #[cfg(test)]
 mod tests {
-    use bevy_math::{prelude::Annulus, primitives::RegularPolygon, FloatOrd};
+    use bevy_math::{FloatOrd, prelude::Annulus, primitives::RegularPolygon};
     use bevy_utils::HashSet;
 
     use crate::{Mesh, MeshBuilder, Meshable, VertexAttributeValues};
@@ -1118,12 +1111,9 @@ mod tests {
         fix_floats(&mut uvs);
 
         assert_eq!(
-            [
-                [0.0, 7.0, 0.0],
-                [-7.0, 0.0, 0.0],
-                [0.0, -7.0, 0.0],
-                [7.0, 0.0, 0.0],
-            ],
+            [[0.0, 7.0, 0.0], [-7.0, 0.0, 0.0], [0.0, -7.0, 0.0], [
+                7.0, 0.0, 0.0
+            ],],
             &positions[..]
         );
 

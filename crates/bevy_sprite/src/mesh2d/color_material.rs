@@ -2,7 +2,7 @@
 
 use crate::{AlphaMode2d, Material2d, Material2dPlugin, MaterialMesh2dBundle};
 use bevy_app::{App, Plugin};
-use bevy_asset::{load_internal_asset, Asset, AssetApp, Assets, Handle};
+use bevy_asset::{Asset, AssetApp, Assets, Handle, load_internal_asset};
 use bevy_color::{Alpha, Color, ColorToComponents, LinearRgba};
 use bevy_image::Image;
 use bevy_math::Vec4;
@@ -30,13 +30,10 @@ impl Plugin for ColorMaterialPlugin {
         // Initialize the default material handle.
         app.world_mut()
             .resource_mut::<Assets<ColorMaterial>>()
-            .insert(
-                &Handle::<ColorMaterial>::default(),
-                ColorMaterial {
-                    color: Color::srgb(1.0, 0.0, 1.0),
-                    ..Default::default()
-                },
-            );
+            .insert(&Handle::<ColorMaterial>::default(), ColorMaterial {
+                color: Color::srgb(1.0, 0.0, 1.0),
+                ..Default::default()
+            });
     }
 }
 

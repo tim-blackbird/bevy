@@ -20,16 +20,16 @@ use bevy_utils::{
 };
 use offset_allocator::{Allocation, Allocator};
 use wgpu::{
-    BufferDescriptor, BufferSize, BufferUsages, CommandEncoderDescriptor, DownlevelFlags,
-    COPY_BUFFER_ALIGNMENT,
+    BufferDescriptor, BufferSize, BufferUsages, COPY_BUFFER_ALIGNMENT, CommandEncoderDescriptor,
+    DownlevelFlags,
 };
 
 use crate::{
+    Render, RenderApp, RenderSet,
     mesh::{Indices, Mesh, MeshVertexBufferLayouts, RenderMesh},
-    render_asset::{prepare_assets, ExtractedAssets},
+    render_asset::{ExtractedAssets, prepare_assets},
     render_resource::Buffer,
     renderer::{RenderAdapter, RenderDevice, RenderQueue},
-    Render, RenderApp, RenderSet,
 };
 
 /// A plugin that manages GPU memory for mesh data.

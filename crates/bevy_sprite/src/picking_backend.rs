@@ -9,7 +9,7 @@ use bevy_app::prelude::*;
 use bevy_asset::prelude::*;
 use bevy_ecs::prelude::*;
 use bevy_image::Image;
-use bevy_math::{prelude::*, FloatExt, FloatOrd};
+use bevy_math::{FloatExt, FloatOrd, prelude::*};
 use bevy_picking::backend::prelude::*;
 use bevy_render::prelude::*;
 use bevy_transform::prelude::*;

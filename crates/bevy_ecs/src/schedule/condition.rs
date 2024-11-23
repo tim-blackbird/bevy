@@ -1351,7 +1351,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::{common_conditions::*, Condition};
+    use super::{Condition, common_conditions::*};
     use crate as bevy_ecs;
     use crate::{
         change_detection::ResMut,

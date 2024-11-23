@@ -10,10 +10,10 @@ use bevy_ecs::{
 };
 use bevy_render::{
     render_resource::{
-        binding_types::uniform_buffer, BindGroup, BindGroupEntries, BindGroupLayout,
-        BindGroupLayoutEntries, CachedRenderPipelineId, CompareFunction, DepthStencilState,
-        FragmentState, MultisampleState, PipelineCache, RenderPipelineDescriptor, Shader,
-        ShaderStages, SpecializedRenderPipeline, SpecializedRenderPipelines,
+        BindGroup, BindGroupEntries, BindGroupLayout, BindGroupLayoutEntries,
+        CachedRenderPipelineId, CompareFunction, DepthStencilState, FragmentState,
+        MultisampleState, PipelineCache, RenderPipelineDescriptor, Shader, ShaderStages,
+        SpecializedRenderPipeline, SpecializedRenderPipelines, binding_types::uniform_buffer,
     },
     renderer::RenderDevice,
     view::{Msaa, ViewUniform, ViewUniforms},
@@ -21,12 +21,12 @@ use bevy_render::{
 use bevy_utils::prelude::default;
 
 use crate::{
+    Skybox,
     core_3d::CORE_3D_DEPTH_FORMAT,
     prepass::{
-        prepass_target_descriptors, MotionVectorPrepass, NormalPrepass, PreviousViewData,
-        PreviousViewUniforms,
+        MotionVectorPrepass, NormalPrepass, PreviousViewData, PreviousViewUniforms,
+        prepass_target_descriptors,
     },
-    Skybox,
 };
 
 pub const SKYBOX_PREPASS_SHADER_HANDLE: Handle<Shader> = Handle::weak_from_u128(376510055324461154);

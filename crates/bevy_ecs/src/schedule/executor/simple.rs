@@ -5,7 +5,7 @@ use fixedbitset::FixedBitSet;
 
 use crate::{
     schedule::{
-        executor::is_apply_deferred, BoxedCondition, ExecutorKind, SystemExecutor, SystemSchedule,
+        BoxedCondition, ExecutorKind, SystemExecutor, SystemSchedule, executor::is_apply_deferred,
     },
     world::World,
 };

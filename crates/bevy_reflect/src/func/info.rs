@@ -3,9 +3,9 @@ use alloc::borrow::Cow;
 use bevy_utils::all_tuples;
 
 use crate::{
+    Type, TypePath,
     func::args::{ArgInfo, GetOwnership, Ownership},
     type_info::impl_type_methods,
-    Type, TypePath,
 };
 
 /// Type information for a [`DynamicFunction`] or [`DynamicFunctionMut`].

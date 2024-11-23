@@ -52,10 +52,10 @@ use bevy_utils::tracing::warn;
 use crate::{
     archetype::{ArchetypeId, ArchetypeRow},
     identifier::{
+        Identifier,
         error::IdentifierError,
         kinds::IdKind,
-        masks::{IdentifierMask, HIGH_MASK},
-        Identifier,
+        masks::{HIGH_MASK, IdentifierMask},
     },
     storage::{SparseSetIndex, TableId, TableRow},
 };

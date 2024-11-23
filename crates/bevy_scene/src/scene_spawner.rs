@@ -78,13 +78,17 @@ pub struct SceneSpawner {
 #[derive(Error, Display, Debug)]
 pub enum SceneSpawnError {
     /// Scene contains an unregistered component type.
-    #[display("scene contains the unregistered component `{type_path}`. consider adding `#[reflect(Component)]` to your type")]
+    #[display(
+        "scene contains the unregistered component `{type_path}`. consider adding `#[reflect(Component)]` to your type"
+    )]
     UnregisteredComponent {
         /// Type of the unregistered component.
         type_path: String,
     },
     /// Scene contains an unregistered resource type.
-    #[display("scene contains the unregistered resource `{type_path}`. consider adding `#[reflect(Resource)]` to your type")]
+    #[display(
+        "scene contains the unregistered resource `{type_path}`. consider adding `#[reflect(Resource)]` to your type"
+    )]
     UnregisteredResource {
         /// Type of the unregistered resource.
         type_path: String,
@@ -109,7 +113,9 @@ pub enum SceneSpawnError {
         type_path: String,
     },
     /// Scene contains a proxy without a represented type.
-    #[display("scene contains dynamic type `{type_path}` without a represented type. consider changing this using `set_represented_type`.")]
+    #[display(
+        "scene contains dynamic type `{type_path}` without a represented type. consider changing this using `set_represented_type`."
+    )]
     NoRepresentedType {
         /// The dynamic instance type.
         type_path: String,

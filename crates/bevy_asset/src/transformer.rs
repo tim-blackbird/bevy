@@ -1,4 +1,4 @@
-use crate::{meta::Settings, Asset, ErasedLoadedAsset, Handle, LabeledAsset, UntypedHandle};
+use crate::{Asset, ErasedLoadedAsset, Handle, LabeledAsset, UntypedHandle, meta::Settings};
 use atomicow::CowArc;
 use bevy_utils::{ConditionalSendFuture, HashMap};
 use core::{

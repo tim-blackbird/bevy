@@ -4,8 +4,8 @@
 //! [easing functions]: EaseFunction
 
 use crate::{
-    curve::{FunctionCurve, Interval},
     Curve, Dir2, Dir3, Dir3A, Quat, Rot2, VectorSpace,
+    curve::{FunctionCurve, Interval},
 };
 
 // TODO: Think about merging `Ease` with `StableInterpolate`
@@ -214,7 +214,7 @@ pub enum EaseFunction {
 mod easing_functions {
     use core::f32::consts::{FRAC_PI_2, FRAC_PI_3, PI};
 
-    use crate::{ops, FloatPow};
+    use crate::{FloatPow, ops};
 
     #[inline]
     pub(crate) fn linear(t: f32) -> f32 {

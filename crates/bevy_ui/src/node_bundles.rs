@@ -2,9 +2,9 @@
 #![expect(deprecated)]
 
 use crate::{
-    widget::{Button, ImageNodeSize},
     BackgroundColor, BorderColor, BorderRadius, ComputedNode, ContentSize, FocusPolicy, ImageNode,
     Interaction, MaterialNode, Node, ScrollPosition, UiMaterial, ZIndex,
+    widget::{Button, ImageNodeSize},
 };
 use bevy_ecs::bundle::Bundle;
 use bevy_render::view::{InheritedVisibility, ViewVisibility, Visibility};

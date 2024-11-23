@@ -4,10 +4,10 @@ use smallvec::{Array as SmallArray, SmallVec};
 use core::any::Any;
 
 use crate::{
-    self as bevy_reflect, utility::GenericTypeInfoCell, ApplyError, FromReflect, FromType,
-    Generics, GetTypeRegistration, List, ListInfo, ListIter, MaybeTyped, PartialReflect, Reflect,
-    ReflectFromPtr, ReflectKind, ReflectMut, ReflectOwned, ReflectRef, TypeInfo, TypeParamInfo,
-    TypePath, TypeRegistration, Typed,
+    self as bevy_reflect, ApplyError, FromReflect, FromType, Generics, GetTypeRegistration, List,
+    ListInfo, ListIter, MaybeTyped, PartialReflect, Reflect, ReflectFromPtr, ReflectKind,
+    ReflectMut, ReflectOwned, ReflectRef, TypeInfo, TypeParamInfo, TypePath, TypeRegistration,
+    Typed, utility::GenericTypeInfoCell,
 };
 
 impl<T: SmallArray + TypePath + Send + Sync> List for SmallVec<T>

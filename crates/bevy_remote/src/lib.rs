@@ -301,7 +301,7 @@
 //! [fully-qualified type name]: bevy_reflect::TypePath::type_path
 
 use async_channel::{Receiver, Sender};
-use bevy_app::{prelude::*, MainScheduleOrder};
+use bevy_app::{MainScheduleOrder, prelude::*};
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::{
     entity::Entity,
@@ -309,7 +309,7 @@ use bevy_ecs::{
     system::{Commands, In, IntoSystem, ResMut, Resource, System, SystemId},
     world::World,
 };
-use bevy_utils::{prelude::default, HashMap};
+use bevy_utils::{HashMap, prelude::default};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::sync::RwLock;
@@ -421,17 +421,14 @@ impl Plugin for RemotePlugin {
 
         let plugin_methods = &mut *self.methods.write().unwrap();
         for (name, handler) in plugin_methods.drain(..) {
-            remote_methods.insert(
-                name,
-                match handler {
-                    RemoteMethodHandler::Instant(system) => RemoteMethodSystemId::Instant(
-                        app.main_mut().world_mut().register_boxed_system(system),
-                    ),
-                    RemoteMethodHandler::Watching(system) => RemoteMethodSystemId::Watching(
-                        app.main_mut().world_mut().register_boxed_system(system),
-                    ),
-                },
-            );
+            remote_methods.insert(name, match handler {
+                RemoteMethodHandler::Instant(system) => RemoteMethodSystemId::Instant(
+                    app.main_mut().world_mut().register_boxed_system(system),
+                ),
+                RemoteMethodHandler::Watching(system) => RemoteMethodSystemId::Watching(
+                    app.main_mut().world_mut().register_boxed_system(system),
+                ),
+            });
         }
 
         app.init_schedule(RemoteLast)

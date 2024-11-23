@@ -12,9 +12,9 @@ use bevy::{
     color::palettes::basic::{GREEN, RED, WHITE},
     prelude::*,
     render::{
+        RenderPlugin,
         render_resource::WgpuFeatures,
         settings::{RenderCreation, WgpuSettings},
-        RenderPlugin,
     },
     sprite::{NoWireframe2d, Wireframe2d, Wireframe2dColor, Wireframe2dConfig, Wireframe2dPlugin},
 };
@@ -88,15 +88,12 @@ fn setup(
     commands.spawn(Camera2d);
 
     // Text used to show controls
-    commands.spawn((
-        Text::default(),
-        Node {
-            position_type: PositionType::Absolute,
-            top: Val::Px(12.0),
-            left: Val::Px(12.0),
-            ..default()
-        },
-    ));
+    commands.spawn((Text::default(), Node {
+        position_type: PositionType::Absolute,
+        top: Val::Px(12.0),
+        left: Val::Px(12.0),
+        ..default()
+    }));
 }
 
 /// This system lets you toggle various wireframe settings

@@ -1,4 +1,4 @@
-use crate::{serde::Serializable, FromReflect, Reflect, TypeInfo, TypePath, Typed};
+use crate::{FromReflect, Reflect, TypeInfo, TypePath, Typed, serde::Serializable};
 use alloc::sync::Arc;
 use bevy_ptr::{Ptr, PtrMut};
 use bevy_utils::{HashMap, HashSet, TypeIdMap};
@@ -7,7 +7,7 @@ use core::{
     fmt::Debug,
     ops::{Deref, DerefMut},
 };
-use downcast_rs::{impl_downcast, Downcast};
+use downcast_rs::{Downcast, impl_downcast};
 use serde::Deserialize;
 use std::sync::{PoisonError, RwLock, RwLockReadGuard, RwLockWriteGuard};
 

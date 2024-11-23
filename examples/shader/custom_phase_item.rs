@@ -8,13 +8,14 @@
 //! for better reuse of parts of Bevy's built-in mesh rendering logic.
 
 use bevy::{
-    core_pipeline::core_3d::{Opaque3d, Opaque3dBinKey, CORE_3D_DEPTH_FORMAT},
+    core_pipeline::core_3d::{CORE_3D_DEPTH_FORMAT, Opaque3d, Opaque3dBinKey},
     ecs::{
         query::ROQueryItem,
-        system::{lifetimeless::SRes, SystemParamItem},
+        system::{SystemParamItem, lifetimeless::SRes},
     },
     prelude::*,
     render::{
+        Render, RenderApp, RenderSet,
         extract_component::{ExtractComponent, ExtractComponentPlugin},
         primitives::Aabb,
         render_phase::{
@@ -30,7 +31,6 @@ use bevy::{
         },
         renderer::{RenderDevice, RenderQueue},
         view::{self, ExtractedView, RenderVisibleEntities, VisibilitySystems},
-        Render, RenderApp, RenderSet,
     },
 };
 use bytemuck::{Pod, Zeroable};

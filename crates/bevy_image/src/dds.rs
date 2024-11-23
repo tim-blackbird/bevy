@@ -272,7 +272,7 @@ pub fn dds_format_to_texture_format(
             _ => {
                 return Err(TextureError::UnsupportedTextureFormat(format!(
                     "{dxgi_format:?}",
-                )))
+                )));
             }
         }
     } else {
@@ -284,7 +284,7 @@ pub fn dds_format_to_texture_format(
 
 #[cfg(test)]
 mod test {
-    use wgpu::{util::TextureDataOrder, TextureDescriptor, TextureDimension};
+    use wgpu::{TextureDescriptor, TextureDimension, util::TextureDataOrder};
 
     use crate::CompressedImageFormats;
 

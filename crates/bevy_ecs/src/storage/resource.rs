@@ -2,7 +2,7 @@ use crate::{
     archetype::ArchetypeComponentId,
     change_detection::{MaybeLocation, MaybeUnsafeCellLocation, MutUntyped, TicksMut},
     component::{ComponentId, ComponentTicks, Components, Tick, TickCells},
-    storage::{blob_vec::BlobVec, SparseSet},
+    storage::{SparseSet, blob_vec::BlobVec},
 };
 use bevy_ptr::{OwningPtr, Ptr, UnsafeCellDeref};
 #[cfg(feature = "track_change_detection")]

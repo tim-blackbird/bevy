@@ -1,13 +1,12 @@
 use core::fmt::{Debug, Formatter};
 
 use bevy_reflect_derive::impl_type_path;
-use bevy_utils::hashbrown::{hash_table::OccupiedEntry as HashTableOccupiedEntry, HashTable};
+use bevy_utils::hashbrown::{HashTable, hash_table::OccupiedEntry as HashTableOccupiedEntry};
 
 use crate::generics::impl_generic_info_methods;
 use crate::{
-    self as bevy_reflect, hash_error, type_info::impl_type_methods, ApplyError, Generics,
-    PartialReflect, Reflect, ReflectKind, ReflectMut, ReflectOwned, ReflectRef, Type, TypeInfo,
-    TypePath,
+    self as bevy_reflect, ApplyError, Generics, PartialReflect, Reflect, ReflectKind, ReflectMut,
+    ReflectOwned, ReflectRef, Type, TypeInfo, TypePath, hash_error, type_info::impl_type_methods,
 };
 
 /// A trait used to power [set-like] operations via [reflection].

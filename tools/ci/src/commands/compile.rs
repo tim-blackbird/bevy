@@ -1,9 +1,9 @@
 use crate::{
+    Flag, Prepare, PreparedCommand,
     commands::{
         BenchCheckCommand, CompileCheckCommand, CompileFailCommand, ExampleCheckCommand,
         TestCheckCommand,
     },
-    Flag, Prepare, PreparedCommand,
 };
 use argh::FromArgs;
 

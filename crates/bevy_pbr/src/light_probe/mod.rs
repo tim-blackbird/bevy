@@ -1,7 +1,7 @@
 //! Light probes for baked global illumination.
 
 use bevy_app::{App, Plugin};
-use bevy_asset::{load_internal_asset, AssetId, Handle};
+use bevy_asset::{AssetId, Handle, load_internal_asset};
 use bevy_core_pipeline::core_3d::Camera3d;
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::{
@@ -14,8 +14,9 @@ use bevy_ecs::{
 };
 use bevy_image::Image;
 use bevy_math::{Affine3A, FloatOrd, Mat4, Vec3A, Vec4};
-use bevy_reflect::{std_traits::ReflectDefault, Reflect};
+use bevy_reflect::{Reflect, std_traits::ReflectDefault};
 use bevy_render::{
+    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
     extract_instances::ExtractInstancesPlugin,
     primitives::{Aabb, Frustum},
     render_asset::RenderAssets,
@@ -25,17 +26,16 @@ use bevy_render::{
     sync_world::RenderEntity,
     texture::{FallbackImage, GpuImage},
     view::{ExtractedView, Visibility},
-    Extract, ExtractSchedule, Render, RenderApp, RenderSet,
 };
 use bevy_transform::{components::Transform, prelude::GlobalTransform};
-use bevy_utils::{tracing::error, HashMap};
+use bevy_utils::{HashMap, tracing::error};
 
 use core::{hash::Hash, ops::Deref};
 
 use crate::{
     irradiance_volume::IRRADIANCE_VOLUME_SHADER_HANDLE,
     light_probe::environment_map::{
-        EnvironmentMapIds, EnvironmentMapLight, ENVIRONMENT_MAP_SHADER_HANDLE,
+        ENVIRONMENT_MAP_SHADER_HANDLE, EnvironmentMapIds, EnvironmentMapLight,
     },
 };
 

@@ -7,10 +7,9 @@ use crate::{
 };
 use bevy_ecs::system::Resource;
 use bevy_utils::{
-    default,
+    Entry, HashMap, default,
     hashbrown::hash_map::{RawEntryMut, VacantEntry},
     tracing::error,
-    Entry, HashMap,
 };
 use core::{fmt::Debug, hash::Hash};
 use derive_more::derive::{Display, Error, From};

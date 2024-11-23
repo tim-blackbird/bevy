@@ -2,16 +2,17 @@
 #![allow(unused_qualifications)]
 
 use crate::{
-    self as bevy_reflect, impl_type_path, map_apply, map_partial_eq, map_try_apply,
+    self as bevy_reflect, ApplyError, Array, ArrayInfo, ArrayIter, DynamicMap, DynamicSet,
+    DynamicTypePath, FromReflect, FromType, Generics, GetTypeRegistration, List, ListInfo,
+    ListIter, Map, MapInfo, MapIter, MaybeTyped, OpaqueInfo, PartialReflect, Reflect,
+    ReflectDeserialize, ReflectFromPtr, ReflectFromReflect, ReflectKind, ReflectMut, ReflectOwned,
+    ReflectRef, ReflectSerialize, Set, SetInfo, TypeInfo, TypeParamInfo, TypePath,
+    TypeRegistration, TypeRegistry, Typed, impl_type_path, map_apply, map_partial_eq,
+    map_try_apply,
     prelude::ReflectDefault,
     reflect::impl_full_reflect,
     set_apply, set_partial_eq, set_try_apply,
-    utility::{reflect_hasher, GenericTypeInfoCell, GenericTypePathCell, NonGenericTypeInfoCell},
-    ApplyError, Array, ArrayInfo, ArrayIter, DynamicMap, DynamicSet, DynamicTypePath, FromReflect,
-    FromType, Generics, GetTypeRegistration, List, ListInfo, ListIter, Map, MapInfo, MapIter,
-    MaybeTyped, OpaqueInfo, PartialReflect, Reflect, ReflectDeserialize, ReflectFromPtr,
-    ReflectFromReflect, ReflectKind, ReflectMut, ReflectOwned, ReflectRef, ReflectSerialize, Set,
-    SetInfo, TypeInfo, TypeParamInfo, TypePath, TypeRegistration, TypeRegistry, Typed,
+    utility::{GenericTypeInfoCell, GenericTypePathCell, NonGenericTypeInfoCell, reflect_hasher},
 };
 use alloc::{borrow::Cow, collections::VecDeque};
 use bevy_reflect_derive::{impl_reflect, impl_reflect_opaque};
@@ -2340,12 +2341,14 @@ mod tests {
         let a: &dyn Reflect = &a;
         let b: &dyn Reflect = &b;
         let c: &dyn Reflect = &c;
-        assert!(a
-            .reflect_partial_eq(b.as_partial_reflect())
-            .unwrap_or_default());
-        assert!(!a
-            .reflect_partial_eq(c.as_partial_reflect())
-            .unwrap_or_default());
+        assert!(
+            a.reflect_partial_eq(b.as_partial_reflect())
+                .unwrap_or_default()
+        );
+        assert!(
+            !a.reflect_partial_eq(c.as_partial_reflect())
+                .unwrap_or_default()
+        );
     }
 
     #[test]
@@ -2361,12 +2364,16 @@ mod tests {
 
         let mut value = Some(123usize);
 
-        assert!(value
-            .reflect_partial_eq(&Some(123usize))
-            .unwrap_or_default());
-        assert!(!value
-            .reflect_partial_eq(&Some(321usize))
-            .unwrap_or_default());
+        assert!(
+            value
+                .reflect_partial_eq(&Some(123usize))
+                .unwrap_or_default()
+        );
+        assert!(
+            !value
+                .reflect_partial_eq(&Some(321usize))
+                .unwrap_or_default()
+        );
 
         assert_eq!("Some", value.variant_name());
         assert_eq!("core::option::Option<usize>::Some", value.variant_path());

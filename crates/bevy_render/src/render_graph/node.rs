@@ -16,7 +16,7 @@ use bevy_ecs::{
 use bevy_utils::all_tuples_with_size;
 use core::fmt::Debug;
 use derive_more::derive::{Display, Error, From};
-use downcast_rs::{impl_downcast, Downcast};
+use downcast_rs::{Downcast, impl_downcast};
 
 pub use bevy_render_macros::RenderLabel;
 
