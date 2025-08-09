@@ -26,6 +26,7 @@ use bevy_reflect::{prelude::ReflectDefault, Reflect};
 use bevy_ui::{ComputedNode, ComputedNodeTarget, InteractionDisabled, UiGlobalTransform, UiScale};
 
 use crate::{Callback, Notify, ValueChange};
+use bevy_ecs::template::GetTemplate;
 
 /// Defines how the slider should behave when you click on the track (not the thumb).
 #[derive(Debug, Default, PartialEq, Clone, Copy, Reflect)]
@@ -69,7 +70,7 @@ pub enum TrackClick {
 ///
 /// In cases where overhang is desired for artistic reasons, the thumb may have additional
 /// decorative child elements, absolutely positioned, which don't affect the size measurement.
-#[derive(Component, Debug, Default)]
+#[derive(Component, Debug, GetTemplate, Clone)]
 #[require(
     AccessibilityNode(accesskit::Node::new(Role::Slider)),
     CoreSliderDragState,
@@ -88,7 +89,7 @@ pub struct CoreSlider {
 }
 
 /// Marker component that identifies which descendant element is the slider thumb.
-#[derive(Component, Debug, Default)]
+#[derive(Component, Debug, Default, Clone)]
 pub struct CoreSliderThumb;
 
 /// A component which stores the current value of the slider.

@@ -53,7 +53,7 @@ impl UiTheme {
 }
 
 /// Component which causes the background color of an entity to be set based on a theme color.
-#[derive(Component, Clone, Copy)]
+#[derive(Component, Clone, Copy, Default)]
 #[require(BackgroundColor)]
 #[component(immutable)]
 #[derive(Reflect)]
@@ -62,7 +62,7 @@ pub struct ThemeBackgroundColor(pub &'static str);
 
 /// Component which causes the border color of an entity to be set based on a theme color.
 /// Only supports setting all borders to the same color.
-#[derive(Component, Clone, Copy)]
+#[derive(Component, Clone, Copy, Default)]
 #[require(BorderColor)]
 #[component(immutable)]
 #[derive(Reflect)]
@@ -70,7 +70,7 @@ pub struct ThemeBackgroundColor(pub &'static str);
 pub struct ThemeBorderColor(pub &'static str);
 
 /// Component which causes the inherited text color of an entity to be set based on a theme color.
-#[derive(Component, Clone, Copy)]
+#[derive(Component, Clone, Copy, Default)]
 #[component(immutable)]
 #[derive(Reflect)]
 #[reflect(Component, Clone)]
@@ -78,7 +78,7 @@ pub struct ThemeFontColor(pub &'static str);
 
 /// A marker component that is used to indicate that the text entity wants to opt-in to using
 /// inherited text styles.
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Default, Clone)]
 #[reflect(Component)]
 pub struct ThemedText;
 

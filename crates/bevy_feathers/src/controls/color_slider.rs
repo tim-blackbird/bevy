@@ -4,22 +4,22 @@ use bevy_app::{Plugin, PreUpdate};
 use bevy_asset::Handle;
 use bevy_color::{Alpha, Color, Hsla};
 use bevy_core_widgets::{
-    Callback, CoreSlider, CoreSliderThumb, SliderRange, SliderValue, TrackClick, ValueChange,
+    CallbackTemplate, CoreSlider, CoreSliderThumb, SliderRange, SliderValue, TrackClick,
+    ValueChange,
 };
 use bevy_ecs::{
     bundle::Bundle,
-    children,
     component::Component,
     entity::Entity,
     hierarchy::Children,
     query::{Changed, Or, With},
     schedule::IntoScheduleConfigs,
-    spawn::SpawnRelated,
     system::{In, Query},
 };
 use bevy_input_focus::tab_navigation::TabIndex;
 use bevy_log::warn_once;
 use bevy_picking::PickingSystems;
+use bevy_scene2::{bsn, template_value, Scene};
 use bevy_ui::{
     AlignItems, BackgroundColor, BackgroundGradient, BorderColor, BorderRadius, ColorStop, Display,
     FlexDirection, Gradient, InterpolationColorSpace, LinearGradient, Node, Outline, PositionType,
@@ -147,7 +147,7 @@ pub struct ColorSliderProps {
     /// Slider current value
     pub value: f32,
     /// On-change handler
-    pub on_change: Callback<In<ValueChange<f32>>>,
+    pub on_change: CallbackTemplate<In<ValueChange<f32>>>,
     /// Which color component we're editing
     pub channel: ColorChannel,
 }
@@ -156,7 +156,7 @@ impl Default for ColorSliderProps {
     fn default() -> Self {
         Self {
             value: 0.0,
-            on_change: Callback::Ignore,
+            on_change: CallbackTemplate::Ignore,
             channel: ColorChannel::Alpha,
         }
     }
@@ -164,7 +164,7 @@ impl Default for ColorSliderProps {
 
 /// A color slider widget.
 #[derive(Component, Default, Clone)]
-#[require(CoreSlider, SliderBaseColor(Color::WHITE))]
+#[require(SliderBaseColor(Color::WHITE))]
 pub struct ColorSlider {
     /// Which channel is being edited by this slider.
     pub channel: ColorChannel,
@@ -184,107 +184,99 @@ struct ColorSliderThumb;
 ///
 /// * `props` - construction properties for the slider.
 /// * `overrides` - a bundle of components that are merged in with the normal slider components.
-pub fn color_slider<B: Bundle>(props: ColorSliderProps, overrides: B) -> impl Bundle {
-    (
+pub fn color_slider(props: ColorSliderProps) -> impl Scene {
+    let channel_range = props.channel.range();
+    bsn! {
         Node {
             display: Display::Flex,
             flex_direction: FlexDirection::Row,
             height: Val::Px(SLIDER_HEIGHT),
             align_items: AlignItems::Stretch,
             flex_grow: 1.0,
-            ..Default::default()
-        },
+        }
         CoreSlider {
-            on_change: props.on_change,
+            on_change: {props.on_change.clone()},
             track_click: TrackClick::Snap,
-        },
+        }
         ColorSlider {
-            channel: props.channel.clone(),
-        },
-        SliderValue(props.value),
-        props.channel.range(),
-        EntityCursor::System(bevy_window::SystemCursorIcon::Pointer),
-        TabIndex(0),
-        overrides,
-        children![
+            channel: {props.channel.clone()},
+        }
+        SliderValue({props.value})
+        template_value(channel_range)
+        EntityCursor::System(bevy_window::SystemCursorIcon::Pointer)
+        TabIndex(0)
+        [
             // track
-            (
-                Node {
-                    position_type: PositionType::Absolute,
-                    left: Val::Px(0.),
-                    right: Val::Px(0.),
-                    top: Val::Px(TRACK_PADDING),
-                    bottom: Val::Px(TRACK_PADDING),
-                    ..Default::default()
-                },
-                RoundedCorners::All.to_border_radius(TRACK_RADIUS),
-                ColorSliderTrack,
-                AlphaPattern,
-                MaterialNode::<AlphaPatternMaterial>(Handle::default()),
-                children![
-                    // Left endcap
-                    (
+            Node {
+                position_type: PositionType::Absolute,
+                left: Val::Px(0.),
+                right: Val::Px(0.),
+                top: Val::Px(TRACK_PADDING),
+                bottom: Val::Px(TRACK_PADDING),
+            }
+            template_value(RoundedCorners::All.to_border_radius(TRACK_RADIUS))
+            ColorSliderTrack
+            AlphaPattern
+            MaterialNode::<AlphaPatternMaterial>(Handle::default())
+            [
+                // Left endcap
+                (
+                    Node {
+                        width: Val::Px({THUMB_SIZE * 0.5}),
+                    }
+                    template_value(RoundedCorners::Left.to_border_radius(TRACK_RADIUS))
+                    BackgroundColor({palette::X_AXIS})
+                ),
+                // Track with gradient
+                (
+                    Node {
+                        flex_grow: 1.0,
+                    }
+                    BackgroundGradient({vec![Gradient::Linear(LinearGradient {
+                        angle: PI * 0.5,
+                        stops: vec![
+                            ColorStop::new(Color::NONE, Val::Percent(0.)),
+                            ColorStop::new(Color::NONE, Val::Percent(50.)),
+                            ColorStop::new(Color::NONE, Val::Percent(100.)),
+                        ],
+                        color_space: InterpolationColorSpace::Srgba,
+                    })]})
+                    ZIndex(1)
+                    [
                         Node {
-                            width: Val::Px(THUMB_SIZE * 0.5),
-                            ..Default::default()
-                        },
-                        RoundedCorners::Left.to_border_radius(TRACK_RADIUS),
-                        BackgroundColor(palette::X_AXIS),
-                    ),
-                    // Track with gradient
-                    (
-                        Node {
-                            flex_grow: 1.0,
-                            ..Default::default()
-                        },
-                        BackgroundGradient(vec![Gradient::Linear(LinearGradient {
-                            angle: PI * 0.5,
-                            stops: vec![
-                                ColorStop::new(Color::NONE, Val::Percent(0.)),
-                                ColorStop::new(Color::NONE, Val::Percent(50.)),
-                                ColorStop::new(Color::NONE, Val::Percent(100.)),
-                            ],
-                            color_space: InterpolationColorSpace::Srgba,
-                        })]),
-                        ZIndex(1),
-                        children![(
-                            Node {
-                                position_type: PositionType::Absolute,
-                                left: Val::Percent(0.),
-                                top: Val::Percent(50.),
-                                width: Val::Px(THUMB_SIZE),
-                                height: Val::Px(THUMB_SIZE),
-                                border: UiRect::all(Val::Px(2.0)),
-                                ..Default::default()
-                            },
-                            CoreSliderThumb,
-                            ColorSliderThumb,
-                            BorderRadius::MAX,
-                            BorderColor::all(palette::WHITE),
-                            Outline {
-                                width: Val::Px(1.),
-                                offset: Val::Px(0.),
-                                color: palette::BLACK
-                            },
-                            UiTransform::from_translation(Val2::new(
-                                Val::Percent(-50.0),
-                                Val::Percent(-50.0),
-                            ))
-                        )]
-                    ),
-                    // Right endcap
-                    (
-                        Node {
-                            width: Val::Px(THUMB_SIZE * 0.5),
-                            ..Default::default()
-                        },
-                        RoundedCorners::Right.to_border_radius(TRACK_RADIUS),
-                        BackgroundColor(palette::Z_AXIS),
-                    ),
-                ]
-            ),
-        ],
-    )
+                            position_type: PositionType::Absolute,
+                            left: Val::Percent(0.),
+                            top: Val::Percent(50.),
+                            width: Val::Px(THUMB_SIZE),
+                            height: Val::Px(THUMB_SIZE),
+                            border: UiRect::all(Val::Px(2.0)),
+                        }
+                        CoreSliderThumb
+                        ColorSliderThumb
+                        BorderRadius::MAX
+                        BorderColor::all(palette::WHITE)
+                        Outline {
+                            width: Val::Px(1.),
+                            offset: Val::Px(0.),
+                            color: palette::BLACK
+                        }
+                        UiTransform::from_translation(Val2::new(
+                            Val::Percent(-50.0),
+                            Val::Percent(-50.0),
+                        ))
+                    ]
+                ),
+                // Right endcap
+                (
+                    Node {
+                        width: Val::Px({THUMB_SIZE * 0.5}),
+                    }
+                    template_value(RoundedCorners::Right.to_border_radius(TRACK_RADIUS))
+                    BackgroundColor({palette::Z_AXIS})
+                ),
+            ]
+        ]
+    }
 }
 
 fn update_slider_pos(

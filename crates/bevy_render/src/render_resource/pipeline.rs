@@ -128,7 +128,7 @@ impl RenderPipelineDescriptor {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, Default)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct VertexState {
     /// The compiled shader module for this stage.
     pub shader: Handle<Shader>,
@@ -140,8 +140,19 @@ pub struct VertexState {
     pub buffers: Vec<VertexBufferLayout>,
 }
 
+impl Default for VertexState {
+    fn default() -> Self {
+        Self {
+            shader: Handle::default(),
+            shader_defs: Default::default(),
+            entry_point: Default::default(),
+            buffers: Default::default(),
+        }
+    }
+}
+
 /// Describes the fragment process in a render pipeline.
-#[derive(Clone, Debug, PartialEq, Eq, Default)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct FragmentState {
     /// The compiled shader module for this stage.
     pub shader: Handle<Shader>,
@@ -159,8 +170,19 @@ impl FragmentState {
     }
 }
 
+impl Default for FragmentState {
+    fn default() -> Self {
+        Self {
+            shader: Handle::default(),
+            shader_defs: Default::default(),
+            entry_point: Default::default(),
+            targets: Default::default(),
+        }
+    }
+}
+
 /// Describes a compute pipeline.
-#[derive(Clone, Debug, PartialEq, Eq, Default)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ComputePipelineDescriptor {
     pub label: Option<Cow<'static, str>>,
     pub layout: Vec<BindGroupLayout>,
@@ -182,4 +204,18 @@ fn filling_set_at<T: Clone>(vec: &mut Vec<T>, index: usize, filler: T, value: T)
     let num_to_fill = (index + 1).saturating_sub(vec.len());
     vec.extend(iter::repeat_n(filler, num_to_fill));
     vec[index] = value;
+}
+
+impl Default for ComputePipelineDescriptor {
+    fn default() -> Self {
+        Self {
+            shader: Handle::default(),
+            label: Default::default(),
+            layout: Default::default(),
+            push_constant_ranges: Default::default(),
+            shader_defs: Default::default(),
+            entry_point: Default::default(),
+            zero_initialize_workgroup_memory: Default::default(),
+        }
+    }
 }
