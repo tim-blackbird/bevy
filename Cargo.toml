@@ -71,6 +71,7 @@ allow_attributes = "warn"
 allow_attributes_without_reason = "warn"
 
 [workspace.lints.rust]
+mismatched_lifetime_syntaxes = "allow"
 missing_docs = "warn"
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(docsrs_dep)'] }
 unsafe_code = "deny"
@@ -525,6 +526,9 @@ libm = ["bevy_internal/libm"]
 
 # Enables use of browser APIs. Note this is currently only applicable on `wasm32` architectures.
 web = ["bevy_internal/web"]
+
+# Enable hotpatching of Bevy systems
+hotpatching = ["bevy_internal/hotpatching"]
 
 [dependencies]
 bevy_internal = { path = "crates/bevy_internal", version = "0.16.0", default-features = false }
@@ -4165,6 +4169,16 @@ inherits = "release"
 lto = "fat"
 panic = "abort"
 
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
+
 [package.metadata.docs.rs]
 # This cfg is needed so that #[doc(fake_variadic)] is correctly propagated for
 # impls for re-exported traits. See https://github.com/rust-lang/cargo/issues/8811
@@ -4316,4 +4330,16 @@ doc-scrape-examples = true
 name = "Extended Bindless Material"
 description = "Demonstrates bindless `ExtendedMaterial`"
 category = "Shaders"
+wasm = false
+
+[[example]]
+name = "hotpatching_systems"
+path = "examples/ecs/hotpatching_systems.rs"
+doc-scrape-examples = true
+required-features = ["hotpatching"]
+
+[package.metadata.example.hotpatching_systems]
+name = "Hotpatching Systems"
+description = "Demonstrates how to hotpatch systems"
+category = "Ecs"
 wasm = false

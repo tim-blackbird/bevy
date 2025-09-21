@@ -60,6 +60,9 @@ pub mod world;
 
 pub use bevy_ptr as ptr;
 
+#[cfg(feature = "hotpatching")]
+use event::Event;
+
 /// The ECS prelude.
 ///
 /// This includes the most common types in this crate, re-exported for your convenience.
@@ -2844,3 +2847,10 @@ mod tests {
     #[derive(Component)]
     struct MyEntitiesTuple(#[entities] Vec<Entity>, #[entities] Entity, usize);
 }
+
+/// Event triggered when a hotpatch happens.
+///
+/// Systems should refresh their inner pointers.
+#[cfg(feature = "hotpatching")]
+#[derive(Event, Default)]
+pub struct HotPatched;
