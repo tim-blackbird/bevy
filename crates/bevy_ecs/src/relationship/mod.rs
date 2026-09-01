@@ -1,5 +1,6 @@
 //! This module provides functionality to link entities to each other using specialized components called "relationships". See the [`Relationship`] trait for more info.
 
+mod query_data;
 mod related_methods;
 mod relationship_query;
 mod relationship_source_collection;
@@ -12,6 +13,7 @@ use core::{any::TypeId, marker::PhantomData};
 use alloc::format;
 
 use bevy_utils::prelude::DebugName;
+pub use query_data::*;
 pub use related_methods::*;
 pub use relationship_query::*;
 pub use relationship_source_collection::*;
